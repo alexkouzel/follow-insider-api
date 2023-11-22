@@ -13,6 +13,7 @@ server:
 spring.jpa:
   database: POSTGRESQL
   hibernate.ddl-auto: update
+  open-in-view: true
   properties.hibernate:
     jdbc.lob.non_contextual_creation: true
     jdbc.batch_size: 32

@@ -15,7 +15,7 @@ VERSION=$ALIAS-$DATE
 gradle build
 
 # upload the jar file to S3
-aws s3 cp fi-web/build/libs/$S3_ASSET s3://$S3_ASSET/
+aws s3 cp fi-web/build/libs/$S3_ASSET s3://$S3_BUCKET/
 
 # create a new version of the application
 aws elasticbeanstalk create-application-version \
