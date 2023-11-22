@@ -1,1 +1,7 @@
+include 'fi-aws'
+include 'fi-web'
+
 rootProject.name = 'follow-insider'
+rootProject.children.each {project ->
+    project.buildFileName = "${project.name}.gradle"
+}

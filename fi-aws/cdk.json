@@ -1,0 +1,14 @@
+{
+  "app": "gradle -q runCdk",
+  "watch": {
+    "include": [
+      "**"
+    ],
+    "exclude": [
+      "README.md",
+      "cdk*.json"
+    ]
+  },
+  "context": {
+  }
+}

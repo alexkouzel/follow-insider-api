@@ -34,3 +34,12 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### AWS CDK ###
+*.swp
+cdk.context.json
+.cdk.staging/
+cdk.out/
+
+### Other ###
+logs/

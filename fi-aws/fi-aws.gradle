@@ -1,0 +1,15 @@
+plugins {
+    id 'io.freefair.lombok' version '8.4'
+}
+
+dependencies {
+    implementation 'software.amazon.awscdk:aws-cdk-lib:2.110.0'
+    implementation 'software.constructs:constructs:10.1.131'
+}
+
+tasks.register('runCdk', JavaExec) {
+    group = 'Execution'
+    description = 'Run the CDK deployment class'
+    mainClass = 'fi.aws.ElasticBeanstalkApp'
+    classpath = sourceSets.main.runtimeClasspath
+}
