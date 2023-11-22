@@ -27,7 +27,10 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 
     /* Other */
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'com.google.guava:guava:31.1-jre'                                    // collections
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.4'     // XML parsing
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.4'                  // logging
+    implementation 'org.springframework.boot:spring-boot-starter-mail'                  // emails
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
 }

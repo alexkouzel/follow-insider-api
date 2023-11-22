@@ -42,4 +42,5 @@ cdk.context.json
 cdk.out/
 
 ### Other ###
+.env/
 logs/
