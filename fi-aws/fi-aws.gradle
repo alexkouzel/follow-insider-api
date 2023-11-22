@@ -10,6 +10,6 @@ dependencies {
 tasks.register('runCdk', JavaExec) {
     group = 'Execution'
     description = 'Run the CDK deployment class'
-    mainClass = 'fi.aws.ElasticBeanstalkApp'
+    mainClass = 'com.followinsider.FollowInsiderDeployer'
     classpath = sourceSets.main.runtimeClasspath
 }

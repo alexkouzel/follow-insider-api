@@ -73,11 +73,12 @@ public class ElasticBeanstalkStack extends Stack {
         // Option settings of application environment
         boolean https = props.isHttps();
         String certificateArn = System.getenv("CERTIFICATE_ARN");
-        List<CfnEnvironment.OptionSettingProperty> settings = new CfnSettingBuilder()
+        List<CfnEnvironment.OptionSettingProperty> settings = new CfnSettingsBuilder()
 
                 /* Elastic Beanstalk */
                 .setting("aws:elasticbeanstalk:application:environment", "SERVER_PORT", props.getPort())
-                .setting("aws:elasticbeanstalk:environment", "EnvironmentType", "LoadBalanced")
+                .setting("aws:elasticbeanstalk:environment:process:default", "HealthCheckPath", props.getHealthUrl())
+                    .setting("aws:elasticbeanstalk:environment", "EnvironmentType", "LoadBalanced")
                 .setting("aws:elasticbeanstalk:environment", "LoadBalancerType", "application")
 
                 /* Load balancer for HTTPS */

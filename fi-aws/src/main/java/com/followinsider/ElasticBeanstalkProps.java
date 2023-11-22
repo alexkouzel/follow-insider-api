@@ -12,6 +12,8 @@ public class ElasticBeanstalkProps {
 
     private final String instanceType;
 
+    private final String healthUrl;
+
     private final String assetPath;
 
     private final String stackName;

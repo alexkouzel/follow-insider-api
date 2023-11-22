@@ -6,7 +6,8 @@
     ],
     "exclude": [
       "README.md",
-      "cdk*.json"
+      "cdk*.json",
+      "docs"
     ]
   },
   "context": {

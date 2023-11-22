@@ -19,6 +19,7 @@ public class FollowInsiderDeployer {
         new ElasticBeanstalkStack(app, ElasticBeanstalkProps.builder()
                 .stackProps(stackProps)
                 .instanceType("t2.micro")
+                .healthUrl("/actuator/health")
                 .assetPath("../fi-web/build/libs/fi-web.jar")
                 .stackName("64bit Amazon Linux 2023 v4.1.1 running Corretto 17")
                 .appName("follow-insider")

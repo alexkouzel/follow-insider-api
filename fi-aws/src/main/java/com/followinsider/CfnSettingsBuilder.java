@@ -5,7 +5,7 @@ import software.amazon.awscdk.services.elasticbeanstalk.CfnEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CfnSettingBuilder {
+public class CfnSettingsBuilder {
 
     private final List<CfnEnvironment.OptionSettingProperty> settings = new ArrayList<>();
 
@@ -13,11 +13,11 @@ public class CfnSettingBuilder {
         return settings;
     }
 
-    public CfnSettingBuilder settingIf(boolean condition, String namespace, String optionName, String value) {
+    public CfnSettingsBuilder settingIf(boolean condition, String namespace, String optionName, String value) {
         return condition ? setting(namespace, optionName, value) : this;
     }
 
-    public CfnSettingBuilder setting(String namespace, String optionName, String value) {
+    public CfnSettingsBuilder setting(String namespace, String optionName, String value) {
         settings.add(CfnEnvironment.OptionSettingProperty.builder()
                 .namespace(namespace)
                 .optionName(optionName)
