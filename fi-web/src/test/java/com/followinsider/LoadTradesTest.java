@@ -1,11 +1,13 @@
 package com.followinsider;
 
-import com.followinsider.insider.*;
+import com.followinsider.core.model.InsiderForm;
+import com.followinsider.core.model.Trade;
+import com.followinsider.common.entity.TradeType;
 import com.followinsider.secapi.client.EdgarClient;
-import com.followinsider.common.Color;
-import com.followinsider.secapi.forms.refs.FormRef;
-import com.followinsider.utils.StringUtils;
-import com.followinsider.utils.TerminalUtils;
+import com.followinsider.common.entity.Color;
+import com.followinsider.secapi.form.ref.FormRef;
+import com.followinsider.util.StringUtils;
+import com.followinsider.util.TerminalUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -18,8 +20,8 @@ class LoadTradesTest {
     @Test
     void loadTrades() throws IOException, ParseException {
         EdgarClient client = new EdgarClient("Alexey Kovzel alexey.kovzel@gmail.com");
-        InsiderFormRefLoader refLoader = new InsiderFormRefLoader(client);
-        InsiderFormLoader loader = new InsiderFormLoader(client);
+        FilingRefLoader refLoader = new FilingRefLoader(client);
+        FilingLoader loader = new FilingLoader(client);
 
         List<FormRef> refs = refLoader.loadLatest(0, 200);
         System.out.println("Loading refs: " + refs.size());
@@ -39,14 +41,14 @@ class LoadTradesTest {
         List<String> values = new ArrayList<>();
         String format = "%s at %s %s %s shares for $%s on %s";
 
-        for (InsiderTrade trade : form.getTrades()) {
-            String actionValue = trade.getType() == InsiderTradeType.BUY
+        for (Trade trade : form.getTrades()) {
+            String actionValue = trade.getType() == TradeType.BUY
                     ? TerminalUtils.color("bought", Color.GREEN)
                     : TerminalUtils.color("sold", Color.RED);
 
             values.add(String.format(format,
                     form.getInsider().getName(),
-                    form.getIssuer().getIssuerName(),
+                    form.getCompany().getIssuerName(),
                     actionValue,
                     StringUtils.stringify(trade.getShareNum()),
                     StringUtils.stringify(trade.getSharePrice()),

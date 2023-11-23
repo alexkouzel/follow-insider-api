@@ -1,6 +1,6 @@
 package com.followinsider.secapi.client;
 
-import com.followinsider.utils.ThreadUtils;
+import com.followinsider.util.ThreadUtils;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
