@@ -1,5 +1,7 @@
 package com.followinsider.secapi.client;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -11,6 +13,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
+@Slf4j
 public class EdgarClient extends DataClient {
 
     private final String userAgent;
@@ -45,11 +48,11 @@ public class EdgarClient extends DataClient {
     @Override
     protected void handleError(int statusCode) {
         if (statusCode == 429) {
-            System.out.println("[SEC] Request failed: error='Too Many Requests'");
+            log.error("[SEC] Request failed: error='Too Many Requests'");
             rateLimiter.handleTooManyRequests();
             return;
         }
-        System.out.println("[SEC] Unusual EDGAR response: " + statusCode);
+        log.error("[SEC] Unusual EDGAR response: '{}'", statusCode);
     }
 
 }

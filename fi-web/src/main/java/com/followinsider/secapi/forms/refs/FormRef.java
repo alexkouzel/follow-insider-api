@@ -8,16 +8,14 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class FormRef {
 
-    private String accNo;
+    private final String accNo;
 
-    private String issueCik;
+    private final String issuerCik;
 
-    private FormType type;
+    private final FormType type;
 
-    private Date filedAt;
+    private final Date filedAt;
 
 }

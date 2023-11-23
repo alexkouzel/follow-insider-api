@@ -1,6 +1,5 @@
 package com.followinsider.secapi.forms;
 
-import com.followinsider.secapi.forms.refs.FormRef;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -12,17 +11,9 @@ public class FormUtils {
         return getUrl(issuerCik, accNo, accNo + ".txt");
     }
 
-    public String getIndexHeadersUrl(String issuerCik, String accNo) {
-        return getUrl(issuerCik, accNo, accNo + "-index-headers.html");
-    }
-
     /* Only for ownership forms */
     public String getXmlUrl(String issuerCik, String accNo, String filename) {
         return getUrl(issuerCik, accNo, "xslF345X03/" + filename);
-    }
-
-    public String getUrl(FormRef ref, String filename) {
-        return getUrl(ref.getIssueCik(), ref.getAccNo(), filename);
     }
 
     public String getUrl(String issueCik, String accNo, String filename) {

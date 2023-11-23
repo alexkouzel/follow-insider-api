@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.followinsider.secapi.common.deserializers.BooleanDeserializer;
+import com.followinsider.secapi.forms.deserializers.BooleanDeserializer;
 import com.followinsider.secapi.forms.f345.footnote.FootnoteEdgarDate;
 import com.followinsider.secapi.forms.f345.footnote.FootnoteValue;
 import lombok.AllArgsConstructor;

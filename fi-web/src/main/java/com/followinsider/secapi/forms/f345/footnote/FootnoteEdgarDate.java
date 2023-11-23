@@ -3,8 +3,8 @@ package com.followinsider.secapi.forms.f345.footnote;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.followinsider.secapi.common.deserializers.EdgarDateDeserializer;
-import com.followinsider.secapi.utils.DateUtils;
+import com.followinsider.secapi.forms.deserializers.EdgarDateDeserializer;
+import com.followinsider.utils.DateUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

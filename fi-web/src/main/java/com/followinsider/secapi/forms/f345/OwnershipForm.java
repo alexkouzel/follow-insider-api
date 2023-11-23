@@ -2,8 +2,8 @@ package com.followinsider.secapi.forms.f345;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.followinsider.secapi.common.deserializers.BooleanDeserializer;
-import com.followinsider.secapi.common.deserializers.EdgarDateDeserializer;
+import com.followinsider.secapi.forms.deserializers.BooleanDeserializer;
+import com.followinsider.secapi.forms.deserializers.EdgarDateDeserializer;
 import com.followinsider.secapi.forms.f345.footnote.FootnoteContainer;
 import com.followinsider.secapi.forms.f345.owner.Issuer;
 import com.followinsider.secapi.forms.f345.owner.ReportingOwner;

@@ -1,7 +1,7 @@
 package com.followinsider.secapi.forms.f345.owner;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.followinsider.secapi.common.deserializers.BooleanDeserializer;
+import com.followinsider.secapi.forms.deserializers.BooleanDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
