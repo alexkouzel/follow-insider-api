@@ -1,6 +1,6 @@
 package com.followinsider.core.service;
 
-import com.followinsider.core.model.Company;
+import com.followinsider.core.entity.Company;
 import com.followinsider.core.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

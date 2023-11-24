@@ -1,6 +1,6 @@
 package com.followinsider.core.controller;
 
-import com.followinsider.core.model.Trade;
+import com.followinsider.core.entity.Trade;
 import com.followinsider.core.service.TradeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.followinsider.core.service;
 
-import com.followinsider.core.model.Trade;
+import com.followinsider.core.entity.Trade;
 import com.followinsider.core.repository.TradeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -12,6 +12,9 @@ configurations {
 
 dependencies {
 
+    /* Modules */
+    implementation project(path: ':fi-secapi')
+
     /* Website */
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -27,12 +30,14 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
+    /* Dev tools */
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
     /* Other */
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.4'
     implementation 'com.sun.mail:javax.mail:1.6.2'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
 }
 

@@ -1,6 +1,6 @@
 package com.followinsider.core.repository;
 
-import com.followinsider.core.model.Position;
+import com.followinsider.core.entity.Position;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
