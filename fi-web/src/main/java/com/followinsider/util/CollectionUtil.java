@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class CollectionUtil {
 
     public static <T, R> List<R> map(List<T> list, Function<T, R> mapper) {
-        return list.stream().map(mapper).collect(Collectors.toList());
+        return list.stream().map(mapper).toList();
     }
     
     public static List<Integer> generateNums(int from, int to) {

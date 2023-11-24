@@ -22,3 +22,6 @@ spring.jpa:
 
 ### Logging ###
 logging.file.name: logs/app.log
+
+### EDGAR ###
+edgar.user_agent: Alexey Kovzel alexey.kovzel@gmail.com

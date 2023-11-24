@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class FormRefLoader {
@@ -72,7 +71,7 @@ public class FormRefLoader {
     private List<FormRef> filterRefs(List<FormRef> refs) {
         return filterUniqueRefs(refs).stream()
                 .filter(form -> form.getType() == formType)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<FormRef> filterUniqueRefs(List<FormRef> refs) {
