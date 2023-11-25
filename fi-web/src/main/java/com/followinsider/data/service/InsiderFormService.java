@@ -1,18 +1,16 @@
 package com.followinsider.data.service;
 
 import com.followinsider.client.EdgarClient;
-import com.followinsider.data.entity.Company;
-import com.followinsider.data.entity.Insider;
+import com.followinsider.data.entity.*;
 import com.followinsider.data.parser.InsiderFormParser;
-import com.followinsider.data.entity.InsiderForm;
-import com.followinsider.data.repository.InsiderFormRepository;
+import com.followinsider.data.repository.*;
+import com.followinsider.loader.FormRefLoader;
 import com.followinsider.loader.OwnershipDocLoader;
 import com.followinsider.parser.f345.OwnershipDoc;
 import com.followinsider.parser.ref.FormRef;
+import com.followinsider.parser.ref.FormType;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -20,42 +18,71 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class InsiderFormService {
 
     private final EdgarClient edgarClient;
 
     private final InsiderFormRepository insiderFormRepository;
 
-    private final InsiderService insiderService;
+    private final FiscalQuarterRepository fiscalQuarterRepository;
 
-    private final CompanyService companyService;
+    private final EntityGraphService entityGraphService;
 
-    @Transactional
-    public void loadAndSaveByRefs(List<FormRef> refs) throws ParseException, IOException {
-        if (refs == null) return;
+    public void saveByQuarter(int year, int qtr) throws ParseException, IOException {
+        FiscalQuarter fiscalQuarter = fiscalQuarterRepository.findByYearAndQuarter(year, qtr)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid year and/or quarter"));
 
-        List<FormRef> newRefs = filterExistingRefs(refs);
-        List<InsiderForm> forms = loadByRefs(newRefs);
+        saveByQuarter(fiscalQuarter);
+    }
 
-        // TODO: Think of a better way to save forms/insiders/companies.
+    public void saveByQuarter(FiscalQuarter fiscalQuarter) throws ParseException, IOException {
+        if (fiscalQuarter.isFullyLoaded()) return;
 
-        List<Company> companies = forms.stream().map(InsiderForm::getCompany).toList();
-        companyService.saveNew(companies);
+        int year = fiscalQuarter.getYear();
+        int qtr = fiscalQuarter.getQuarter();
 
-        // TODO: Assign company references to insiders.
+        List<FormRef> refs = getRefLoader().loadByQuarter(year, qtr);
+        fiscalQuarter.setFormNum(refs.size());
 
-        List<Insider> insiders = forms.stream().map(InsiderForm::getInsider).toList();
-        insiderService.saveNew(insiders);
+        try {
+            saveByRefs(refs);
+            fiscalQuarter.setFullyLoaded(true);
+        } finally {
+            fiscalQuarterRepository.save(fiscalQuarter);
+        }
+    }
 
-        // TODO: Assign company/insider references to forms.
+    public void saveDaysAgo(int daysAgo) throws IOException, ParseException {
+        List<FormRef> refs = getRefLoader().loadDaysAgo(daysAgo);
+        saveByRefs(refs);
+    }
 
-        insiderFormRepository.saveAll(forms);
+    public void saveLatest(int count) throws ParseException, IOException {
+        List<FormRef> refs = getRefLoader().loadLatest(0, count);
+        saveByRefs(refs);
+    }
+
+    public void saveByCik(String cik) throws IOException, ParseException {
+        List<FormRef> refs = getRefLoader().loadByCik(cik);
+        saveByRefs(refs);
+    }
+
+    private FormRefLoader getRefLoader() {
+        return new FormRefLoader(edgarClient, FormType.F4);
+    }
+
+    private void saveByRefs(List<FormRef> refs) throws ParseException, IOException {
+        List<InsiderForm> forms = loadNewByRefs(refs);
+        entityGraphService.saveInsiderForms(forms);
+    }
+
+    private List<InsiderForm> loadNewByRefs(List<FormRef> refs) throws ParseException, IOException {
+        return loadByRefs(filterOldRefs(refs));
     }
 
     private List<InsiderForm> loadByRefs(List<FormRef> refs) throws ParseException, IOException {
-        List<InsiderForm> forms = new ArrayList<>();
         OwnershipDocLoader docLoader = new OwnershipDocLoader(edgarClient);
+        List<InsiderForm> forms = new ArrayList<>();
 
         for (FormRef ref : refs) {
             OwnershipDoc doc = docLoader.loadByRef(ref);
@@ -65,13 +92,13 @@ public class InsiderFormService {
         return forms;
     }
 
-    private List<FormRef> filterExistingRefs(List<FormRef> refs) {
+    private List<FormRef> filterOldRefs(List<FormRef> refs) {
         List<Date> dates = refs.stream().map(FormRef::getFiledAt).toList();
 
         Date date1 = Collections.min(dates);
         Date date2 = Collections.max(dates);
 
-        Set<String> ids = insiderFormRepository.findIdsBetween(date1, date2);
+        Set<String> ids = insiderFormRepository.findIdsFiledBetween(date1, date2);
 
         return refs.stream()
                 .filter(ref -> !ids.contains(ref.getAccNum()))

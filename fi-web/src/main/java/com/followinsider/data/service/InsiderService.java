@@ -21,19 +21,4 @@ public class InsiderService {
         return repository.findById(cik).orElse(null);
     }
 
-    public void saveNew(List<Insider> insiders) {
-        for (Insider insider : insiders) {
-            String id = insider.getCik();
-
-            if (repository.existsById(id)) {
-
-                Insider insiderRef = repository.getReferenceById(id);
-                // TODO: Implement this.
-
-            } else {
-                repository.save(insider);
-            }
-        }
-    }
-
 }

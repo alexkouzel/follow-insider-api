@@ -11,7 +11,7 @@ import java.util.Set;
 @Repository
 public interface InsiderFormRepository extends JpaRepository<InsiderForm, String> {
 
-    @Query("SELECT f.accNum FROM InsiderForm f WHERE f.filedAt >= :date1 AND f.filedAt <= :date2")
-    Set<String> findIdsBetween(Date date1, Date date2);
+    @Query("SELECT f.accNum FROM InsiderForm f WHERE f.filedAt BETWEEN :date1 AND :date2")
+    Set<String> findIdsFiledBetween(Date date1, Date date2);
 
 }

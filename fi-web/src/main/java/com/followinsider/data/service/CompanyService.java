@@ -21,12 +21,4 @@ public class CompanyService {
         return repository.findById(cik).orElse(null);
     }
 
-    public void saveNew(List<Company> companies) {
-        List<Company> newCompanies = companies.stream()
-                .filter(company -> !repository.existsById(company.getCik()))
-                .toList();
-
-        repository.saveAll(newCompanies);
-    }
-
 }

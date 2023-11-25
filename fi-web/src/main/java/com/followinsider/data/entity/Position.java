@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -24,6 +25,6 @@ public class Position extends BaseEntity {
     private Insider insider;
 
     @ElementCollection
-    private List<String> titles;
+    private Set<String> titles;
 
 }

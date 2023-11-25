@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(exclude = {"company", "insider", "trades"})
 @ToString(exclude = {"company", "insider", "trades"})
-@Table(name = "insider_form")
+@Table(name = "insider_form", indexes = @Index(columnList = "filedAt"))
 public class InsiderForm {
 
     @Id

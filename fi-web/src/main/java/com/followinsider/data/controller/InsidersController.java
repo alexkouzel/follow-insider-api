@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/insiders")
 @RequiredArgsConstructor
-@Slf4j
 public class InsidersController {
 
     private final InsiderService insiderService;

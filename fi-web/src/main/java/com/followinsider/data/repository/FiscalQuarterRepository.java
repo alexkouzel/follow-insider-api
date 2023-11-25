@@ -6,11 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FiscalQuarterRepository extends JpaRepository<FiscalQuarter, Integer> {
 
-    @Query("SELECT q FROM FiscalQuarter q WHERE NOT q.isFullyLoaded ORDER BY q.year, q.quarter")
-    List<FiscalQuarter> findNotLoadedAndSort();
+    @Query("SELECT q FROM FiscalQuarter q WHERE NOT q.fullyLoaded ORDER BY q.year, q.quarter DESC")
+    List<FiscalQuarter> findUnloadedAndOrder();
+
+    Optional<FiscalQuarter> findByYearAndQuarter(int year, int quarter);
 
 }

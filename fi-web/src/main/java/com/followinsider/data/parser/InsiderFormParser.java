@@ -16,10 +16,12 @@ public class InsiderFormParser {
 
     public static InsiderForm parseOwnershipDoc(OwnershipDoc doc) {
         OwnershipForm form = doc.getOwnershipForm();
+        Position position = parsePosition(form);
+
         return InsiderForm.builder()
                 .accNum(doc.getAccNum())
-                .company(parseCompany(form))
-                .insider(parseInsider(form))
+                .company(position.getCompany())
+                .insider(position.getInsider())
                 .trades(parseTrades(form))
                 .filedAt(doc.getFiledAt())
                 .reportedAt(doc.getReportedAt())
@@ -29,37 +31,34 @@ public class InsiderFormParser {
                 .build();
     }
 
+    private static Position parsePosition(OwnershipForm form) {
+        Company company = parseCompany(form);
+
+        ReportingOwner reportingOwner = form.getReportingOwner().get(0);
+        ReportingOwner.ID id = reportingOwner.getReportingOwnerId();
+        Insider insider = new Insider(id.getRptOwnerCik(), id.getRptOwnerName(), null);
+
+        Relationship relationship = reportingOwner.getReportingOwnerRelationship();
+        Set<String> titles = parseTitles(relationship);
+        Position position = new Position(company, insider, titles);
+
+        List<Position> positions = List.of(position);
+        insider.setPositions(positions);
+        company.setPositions(positions);
+
+        return new Position(company, insider, titles);
+    }
+
     private static Company parseCompany(OwnershipForm form) {
         Issuer issuer = form.getIssuer();
         String cik = issuer.getIssuerCik();
         String name = issuer.getIssuerName();
         String symbol = issuer.getIssuerTradingSymbol();
-        return new Company(cik, symbol, name, null);
+        return new Company(cik, name, symbol, null);
     }
 
-    private static Insider parseInsider(OwnershipForm form) {
-        ReportingOwner reportingOwner = form.getReportingOwner().get(0);
-
-        // Parse insider name & CIK
-        ReportingOwner.ID id = reportingOwner.getReportingOwnerId();
-        String name = id.getRptOwnerName();
-        String cik = id.getRptOwnerCik();
-
-        // Parse relationship titles
-        Relationship relationship = reportingOwner.getReportingOwnerRelationship();
-        List<String> titles = parseTitles(relationship);
-
-        Insider insider = new Insider(cik, name, null);
-
-        Position position = new Position(null, insider, titles);
-        List<Position> positions = List.of(position);
-        insider.setPositions(positions);
-
-        return insider;
-    }
-
-    private static List<String> parseTitles(Relationship relationship) {
-        List<String> titles = new ArrayList<>();
+    private static Set<String> parseTitles(Relationship relationship) {
+        Set<String> titles = new HashSet<>();
         if (relationship.isDirector()) titles.add("Director");
         if (relationship.isTenPercentOwner()) titles.add("10% Owner");
         if (relationship.isOfficer()) titles.add(relationship.getOfficerTitle());

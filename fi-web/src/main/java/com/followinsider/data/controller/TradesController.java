@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/trades")
 @RequiredArgsConstructor
-@Slf4j
 public class TradesController {
 
     private final TradeService tradeService;
