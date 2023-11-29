@@ -31,6 +31,7 @@ public class LatestFeedParser {
         String href = entry.getLink().getHref();
         Matcher matcher = ISSUER_CIK_PATTERN.matcher(href);
         String issueCik = matcher.find() ? matcher.group(1) : null;
+
         if (issueCik == null) {
             throw new ParseException("Couldn't match issuer CIK at href", -1);
         }
@@ -40,8 +41,8 @@ public class LatestFeedParser {
         FormType type = FormType.ofValue(typeValue);
 
         // Parse filing date
-        String filedAtValue = summaryParts[1];
-        Date filedAt = DateUtil.tryParse(filedAtValue, "yyyy-MM-dd").orElse(null);
+        String filedAtValue = summaryParts[2];
+        Date filedAt = DateUtil.parse(filedAtValue, "yyyy-MM-dd");
 
         return new FormRef(accNum, issueCik, type, filedAt);
     }

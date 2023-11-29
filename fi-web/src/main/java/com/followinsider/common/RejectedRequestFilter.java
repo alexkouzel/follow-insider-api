@@ -38,7 +38,7 @@ public class RejectedRequestFilter extends GenericFilterBean {
             // This is a hack to avoid logging errors when the client closes the connection
 
         } catch (Exception e) {
-            log.error("Error while processing request", e);
+            log.error("Failed processing HTTP request :: error: {}", e.getMessage());
             httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Something went wrong.");
         }
     }

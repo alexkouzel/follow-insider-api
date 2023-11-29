@@ -2,4 +2,4 @@ spring.datasource:
   url: ${PROD_DB_URL}
   username: ${PROD_DB_USERNAME}
   password: ${PROD_DB_PASSWORD}
-  driverClassName: ${PROD_DB_DRIVER}
+  driver-class-name: ${PROD_DB_DRIVER}

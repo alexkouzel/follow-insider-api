@@ -19,8 +19,6 @@ public class OwnershipDoc {
 
     private Date reportedAt;
 
-    private Date acceptedAt;
-
     private Date filedAt;
 
     private Date updatedAt;

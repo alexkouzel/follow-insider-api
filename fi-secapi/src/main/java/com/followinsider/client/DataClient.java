@@ -60,7 +60,8 @@ public abstract class DataClient {
 
     public InputStream loadStream(String url, String contentType) throws IOException {
         HttpRequest request = buildRequest(url, contentType);
-        return tryRequestStream(request, maxRetries).orElseThrow(IOException::new);
+        return tryRequestStream(request, maxRetries)
+                .orElseThrow(() -> new IOException("Request failed for all attempts"));
     }
 
     private Optional<InputStream> tryRequestStream(HttpRequest request, int attemptsLeft) {

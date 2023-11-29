@@ -62,7 +62,7 @@ public class LogService {
                 }
             }
         } catch (IOException e) {
-            log.error("Failed to load logs: error='{}'", e.getMessage());
+            log.error("Failed loading logs :: error: {}", e.getMessage());
         }
         return new ArrayList<>(logs);
     }
@@ -72,7 +72,7 @@ public class LogService {
         try {
             new FileWriter(logsPath, false).close();
         } catch (IOException e) {
-            log.error("Failed to clear logs: error='{}'", e.getMessage());
+            log.error("Failed clearing logs :: error: {}", e.getMessage());
         }
     }
 

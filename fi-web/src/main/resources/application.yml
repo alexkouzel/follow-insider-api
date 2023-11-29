@@ -1,15 +1,21 @@
 spring:
-  profiles.active: prod
+  profiles.active: dev
   application.name: follow-insider
 
-### Server ###
+logging.file.name: logs/app.log
+
+edgar.user_agent: ${EDGAR_USER_AGENT}
+
+email:
+  username: ${EMAIL_USERNAME}
+  password: ${EMAIL_PASSWORD}
+
 server:
   port: 5000
   tomcat.remoteip:
     protocol-header: X-Forwarded-Proto
     remote-ip-header: X-Forwarded-For
 
-### Database ###
 spring.jpa:
   database: POSTGRESQL
   hibernate.ddl-auto: update
@@ -19,9 +25,3 @@ spring.jpa:
     jdbc.batch_size: 32
     order_inserts: true
     order_updates: false
-
-### Logging ###
-logging.file.name: logs/app.log
-
-### EDGAR ###
-edgar.user_agent: Alexey Kovzel alexey.kovzel@gmail.com

@@ -14,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class FormRefLoader {
@@ -69,21 +66,14 @@ public class FormRefLoader {
     }
 
     private List<FormRef> filterRefs(List<FormRef> refs) {
-        return filterUniqueRefs(refs).stream()
+        Map<String, FormRef> refMap = new HashMap<>();
+
+        for (FormRef ref : refs) {
+            refMap.put(ref.getAccNum(), ref);
+        }
+        return refMap.values().stream()
                 .filter(form -> form.getType() == formType)
                 .toList();
-    }
-
-    private List<FormRef> filterUniqueRefs(List<FormRef> refs) {
-        List<FormRef> uniqueRefs = new ArrayList<>();
-        Set<String> takenAccNums = new HashSet<>();
-        for (FormRef ref : refs) {
-            if (!takenAccNums.contains(ref.getAccNum())) {
-                uniqueRefs.add(ref);
-                takenAccNums.add(ref.getAccNum());
-            }
-        }
-        return uniqueRefs;
     }
 
 }
