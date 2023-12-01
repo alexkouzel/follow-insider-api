@@ -1,5 +1,6 @@
 package com.followinsider.core.entity;
 
+import com.followinsider.common.entity.Identifiable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,8 +16,8 @@ import java.util.Set;
 @Builder
 @EqualsAndHashCode(exclude = {"company", "insider", "trades"})
 @ToString(exclude = {"company", "insider", "trades"})
-@Table(name = "insider_form", indexes = @Index(columnList = "filedAt"))
-public class InsiderForm implements Identifiable<String> {
+@Table(name = "form", indexes = @Index(columnList = "filedAt"))
+public class Form implements Identifiable<String> {
 
     @Id
     @Column(length = 20)

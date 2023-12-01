@@ -1,4 +1,4 @@
-package com.followinsider.core.entity;
+package com.followinsider.common.entity;
 
 public interface Identifiable<T> {
 

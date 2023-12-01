@@ -1,4 +1,4 @@
-package com.followinsider.common;
+package com.followinsider.common.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
@@ -38,7 +38,7 @@ public class RejectedRequestFilter extends GenericFilterBean {
             // This is a hack to avoid logging errors when the client closes the connection
 
         } catch (Exception e) {
-            log.error("Failed processing HTTP request :: error: {}", e.getMessage());
+            log.error("Failed HTTP request :: {}", e.getMessage());
             httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Something went wrong.");
         }
     }

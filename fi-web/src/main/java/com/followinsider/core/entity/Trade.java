@@ -1,5 +1,6 @@
 package com.followinsider.core.entity;
 
+import com.followinsider.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,7 @@ public class Trade extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "acc_no")
-    private InsiderForm form;
+    private Form form;
 
     @Column(nullable = false)
     private String securityTitle;
@@ -26,7 +27,6 @@ public class Trade extends BaseEntity {
     @Column(nullable = false)
     private Double shareNum;
 
-    @Column(nullable = false)
     private Double sharePrice;
 
     @Column(length = 1000)

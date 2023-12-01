@@ -1,4 +1,4 @@
-package com.followinsider.util;
+package com.followinsider.common.util;
 
 import lombok.experimental.UtilityClass;
 

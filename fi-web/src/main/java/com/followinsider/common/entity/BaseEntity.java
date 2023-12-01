@@ -1,4 +1,4 @@
-package com.followinsider.core.entity;
+package com.followinsider.common.entity;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

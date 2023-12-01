@@ -1,16 +1,17 @@
-package com.followinsider.util;
+package com.followinsider.common.util;
 
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
 @UtilityClass
 public class CollectionUtil {
 
-    public static <T, R> List<R> map(List<T> list, Function<T, R> mapper) {
-        return list.stream().map(mapper).toList();
+    public static <T> boolean isEmpty(Collection<T> list) {
+        return list == null || list.isEmpty();
     }
     
     public static List<Integer> generateNums(int from, int to) {

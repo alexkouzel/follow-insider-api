@@ -1,16 +1,21 @@
-package com.followinsider.util;
+package com.followinsider.common.util;
 
+import com.followinsider.common.entity.container.Tuple2;
 import lombok.experimental.UtilityClass;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Optional;
-import java.util.TimeZone;
+import java.util.*;
 
 @UtilityClass
 public class DateUtil {
+
+    public static Tuple2<Date, Date> getTimeSpan(Set<Date> dates) {
+        Date minDate = Collections.min(dates);
+        Date maxDate = Collections.max(dates);
+        return new Tuple2<>(minDate, maxDate);
+    }
 
     public static Date parse(String value, String pattern) throws ParseException {
         DateFormat format = new SimpleDateFormat(pattern);

@@ -1,5 +1,6 @@
 package com.followinsider.core.entity;
 
+import com.followinsider.common.entity.Identifiable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,14 +21,14 @@ public class Company implements Identifiable<String> {
     @Column(length = 10)
     private String cik;
 
-    @Column(nullable = false, length = 10)
+    @Column(length = 10)
     private String symbol;
 
     @Column(nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "company")
-    private List<InsiderForm> forms;
+    private List<Form> forms;
 
     @Override
     public String getId() {

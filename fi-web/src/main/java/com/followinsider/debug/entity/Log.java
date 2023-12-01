@@ -1,4 +1,4 @@
-package com.followinsider.debug.logging;
+package com.followinsider.debug.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

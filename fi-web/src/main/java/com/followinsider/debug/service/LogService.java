@@ -1,6 +1,7 @@
-package com.followinsider.debug.logging;
+package com.followinsider.debug.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.followinsider.debug.entity.Log;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -62,7 +63,7 @@ public class LogService {
                 }
             }
         } catch (IOException e) {
-            log.error("Failed loading logs :: error: {}", e.getMessage());
+            log.error("Failed loading logs :: {}", e.getMessage());
         }
         return new ArrayList<>(logs);
     }
@@ -72,7 +73,7 @@ public class LogService {
         try {
             new FileWriter(logsPath, false).close();
         } catch (IOException e) {
-            log.error("Failed clearing logs :: error: {}", e.getMessage());
+            log.error("Failed clearing logs :: {}", e.getMessage());
         }
     }
 

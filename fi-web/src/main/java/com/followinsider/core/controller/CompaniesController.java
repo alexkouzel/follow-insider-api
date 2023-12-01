@@ -1,7 +1,7 @@
 package com.followinsider.core.controller;
 
-import com.followinsider.core.entity.Company;
 import com.followinsider.core.service.CompanyService;
+import com.followinsider.core.entity.Company;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

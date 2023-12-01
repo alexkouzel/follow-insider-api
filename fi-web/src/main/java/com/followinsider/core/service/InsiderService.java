@@ -1,7 +1,7 @@
 package com.followinsider.core.service;
 
-import com.followinsider.core.entity.Insider;
 import com.followinsider.core.repository.InsiderRepository;
+import com.followinsider.core.entity.Insider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

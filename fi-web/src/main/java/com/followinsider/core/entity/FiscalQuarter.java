@@ -1,5 +1,6 @@
 package com.followinsider.core.entity;
 
+import com.followinsider.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -21,8 +22,7 @@ public class FiscalQuarter extends BaseEntity {
     @Column(nullable = false)
     private int quarterVal;
 
-    @Column(nullable = false)
-    private boolean fullyLoaded = false;
+    private Boolean downloaded;
 
     private Integer formNum;
 

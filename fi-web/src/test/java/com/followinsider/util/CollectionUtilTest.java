@@ -1,5 +1,6 @@
 package com.followinsider.util;
 
+import com.followinsider.common.util.CollectionUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public class CollectionUtilTest {
     @Test
     public void testMap() {
         List<Integer> nums = List.of(1, 2, 3);
-        assertEquals(List.of(2, 4, 6), CollectionUtil.map(nums, num -> num * 2));
+        assertEquals(List.of(2, 4, 6), nums.stream().map(num -> num * 2).toList());
     }
 
     @Test

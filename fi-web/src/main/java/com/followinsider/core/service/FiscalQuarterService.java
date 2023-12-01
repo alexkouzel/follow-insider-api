@@ -2,10 +2,11 @@ package com.followinsider.core.service;
 
 import com.followinsider.core.entity.FiscalQuarter;
 import com.followinsider.core.repository.FiscalQuarterRepository;
-import com.followinsider.util.FiscalUtil;
+import com.followinsider.common.util.FiscalUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.List;
 @Slf4j
 public class FiscalQuarterService {
 
-    private final InsiderFormService insiderFormService;
+    private final FormDownloaderService formDownloaderService;
 
     private final FiscalQuarterRepository fiscalQuarterRepository;
 
@@ -24,29 +25,26 @@ public class FiscalQuarterService {
     public void init() {
         if (fiscalQuarterRepository.count() != 0) return;
 
-        List<FiscalQuarter> fiscalQuarters = new ArrayList<>();
+        List<FiscalQuarter> quarters = new ArrayList<>();
 
-        for (int[] quarter : FiscalUtil.generateQuarters(1993, 1, 2023, 4)) {
-            fiscalQuarters.add(new FiscalQuarter(quarter[0], quarter[1]));
+        for (int[] quarterVals : FiscalUtil.generateQuarters(1993, 1, 2023, 4)) {
+            quarters.add(new FiscalQuarter(quarterVals[0], quarterVals[1]));
         }
-        fiscalQuarterRepository.saveAll(fiscalQuarters);
+        fiscalQuarterRepository.saveAll(quarters);
     }
 
-//    @Scheduled(cron = "0 0 */2 * * ?")
-//    public void scheduleSaveQuarter() {
-//        saveLatestUnloadedQuarter();
-//    }
-//
-//    private void saveLatestUnloadedQuarter() {
-//        List<FiscalQuarter> fiscalQuarters = fiscalQuarterRepository.findUnloadedAndOrder();
-//        FiscalQuarter latest = fiscalQuarters.get(0);
-//        try {
-//            insiderFormService.saveByQuarter(latest);
-//
-//        } catch (ParseException | IOException e) {
-//            log.error("Couldn't save the next fiscal quarter: year={}; quarter={}; error='{}'",
-//                    latest.getYear(), latest.getQuarter(), e.getMessage());
-//        }
-//    }
+    @Scheduled(cron = "0 0 */2 * * ?")
+    public void doEvery2Hours() {
+        downloadLatestQuarter();
+    }
+
+    private void downloadLatestQuarter() {
+        List<FiscalQuarter> quarters = fiscalQuarterRepository.findUnloadedAndOrder();
+
+        if (!quarters.isEmpty()) {
+            FiscalQuarter latestQuarter = quarters.get(0);
+            formDownloaderService.downloadQuarter(latestQuarter);
+        }
+    }
 
 }

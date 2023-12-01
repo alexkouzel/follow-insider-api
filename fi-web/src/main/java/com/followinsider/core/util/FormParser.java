@@ -1,4 +1,4 @@
-package com.followinsider.core.parser;
+package com.followinsider.core.util;
 
 import com.followinsider.core.entity.*;
 import com.followinsider.parser.f345.*;
@@ -12,12 +12,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @UtilityClass
-public class InsiderFormParser {
+public class FormParser {
 
-    public static InsiderForm parseOwnershipDoc(OwnershipDoc doc) {
+    public static Form parseOwnershipDoc(OwnershipDoc doc) {
         OwnershipForm form = doc.getOwnershipForm();
 
-        return InsiderForm.builder()
+        return Form.builder()
                 .accNum(doc.getAccNum())
                 .company(parseCompany(form))
                 .insider(parseInsider(form))

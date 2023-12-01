@@ -10,6 +10,7 @@ import com.followinsider.parser.ref.index.IndexFeedParser;
 import com.followinsider.parser.ref.cik.CikSubmission;
 import com.followinsider.parser.ref.cik.CikSubmissionParser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,32 +38,52 @@ public class FormRefLoader {
                     "&count=%d" +
                     "&output=atom";
 
-    public List<FormRef> loadDaysAgo(int daysAgo) throws IOException, ParseException {
-        String url = String.format(DAILY_FEED_URL, daysAgo, formType.getValue());
-        String txt = client.loadText(url);
-        List<FormRef> refs = new DailyFeedParser().parse(txt);
-        return filterRefs(refs);
+    public List<FormRef> loadDaysAgo(int daysAgo) {
+        try {
+            String url = String.format(DAILY_FEED_URL, daysAgo, formType.getValue());
+            String txt = client.loadText(url);
+            List<FormRef> refs = new DailyFeedParser().parse(txt);
+            return filterRefs(refs);
+
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public List<FormRef> loadByQuarter(int year, int quarter) throws IOException, ParseException {
-        String url = String.format(FULL_INDEX_URL, year, quarter);
-        InputStream stream = client.loadStream(url, "text/html");
-        List<FormRef> refs = new IndexFeedParser().parse(stream);
-        return filterRefs(refs);
+    public List<FormRef> loadByQuarter(int year, int quarter) {
+        try {
+            String url = String.format(FULL_INDEX_URL, year, quarter);
+            InputStream stream = client.loadStream(url, "text/html");
+            List<FormRef> refs = new IndexFeedParser().parse(stream);
+            return filterRefs(refs);
+
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public List<FormRef> loadLatest(int start, int count) throws IOException, ParseException {
-        String url = String.format(LATEST_FEED_URL, formType.getValue(), start, count);
-        LatestFeed feed = client.loadXmlType(url, LatestFeed.class);
-        List<FormRef> refs = new LatestFeedParser().parse(feed);
-        return filterRefs(refs);
+    public List<FormRef> loadLatest(int start, int count) {
+        try {
+            String url = String.format(LATEST_FEED_URL, formType.getValue(), start, count);
+            LatestFeed feed = client.loadXmlType(url, LatestFeed.class);
+            List<FormRef> refs = new LatestFeedParser().parse(feed);
+            return filterRefs(refs);
+
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public List<FormRef> loadByCik(String cik) throws IOException, ParseException {
-        String url = String.format(SUBMISSIONS_URL, cik);
-        CikSubmission submission = client.loadJsonType(url, CikSubmission.class);
-        List<FormRef> refs = new CikSubmissionParser().parse(submission);
-        return filterRefs(refs);
+    public List<FormRef> loadByCik(String cik) {
+        try {
+            String url = String.format(SUBMISSIONS_URL, cik);
+            CikSubmission submission = client.loadJsonType(url, CikSubmission.class);
+            List<FormRef> refs = new CikSubmissionParser().parse(submission);
+            return filterRefs(refs);
+
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<FormRef> filterRefs(List<FormRef> refs) {

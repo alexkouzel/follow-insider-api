@@ -1,7 +1,7 @@
-package com.followinsider.debug;
+package com.followinsider.debug.controller;
 
-import com.followinsider.debug.logging.Log;
-import com.followinsider.debug.logging.LogService;
+import com.followinsider.debug.entity.Log;
+import com.followinsider.debug.service.LogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

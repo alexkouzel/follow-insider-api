@@ -1,9 +1,13 @@
 package com.followinsider.core.service;
 
-import com.followinsider.core.entity.*;
-import com.followinsider.core.repository.CompanyRepository;
-import com.followinsider.core.repository.InsiderFormRepository;
+import com.followinsider.common.entity.Identifiable;
 import com.followinsider.core.repository.InsiderRepository;
+import com.followinsider.core.entity.Company;
+import com.followinsider.core.entity.Form;
+import com.followinsider.core.entity.Insider;
+import com.followinsider.core.entity.Trade;
+import com.followinsider.core.repository.CompanyRepository;
+import com.followinsider.core.repository.FormRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,15 +27,15 @@ public class EntitySaverService {
 
     private final InsiderRepository insiderRepository;
 
-    private final InsiderFormRepository insiderFormRepository;
+    private final FormRepository formRepository;
 
     @Transactional
-    public void saveInsiderForms(List<InsiderForm> forms, String source) {
+    public void saveForms(List<Form> forms, String source) {
         List<Company> companies = new ArrayList<>();
         List<Insider> insiders = new ArrayList<>();
         int tradeNum = 0;
 
-        for (InsiderForm form : forms) {
+        for (Form form : forms) {
             companies.add(form.getCompany());
             insiders.add(form.getInsider());
             tradeNum += form.getTrades().size();
@@ -40,7 +44,7 @@ public class EntitySaverService {
         int companyNum = saveCompanies(companies);
         int insiderNum = saveInsiders(insiders);
 
-        for (InsiderForm form : forms) {
+        for (Form form : forms) {
             form.setInsider(insiderRepository.getReferenceById(form.getInsider().getCik()));
             form.setCompany(companyRepository.getReferenceById(form.getCompany().getCik()));
 
@@ -49,9 +53,9 @@ public class EntitySaverService {
             }
         }
 
-        insiderFormRepository.saveAll(forms);
-        log.info("Saved entities :: forms: {}, trades: {}, companies: {}, insiders: {}, source: {}",
-                forms.size(), tradeNum, companyNum, insiderNum, source);
+        formRepository.saveAll(forms);
+        log.info("Saved entities :: source: {}, forms: {}, trades: {}, companies: {}, insiders: {}",
+                source, forms.size(), tradeNum, companyNum, insiderNum);
     }
 
     @Transactional

@@ -11,8 +11,11 @@ import java.util.Optional;
 @Repository
 public interface FiscalQuarterRepository extends JpaRepository<FiscalQuarter, Integer> {
 
-    @Query("SELECT q FROM FiscalQuarter q WHERE NOT q.fullyLoaded ORDER BY q.yearVal, q.quarterVal DESC")
+    @Query("SELECT q FROM FiscalQuarter q WHERE q.downloaded = false ORDER BY q.yearVal, q.quarterVal DESC")
     List<FiscalQuarter> findUnloadedAndOrder();
+
+    @Query("SELECT q FROM FiscalQuarter q WHERE q.downloaded = true AND q.verified IS NOT NULL")
+    List<FiscalQuarter> findLoadedAndUnverified();
 
     Optional<FiscalQuarter> findByYearValAndQuarterVal(int year, int quarter);
 

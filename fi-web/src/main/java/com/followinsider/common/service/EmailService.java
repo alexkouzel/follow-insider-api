@@ -1,4 +1,4 @@
-package com.followinsider.common;
+package com.followinsider.common.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

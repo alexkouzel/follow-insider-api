@@ -8,6 +8,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.zip.DeflaterInputStream;
 import java.util.zip.GZIPInputStream;
 
 public class EdgarClient extends DataClient {
@@ -25,7 +26,7 @@ public class EdgarClient extends DataClient {
                 .timeout(Duration.of(5, ChronoUnit.SECONDS))
                 .header("User-Agent", userAgent)
                 .header("Content-Type", contentType + ";charset=UTF-8")
-                .header("Accept-Encoding", "gzip")
+                .header("Accept-Encoding", "gzip, deflate")
                 .build();
     }
 
@@ -34,9 +35,11 @@ public class EdgarClient extends DataClient {
         rateLimiter.resetBackoff();
         String encoding = response.headers().firstValue("Content-Encoding").orElse("");
         InputStream stream = response.body();
+
         return switch (encoding) {
             case "" -> stream;
             case "gzip" -> new GZIPInputStream(stream);
+            case "deflate" -> new DeflaterInputStream(stream);
             default -> throw new UnsupportedEncodingException();
         };
     }
@@ -45,6 +48,8 @@ public class EdgarClient extends DataClient {
     protected void handleError(int statusCode) {
         if (statusCode == 429) {
             rateLimiter.handleTooManyRequests();
+        } else {
+            rateLimiter.handleUnknownError(statusCode);
         }
     }
 

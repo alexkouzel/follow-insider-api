@@ -65,9 +65,9 @@ public abstract class DataClient {
     }
 
     private Optional<InputStream> tryRequestStream(HttpRequest request, int attemptsLeft) {
-        return attemptsLeft > 0
-                ? executeRequest(request).or(() -> tryRequestStream(request, attemptsLeft - 1))
-                : Optional.empty();
+        if (attemptsLeft == 0) return Optional.empty();
+        return executeRequest(request)
+                .or(() -> tryRequestStream(request, attemptsLeft - 1));
     }
 
     private Optional<InputStream> executeRequest(HttpRequest request) {
@@ -77,6 +77,7 @@ public abstract class DataClient {
             }
             var responseType = HttpResponse.BodyHandlers.ofInputStream();
             HttpResponse<InputStream> response = client.send(request, responseType);
+
             int statusCode = response.statusCode();
             if (statusCode != 200) {
                 handleError(statusCode);
@@ -84,6 +85,7 @@ public abstract class DataClient {
             }
             InputStream stream = extractStream(response);
             return Optional.ofNullable(stream);
+
         } catch (IOException | InterruptedException e) {
             return Optional.empty();
         }
