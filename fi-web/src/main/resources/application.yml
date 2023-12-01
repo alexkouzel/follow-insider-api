@@ -9,6 +9,7 @@ edgar.user_agent: ${EDGAR_USER_AGENT}
 email:
   username: ${EMAIL_USERNAME}
   password: ${EMAIL_PASSWORD}
+  sender: ${EMAIL_SENDER}
 
 server:
   port: 5000

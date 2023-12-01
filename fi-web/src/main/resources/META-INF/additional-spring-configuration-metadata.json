@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "edgar.user_agent",
-      "type": "java.lang.String",
-      "description": "User-Agent field for HTTP requests to the EDGAR API."
-  }
-] }
