@@ -1,5 +1,6 @@
 package com.followinsider.core.trading.form.sync;
 
+import com.followinsider.common.entity.ExecMode;
 import com.followinsider.common.util.CollectionUtils;
 import com.followinsider.core.trading.form.*;
 import com.followinsider.core.trading.quarter.FiscalQuarter;
@@ -13,10 +14,13 @@ import com.followinsider.parser.f345.OwnershipDoc;
 import com.followinsider.parser.ref.FormRef;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -35,16 +39,37 @@ public class FormSyncService {
 
     private final FormService formService;
 
-    @Async
-    public void syncFiscalQuarter(int year, int quarter) {
-        FiscalQuarter fiscalQuarter = fiscalQuarterService.getByYearAndQuarter(year, quarter);
-        syncFiscalQuarter(fiscalQuarter);
+    @Value("${app.form_bunch_size}")
+    private int formBunchSize;
+
+    public void syncDaysAgo(int daysAgo, ExecMode execMode) {
+        List<FormRef> refs = formRefLoader.loadDaysAgo(daysAgo);
+        syncRefs(refs, daysAgo + " days ago", execMode);
     }
 
-    @Async
-    public void syncFiscalQuarter(FiscalQuarter fiscalQuarter) {
-        if (fiscalQuarter.getSyncStatus() == SyncStatus.FULL) return;
+    public void syncLatest(int count, ExecMode execMode) {
+        List<FormRef> refs = formRefLoader.loadLatest(0, 200);
+        syncRefs(refs, "latest " + count, execMode);
+    }
 
+    public void syncCik(String cik, ExecMode execMode) {
+        List<FormRef> refs = formRefLoader.loadByCik(cik);
+        syncRefs(refs, "CIK " + cik, execMode);
+    }
+
+    public void syncFiscalQuarter(int year, int quarter, ExecMode execMode) {
+        execute(execMode, () -> {
+            FiscalQuarter fiscalQuarter = fiscalQuarterService.getByYearAndQuarter(year, quarter);
+            syncFiscalQuarter(fiscalQuarter);
+        });
+    }
+
+    public void syncFiscalQuarter(FiscalQuarter fiscalQuarter, ExecMode execMode) {
+        if (fiscalQuarter.getSyncStatus() == SyncStatus.FULL) return;
+        execute(execMode, () -> syncFiscalQuarter(fiscalQuarter));
+    }
+
+    private void syncFiscalQuarter(FiscalQuarter fiscalQuarter) {
         int year = fiscalQuarter.getYearVal();
         int quarter = fiscalQuarter.getQuarterVal();
 
@@ -58,19 +83,8 @@ public class FormSyncService {
         fiscalQuarterService.save(fiscalQuarter);
     }
 
-    @Async
-    public void syncDaysAgo(int daysAgo) {
-        syncRefs(formRefLoader.loadDaysAgo(daysAgo), daysAgo + " days ago");
-    }
-
-    @Async
-    public void syncLatest(int count) {
-        syncRefs(formRefLoader.loadLatest(0, 200), "latest " + count);
-    }
-
-    @Async
-    public void syncCik(String cik) {
-        syncRefs(formRefLoader.loadByCik(cik), "CIK " + cik);
+    private void syncRefs(List<FormRef> refs, String source, ExecMode execMode) {
+        execute(execMode, () -> syncRefs(refs, source));
     }
 
     private SyncStatus syncRefs(List<FormRef> refs, String source) {
@@ -81,10 +95,20 @@ public class FormSyncService {
             if (newRefs.isEmpty()) return SyncStatus.FULL;
 
             log.info("Synchronizing forms :: {} :: count: {}", source, newRefs.size());
-            return unsafeSyncRefs(newRefs, source);
+
+            List<SyncStatus> statuses = new ArrayList<>();
+            List<List<FormRef>> refBunches = CollectionUtils.divideBySize(newRefs, formBunchSize);
+
+            for (int i = 0; i < refBunches.size(); i++) {
+                String bunchSource = String.format("%s %d/%d", source, i + 1, refBunches.size());
+                SyncStatus status = unsafeSyncRefs(refBunches.get(i), bunchSource);
+                statuses.add(status);
+            }
+            return statuses.stream()
+                    .allMatch(status -> status == SyncStatus.FULL)
+                    ? SyncStatus.FULL : SyncStatus.PARTIAL;
 
         } catch (Exception e) {
-            
             log.error("Failed synchronizing form :: {}", e.getMessage());
             return SyncStatus.FAILED;
         }
@@ -100,7 +124,11 @@ public class FormSyncService {
                 .toList();
 
         formPersistenceService.saveForms(forms, source);
-        failedFormRepository.saveAll(failedForms);
+
+        if (!failedForms.isEmpty()) {
+            failedFormRepository.saveAll(failedForms);
+            log.warn("Failed forms :: {} :: count: {}", source, failedForms.size());
+        }
 
         return failedForms.isEmpty()
                 ? SyncStatus.FULL
@@ -117,6 +145,14 @@ public class FormSyncService {
             failedForms.add(failedForm);
         }
         return null;
+    }
+
+    private void execute(ExecMode execMode, Runnable runnable) {
+        if (execMode == ExecMode.SYNC) {
+            runnable.run();
+        } else {
+            CompletableFuture.runAsync(runnable);
+        }
     }
 
 }

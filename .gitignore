@@ -44,3 +44,5 @@ cdk.out/
 ### Other ###
 .env/
 logs/
+application.yml
+application-*.yml

@@ -1,5 +1,6 @@
 package com.followinsider.core.trading.form.sync;
 
+import com.followinsider.common.entity.ExecMode;
 import com.followinsider.core.trading.quarter.FiscalQuarter;
 import com.followinsider.core.trading.quarter.FiscalQuarterService;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +21,12 @@ public class FormSyncAutoService {
     @Value("${app.auto_form_sync}")
     private boolean autoFormSync;
 
-    @Scheduled(fixedDelay = 1000 * 60 * 60 * 2)
-    public void doEvery2Hours() {
+    @Scheduled(fixedDelay = 10)
+    public void loadLatestUnloaded() {
         if (!autoFormSync) return;
 
         FiscalQuarter fiscalQuarter = fiscalQuarterService.getLatestUnloaded();
-        formSyncService.syncFiscalQuarter(fiscalQuarter);
+        formSyncService.syncFiscalQuarter(fiscalQuarter, ExecMode.SYNC);
     }
 
 }

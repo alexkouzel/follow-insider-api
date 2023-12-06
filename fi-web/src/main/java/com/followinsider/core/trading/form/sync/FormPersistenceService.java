@@ -55,7 +55,7 @@ public class FormPersistenceService {
 
         formRepository.saveAll(forms);
 
-        log.info("Saved forms :: {} :: forms: {}, trades: {}, companies: {}, insiders: {}",
+        log.info("Saved :: {} :: forms: {}, trades: {}, companies: {}, insiders: {}",
                 source, forms.size(), tradeNum, savedCompanyNum, savedInsiderNum);
     }
 

@@ -1,5 +1,3 @@
 #!/bin/sh
 
-. .env/env-web.sh
-
-./gradlew :fi-web:bootRun
+./gradlew :fi-web:bootRun --args="--spring.profiles.active=dev"
