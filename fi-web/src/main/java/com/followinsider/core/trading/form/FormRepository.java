@@ -13,7 +13,4 @@ public interface FormRepository extends JpaRepository<Form, String> {
     @Query("SELECT f.accNum FROM Form f WHERE f.filedAt BETWEEN :date1 AND :date2")
     Set<String> findIdsFiledBetween(Date date1, Date date2);
 
-    @Query("SELECT COUNT(f) FROM Form f WHERE f.filedAt BETWEEN :date1 AND :date2")
-    int countFiledBetween(Date date1, Date date2);
-
 }

@@ -1,7 +1,6 @@
 package com.followinsider.controller;
 
-import com.followinsider.core.trading.form.download.FormDownloaderService;
-import com.followinsider.core.trading.form.FormService;
+import com.followinsider.core.trading.form.sync.FormSyncService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -12,28 +11,26 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class FormsController {
 
-    private final FormDownloaderService formDownloaderService;
+    private final FormSyncService formSyncService;
 
-    private final FormService formService;
-
-    @PostMapping("/download/days-ago/{daysAgo}")
-    public void downloadDaysAgo(@PathVariable int daysAgo) {
-        formDownloaderService.downloadDaysAgo(daysAgo);
+    @PostMapping("/sync/days-ago/{daysAgo}")
+    public void syncDaysAgo(@PathVariable int daysAgo) {
+        formSyncService.syncDaysAgo(daysAgo);
     }
 
-    @PostMapping("/download/year/{year}/quarter/{quarter}")
-    public void downloadQuarter(@PathVariable int year, @PathVariable int quarter) {
-        formDownloaderService.downloadQuarter(year, quarter);
+    @PostMapping("/sync/year/{year}/quarter/{quarter}")
+    public void syncFiscalQuarter(@PathVariable int year, @PathVariable int quarter) {
+        formSyncService.syncFiscalQuarter(year, quarter);
     }
 
-    @PostMapping("/download/latest/{count}")
-    public void downloadLatest(@PathVariable int count)  {
-        formDownloaderService.downloadLatest(count);
+    @PostMapping("/sync/latest/{count}")
+    public void syncLatest(@PathVariable int count)  {
+        formSyncService.syncLatest(count);
     }
 
-    @PostMapping("/download/companies/{cik}")
-    public void downloadCik(@PathVariable String cik) {
-        formDownloaderService.downloadCik(cik);
+    @PostMapping("/sync/companies/{cik}")
+    public void syncCik(@PathVariable String cik) {
+        formSyncService.syncCik(cik);
     }
 
 }

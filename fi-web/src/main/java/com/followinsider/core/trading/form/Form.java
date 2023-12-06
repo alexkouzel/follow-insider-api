@@ -26,6 +26,9 @@ public class Form implements Identifiable<String> {
     @Column(length = 20)
     private String accNum;
 
+    @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
+    private List<Trade> trades;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_cik")
     private Company company;
@@ -36,10 +39,7 @@ public class Form implements Identifiable<String> {
 
     @ElementCollection
     @CollectionTable(name = "insider_title", joinColumns = @JoinColumn(name = "acc_num"))
-    private Set<String> titles;
-
-    @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
-    private List<Trade> trades;
+    private Set<String> insiderTitles;
 
     @Column(nullable = false)
     private Date filedAt;

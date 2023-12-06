@@ -1,4 +1,4 @@
-package com.followinsider.core.trading.form.download;
+package com.followinsider.core.trading.form.sync;
 
 import com.followinsider.core.trading.company.Company;
 import com.followinsider.core.trading.form.Form;
@@ -25,7 +25,7 @@ public class FormOwnershipDocMapper {
                 .accNum(doc.getAccNum())
                 .company(getCompany(form))
                 .insider(getInsider(form))
-                .titles(getTitles(form))
+                .insiderTitles(getInsiderTitles(form))
                 .trades(getTrades(form))
                 .filedAt(doc.getFiledAt())
                 .xmlUrl(doc.getXmlUrl())
@@ -42,6 +42,10 @@ public class FormOwnershipDocMapper {
                 .build();
     }
 
+    // -- Example with multiple reporting owners --
+    // https://www.sec.gov/Archives/edgar/data/718937/000091957423006577/xslF345X03/ownership.xml
+
+    // Assume that the 1-st reporting owner is the insider
     private static Insider getInsider(OwnershipForm form) {
         ReportingOwner reportingOwner = form.getReportingOwner().get(0);
         ReportingOwner.ID id = reportingOwner.getReportingOwnerId();
@@ -52,7 +56,7 @@ public class FormOwnershipDocMapper {
                 .build();
     }
 
-    private static Set<String> getTitles(OwnershipForm form) {
+    private static Set<String> getInsiderTitles(OwnershipForm form) {
         ReportingOwner reportingOwner = form.getReportingOwner().get(0);
         Relationship relationship = reportingOwner.getReportingOwnerRelationship();
 
@@ -82,29 +86,34 @@ public class FormOwnershipDocMapper {
         TradeType tradeType = getTradeType(transaction);
         if (tradeType == null) return null;
 
+        boolean isDirect = transaction
+                .getOwnershipNature()
+                .getDirectOrIndirectOwnership()
+                .getValue()
+                .equals("D");
+
+        if (!isDirect) return null;
+
         NonDerivativeTransactionAmounts amounts = transaction.getTransactionAmounts();
         String securityTitle = transaction.getSecurityTitle().getValue();
         Date executedAt = transaction.getTransactionDate().getValue();
         Double shareNum = amounts.getTransactionShares().getValue();
         Double sharesLeft = getSharesLeft(transaction);
 
-        // Extract shape price (if missing, then include a footnote)
-        FootnoteValue<Double> sharePriceField = amounts.getTransactionPricePerShare();
-        Double sharePrice = sharePriceField.getValue();
-        String sharePriceFootnote = null;
+        FootnoteValue<Double> priceField = amounts.getTransactionPricePerShare();
+        FootnoteID priceFootnoteID = priceField.getFootnoteId();
 
-        if (sharePrice == null) {
-            String footnoteId = sharePriceField.getFootnoteId().getId();
-            sharePriceFootnote = footnotes.get(footnoteId);
-        }
+        String priceFootnote = priceFootnoteID != null && priceFootnoteID.getId() != null
+                ? footnotes.get(priceFootnoteID.getId())
+                : null;
 
         return Trade.builder()
                 .securityTitle(securityTitle)
                 .type(tradeType)
                 .shareNum(shareNum)
                 .sharesLeft(sharesLeft)
-                .sharePrice(sharePrice)
-                .sharePriceFootnote(sharePriceFootnote)
+                .sharePrice(priceField.getValue())
+                .sharePriceFootnote(priceFootnote)
                 .executedAt(executedAt)
                 .build();
     }

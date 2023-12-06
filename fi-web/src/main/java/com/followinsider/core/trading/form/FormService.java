@@ -20,8 +20,6 @@ public class FormService {
 
     private final FormRepository formRepository;
 
-    private final FormRefLoader formRefLoader;
-
     public List<FormRef> filterOldRefs(List<FormRef> refs) {
         Tuple2<Date, Date> timePeriod = getTimeSpanByRefs(refs);
         Set<String> ids = formRepository.findIdsFiledBetween(timePeriod.first(), timePeriod.second());

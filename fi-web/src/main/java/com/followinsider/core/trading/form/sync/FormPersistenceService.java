@@ -1,4 +1,4 @@
-package com.followinsider.core.trading.form.download;
+package com.followinsider.core.trading.form.sync;
 
 import com.followinsider.common.entity.Identifiable;
 import com.followinsider.core.trading.company.CompanyRepository;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FormSaverService {
+public class FormPersistenceService {
 
     private final CompanyRepository companyRepository;
 
@@ -41,12 +41,12 @@ public class FormSaverService {
             tradeNum += form.getTrades().size();
         }
 
-        int companyNum = saveCompanies(companies);
-        int insiderNum = saveInsiders(insiders);
+        int savedCompanyNum = saveCompanies(companies);
+        int savedInsiderNum = saveInsiders(insiders);
 
         for (Form form : forms) {
-            form.setInsider(insiderRepository.getReferenceById(form.getInsider().getCik()));
             form.setCompany(companyRepository.getReferenceById(form.getCompany().getCik()));
+            form.setInsider(insiderRepository.getReferenceById(form.getInsider().getCik()));
 
             for (Trade trade : form.getTrades()) {
                 trade.setForm(form);
@@ -54,12 +54,12 @@ public class FormSaverService {
         }
 
         formRepository.saveAll(forms);
-        log.info("Saved entities :: source: {}, forms: {}, trades: {}, companies: {}, insiders: {}",
-                source, forms.size(), tradeNum, companyNum, insiderNum);
+
+        log.info("Saved forms :: {} :: forms: {}, trades: {}, companies: {}, insiders: {}",
+                source, forms.size(), tradeNum, savedCompanyNum, savedInsiderNum);
     }
 
-    @Transactional
-    public int saveCompanies(List<Company> companies) {
+    private int saveCompanies(List<Company> companies) {
         Set<String> ids = getEntityIds(companies);
         Set<String> savedIds = companyRepository.findIdsByIdIn(ids);
 
@@ -71,8 +71,7 @@ public class FormSaverService {
         return newCompanies.size();
     }
 
-    @Transactional
-    public int saveInsiders(List<Insider> insiders) {
+    private int saveInsiders(List<Insider> insiders) {
         Set<String> ids = getEntityIds(insiders);
         Set<String> savedIds = insiderRepository.findIdsByIdIn(ids);
 

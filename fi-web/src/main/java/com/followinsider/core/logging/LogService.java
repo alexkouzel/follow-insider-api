@@ -1,4 +1,4 @@
-package com.followinsider.core.monitoring;
+package com.followinsider.core.logging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;

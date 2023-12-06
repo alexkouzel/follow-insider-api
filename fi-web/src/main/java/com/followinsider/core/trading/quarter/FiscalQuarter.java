@@ -1,8 +1,10 @@
-package com.followinsider.core.trading.form.download.auto;
+package com.followinsider.core.trading.quarter;
 
 import com.followinsider.common.entity.BaseEntity;
+import com.followinsider.core.trading.form.sync.SyncStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.*;
 
@@ -22,17 +24,14 @@ public class FiscalQuarter extends BaseEntity {
     @Column(nullable = false)
     private int quarterVal;
 
-    private Boolean downloaded;
+    @Enumerated
+    private SyncStatus syncStatus = SyncStatus.PENDING;
 
     private Integer formNum;
 
-    public FiscalQuarter(int year, int quarter) {
-        this.yearVal = year;
-        this.quarterVal = quarter;
-    }
-
-    public String getAlias() {
-        return yearVal + "Q" + quarterVal;
+    public FiscalQuarter(int yearVal, int quarterVal) {
+        this.yearVal = yearVal;
+        this.quarterVal = quarterVal;
     }
 
 }

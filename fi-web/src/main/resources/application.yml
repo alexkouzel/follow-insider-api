@@ -4,7 +4,9 @@ spring:
 
 logging.file.name: logs/app.log
 
-edgar.user_agent: ${EDGAR_USER_AGENT}
+app:
+  auto_form_sync: ${AUTO_FORM_SYNC}
+  edgar_user_agent: ${EDGAR_USER_AGENT}
 
 email:
   username: ${EMAIL_USERNAME}

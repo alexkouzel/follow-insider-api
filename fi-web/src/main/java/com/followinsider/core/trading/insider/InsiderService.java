@@ -11,14 +11,14 @@ import java.util.List;
 @Slf4j
 public class InsiderService {
 
-    private final InsiderRepository repository;
+    private final InsiderRepository insiderRepository;
 
     public List<Insider> getAll() {
-        return repository.findAll();
+        return insiderRepository.findAll();
     }
 
     public Insider getByCik(String cik) {
-        return repository.findById(cik).orElse(null);
+        return insiderRepository.findById(cik).orElse(null);
     }
 
 }

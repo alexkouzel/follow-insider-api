@@ -1,5 +1,6 @@
-package com.followinsider.core.trading.form.download.failed;
+package com.followinsider.core.trading.form.failed;
 
+import com.followinsider.common.entity.BaseEntity;
 import com.followinsider.parser.ref.FormRef;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,10 +11,9 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "failed_form_ref")
-public class FailedFormRef {
+@Table(name = "form_failed")
+public class FailedForm extends BaseEntity {
 
-    @Id
     @Column(length = 20)
     private String accNum;
 
@@ -23,10 +23,14 @@ public class FailedFormRef {
     @Column(nullable = false)
     private Date filedAt;
 
-    public FailedFormRef(FormRef ref) {
+    @Column(nullable = false)
+    private String error;
+
+    public FailedForm(FormRef ref, String error) {
         this.accNum = ref.getAccNum();
         this.issuerCik = ref.getIssuerCik();
         this.filedAt = ref.getFiledAt();
+        this.error = error;
     }
 
 }

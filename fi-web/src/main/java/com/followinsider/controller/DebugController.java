@@ -1,7 +1,7 @@
 package com.followinsider.controller;
 
-import com.followinsider.core.monitoring.LogService;
-import com.followinsider.core.monitoring.Log;
+import com.followinsider.core.logging.LogService;
+import com.followinsider.core.logging.Log;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -25,7 +25,7 @@ public class EmailService {
     @Value("${email.password}")
     private String password;
 
-    @Value("${EMAIL_SENDER}")
+    @Value("${email.sender}")
     private String sender;
 
     public void sendFileEmail(String to, String path, String subject,
