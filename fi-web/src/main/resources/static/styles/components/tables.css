@@ -1,0 +1,70 @@
+.table-wrapper {
+    overflow-x: auto;
+    position: relative;
+    box-shadow: var(--shadow-1);
+    border-radius: 1.5rem;
+    min-height: 60rem;
+    width: 100%;
+}
+
+table {
+    position: relative;
+    border-spacing: 0;
+    font-size: 1.4rem;
+    width: 100%;
+}
+
+thead tr {
+    background-color: #FAFAFA;
+    border-bottom: .1rem solid #ddd;
+    height: 6.5rem;
+}
+
+tbody tr:hover {
+    background-color: #f4f4f4;
+}
+
+tr>* {
+    padding: 2.5rem 1rem;
+    border-bottom: .1rem solid #eee;
+}
+
+td, th {
+    line-height: 2.2rem;
+    overflow: hidden;
+}
+
+/* scrollbar */
+.scrollbar::-webkit-scrollbar {
+    width: .8rem;
+    height: .8rem;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    background-color: #bbb;
+    border-radius: .8rem;
+}
+
+/* empty state illustration */
+.empty-state h3 {
+    margin: -1.5rem 0 1.5rem 0;
+}
+
+/* filters */
+.filters {
+    display: flex;
+    justify-content: end;
+    margin: 0 3rem 2rem 0;
+    gap: 2rem;
+}
+
+.filters input[type='checkbox'] {
+    margin-right: 0.5rem;
+}
+
+/* adapt for mobile */
+@media screen and (max-width: 77rem) {
+    tr>* {
+        padding: 2rem 1rem;
+    }
+}

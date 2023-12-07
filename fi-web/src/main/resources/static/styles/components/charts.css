@@ -1,0 +1,23 @@
+.chart {
+    width: 100%;
+    min-height: 35rem;
+    position: relative;
+}
+
+.time-ranges {
+    display: flex;
+    border: .1rem solid #eee;
+    padding: 1rem 2rem;
+    margin: 1rem 7.5% 0 7.5%;
+    font-size: 1.2rem;
+    gap: 1.5rem;
+}
+
+.time-ranges input[type=checkbox] {
+    display: none;
+}
+
+.time-ranges input[type=checkbox]:checked + label {
+    color: var(--blue);
+    font-weight: bold;
+}

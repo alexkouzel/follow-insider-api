@@ -8,7 +8,7 @@ public class TemplateController {
 
     @GetMapping("/")
     public String index() {
-        return "index.html";
+        return "pages/index.html";
     }
 
 }

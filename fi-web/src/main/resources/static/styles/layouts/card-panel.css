@@ -1,0 +1,37 @@
+.card-panel {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 1fr 1fr;
+    padding-bottom: 5rem;
+    grid-column-gap: 4rem;
+    grid-auto-rows: 1.05rem;
+}
+
+.card-title {
+    padding-bottom: 2rem;
+}
+
+.card {
+    position: relative;
+    height: min-content;
+    box-shadow: var(--shadow-0);
+    border-radius: 1.5rem;
+    min-width: 30rem;
+    padding: 3rem;
+}
+
+.card p {
+    line-height: 2.4rem;
+}
+
+@media screen and (max-width: 90rem) {
+    .card-panel {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 70rem) {
+    .card {
+        min-width: 20rem;
+    }
+}

@@ -1,0 +1,44 @@
+@import "shared/common.css";
+@import "shared/reset.css";
+@import "shared/typography.css";
+
+@import "layouts/footers.css";
+
+:root {
+    /* blue colors */
+    --faint-blue: #7d87a2;
+    --dark-blue: #0A142F;
+    --light-blue: #3DA8AE;
+    --blue: #314069;
+
+    /* grey colors */
+    --dark-grey: #444;
+    --light-grey: #C9C9C9;
+    --grey: #999;
+    --faint: #EEE;
+
+    /* status colors */
+    --green: #808000;
+    --yellow: #EBD82C;
+    --orange: #b66141;
+    --red: #c94e45;
+
+    /* chart colors */
+    --c1: #34495E;
+    --c2: #1E6A49;
+    --c3: #7B8D8E;
+    --c4: #4B3A6E;
+    --c5: #6E4F6A;
+    --c6: #515A5A;
+
+    /* borders */
+    --small-border: 0.1rem solid #ccc;
+
+    /* shadows */
+    --shadow-0: 0 .1rem .4rem .1rem rgba(0, 0, 0, 0.10);
+    --shadow-1: 0 .2rem .4rem .2rem rgba(0, 0, 0, 0.15);
+
+    /* header */
+    --header-height: 6rem;
+    --header-font: 1.4rem;
+}

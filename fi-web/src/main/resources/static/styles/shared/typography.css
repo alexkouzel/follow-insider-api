@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+* {
+    font-family: 'Montserrat', sans-serif;
+}
+
+h1, h2, h3 {
+    color: var(--blue)
+}
+
+h1 {
+    font-size: 3.8rem;
+    font-weight: bold
+}
+
+h2 {
+    font-size: 2.8rem;
+    font-weight: bold
+}
+
+h3 {
+    font-size: 1.8rem;
+    font-weight: bold
+}
+
+h4 {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--grey)
+}
+
+p, label {
+    font-size: 1.4rem
+}
+
+@media screen and (max-width: 40rem) {
+
+    h1 {
+        font-size: 3.6rem
+    }
+
+    h2 {
+        font-size: 2.4rem
+    }
+
+    h3 {
+        font-size: 1.6rem
+    }
+}
+
+.no-select {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version */
+}
+
+.wrap {
+    white-space: -moz-pre-wrap; /* Firefox */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    white-space: pre-wrap; /* CSS3 */
+    word-wrap: break-word; /* IE */
+}
+
+.link {
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--light-blue);
+}

@@ -1,0 +1,123 @@
+@import "/card-panel.css";
+@import "../components/tables.css";
+@import "../components/charts.css";
+
+:root {
+    --panel-width: 42rem;
+    --panel-toggle-delay: .5s;
+    --panel-toggle-effect: ease;
+}
+
+main {
+    margin-top: var(--header-height);
+    visibility: hidden;
+    width: 100%;
+}
+
+#content {
+    padding: 6rem calc(2rem + 3%) 3rem calc(2rem + 3%);
+    transition: margin-left var(--panel-toggle-delay) var(--panel-toggle-effect);
+    margin-left: var(--panel-width);
+    font-size: 1.6rem;
+}
+
+/* @tabs */
+#tabs {
+    display: flex;
+    margin-bottom: 4rem;
+    border-bottom: 0.1rem solid #ccc;
+    overflow: auto;
+    white-space: nowrap;
+    gap: 6rem;
+}
+
+#tabs a {
+    cursor: pointer;
+    font-size: 1.8rem;
+    line-height: 4.5rem;
+}
+
+.chosen {
+    font-weight: bold;
+    color: var(--blue) !important;
+}
+
+.chosen:after {
+    content: '';
+    display: block;
+    height: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--blue);
+}
+
+/* @side panel */
+#panel {
+    position: fixed;
+    background-color: white;
+    overflow: hidden;
+    transition: width var(--panel-toggle-delay) var(--panel-toggle-effect);
+    box-shadow: var(--shadow-0);
+    width: var(--panel-width);
+    height: 100%;
+}
+
+#panel .link {
+    position: absolute;
+    height: 2.5rem;
+    width: 2.5rem;
+    right: 3rem;
+    top: 3rem;
+}
+
+#panel-info {
+    display: flex;
+    flex-direction: column;
+    transition: visibility var(--panel-toggle-delay) var(--panel-toggle-effect),
+        opacity var(--panel-toggle-delay) var(--panel-toggle-effect);
+    padding: 7rem 4rem;
+    width: calc(var(--panel-width) - 8rem);
+    gap: 6rem;
+}
+
+#panel-intro {
+    display: flex;
+    align-items: center;
+}
+
+#panel-image {
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-0);
+    height: 12rem;
+    min-width: 12rem;
+    max-width: 12rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#panel-image img {
+    width: 9rem;
+    border-radius: 1rem;
+}
+
+@media screen and (max-width: 60rem) {
+    #content {
+        padding: 6rem calc(1rem + 3%) 3rem calc(1rem + 3%);
+        margin-left: 0;
+        width: auto;
+    }
+
+    #tabs {
+        gap: 3.8rem;
+    }
+    
+    #panel {
+        position: static;
+        width: 100%;
+    }
+
+    #panel-info {
+        width: auto;
+        padding: 4rem;
+    }
+}

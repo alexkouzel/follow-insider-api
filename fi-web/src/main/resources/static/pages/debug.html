@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="/scripts/root.js"></script>
+    <script type="module" src="/scripts/modules/debug.js"></script>
+    <link rel="stylesheet" href="/styles/root.css">
+    <title>Debug | Follow Insider</title>
+</head>
+
+<body>
+    <div class="col wrap logs"></div>
+
+    <bottom-waves></bottom-waves>
+</body>
+
+<style>
+    .logs {
+        margin: 4rem 0;
+        width: 95%;
+        gap: 1rem;
+    }
+
+    .stack-trace {
+        cursor: pointer;
+        padding: 2rem 0;
+    }
+
+    .stack-trace>p {
+        color: #999;
+    }
+</style>
+
+<script type="module">
+    import { initLogs } from '/scripts/modules/debug.js';
+
+    window.addEventListener('load', () => {
+        let main = document.querySelector('.logs');
+        initLogs(main)
+    });
+</script>
+
+</html>

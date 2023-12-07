@@ -1,0 +1,57 @@
+.info {
+    display: flex;
+    flex-direction: column;
+    margin: 15rem 0 10rem 0;
+    width: calc(60% + 20rem);
+    gap: 2.5rem;
+}
+
+.info article {
+    margin-bottom: 4rem;
+    width: 70%;
+}
+
+.info h2 {
+    margin-bottom: 2.5rem;
+}
+
+.info h3,
+.info h4 {
+    margin: 4rem 0 1rem 0;
+}
+
+.info p {
+    margin-bottom: 1rem;
+}
+
+.info p,
+.info td {
+    color: var(--dark-grey);
+    line-height: 2.5rem;
+    font-weight: 300;
+    font-size: 1.6rem;
+}
+
+.info .link {
+    color: var(--light-blue);
+}
+
+.info ul {
+    list-style-type: circle;
+    margin: 3rem 0;
+}
+
+.info li {
+    font-size: 1.6rem;
+}
+
+@media screen and (max-width: 60rem) {
+    .info {
+        align-items: center;
+        width: 100%;
+    }
+
+    .info article {
+        width: 80%;
+    }
+}
