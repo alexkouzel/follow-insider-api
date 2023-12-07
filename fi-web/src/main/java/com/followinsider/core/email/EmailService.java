@@ -1,5 +1,6 @@
 package com.followinsider.core.email;
 
+import com.followinsider.common.util.IOUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,9 +10,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 
@@ -28,42 +26,45 @@ public class EmailService {
     @Value("${email.sender}")
     private String sender;
 
-    public void sendFileEmail(String to, String path, String subject,
-                              Map<String, String> toReplace) throws MessagingException {
+    private static final String VALUE_MARK = "%";
 
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("email/" + path)) {
-            if (in == null) {
-                throw new IOException();
-            }
-            String body = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-            sendPlainEmail(to, subject, body, toReplace);
-        } catch (IOException e) {
-            throw new MessagingException("File not found: " + path);
-        }
+    public void sendFileEmail(String to, String path, String subject,
+                              Map<String, String> valueMap) throws MessagingException {
+
+        String body = IOUtils.loadResourceFile(path)
+                .orElseThrow(() -> new MessagingException("Missing template: " + path));
+
+        sendEmail(to, subject, body, valueMap);
     }
 
-    private void sendPlainEmail(String to, String subject, String body,
-                                Map<String, String> toReplace) throws MessagingException {
+    private void sendEmail(String to, String subject, String body,
+                           Map<String, String> valueMap) throws MessagingException {
 
-        // Replace all placeholders
-        for (Map.Entry<String, String> entry : toReplace.entrySet()) {
-            body = body.replace("%" + entry.getKey() + "%", entry.getValue());
+        for (Map.Entry<String, String> entry : valueMap.entrySet()) {
+            String target = VALUE_MARK + entry.getKey() + VALUE_MARK;
+            body = body.replace(target, entry.getValue());
         }
-        // Create an email message
+        sendEmail(to, subject, body);
+    }
+
+    private void sendEmail(String to, String subject, String body) throws MessagingException {
+        Message message = buildMessage(to, subject, body);
+        Transport.send(message);
+    }
+
+    private Message buildMessage(String to, String subject, String body) throws MessagingException {
         Message message = new MimeMessage(startSession());
         message.setFrom(new InternetAddress(sender));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
         message.setSubject(subject);
+        message.setContent(buildMessageContent(body));
+        return message;
+    }
 
-        // Set the email content
+    private Multipart buildMessageContent(String body) throws MessagingException {
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         mimeBodyPart.setContent(body, "text/html; charset=utf-8");
-        Multipart content = new MimeMultipart();
-        content.addBodyPart(mimeBodyPart);
-        message.setContent(content);
-
-        // Send the email message
-        Transport.send(message);
+        return new MimeMultipart(mimeBodyPart);
     }
 
     private Session startSession() {

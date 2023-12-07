@@ -5,6 +5,7 @@ public enum SyncStatus {
     PENDING,
     FAILED,
     PARTIAL,
-    FULL;
+    FULL,
+    VERIFIED;
 
 }
