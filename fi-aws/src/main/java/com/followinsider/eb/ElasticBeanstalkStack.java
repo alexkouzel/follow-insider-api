@@ -78,7 +78,7 @@ public class ElasticBeanstalkStack extends Stack {
                 /* Elastic Beanstalk */
                 .setting("aws:elasticbeanstalk:application:environment", "SERVER_PORT", props.getPort())
                 .setting("aws:elasticbeanstalk:environment:process:default", "HealthCheckPath", props.getHealthUrl())
-                    .setting("aws:elasticbeanstalk:environment", "EnvironmentType", "LoadBalanced")
+                .setting("aws:elasticbeanstalk:environment", "EnvironmentType", "LoadBalanced")
                 .setting("aws:elasticbeanstalk:environment", "LoadBalancerType", "application")
 
                 /* Load balancer for HTTPS */

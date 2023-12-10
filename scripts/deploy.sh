@@ -2,13 +2,12 @@
 
 S3_BUCKET=elasticbeanstalk-eu-central-1-067416207435
 
-ALIAS=fi
-ENV_NAME=$ALIAS-eb-env
-S3_ASSET=$ALIAS-web.jar
+ENV_NAME=fi-eb-env
+S3_ASSET=fi-core.jar
 APP_NAME=follow-insider
 
 DATE=$(date "+%d-%m-%Y_%H:%M:%S")
-VERSION=$ALIAS-$DATE
+VERSION=$APP_NAME_$DATE
 
 # build the jar file
 gradle build

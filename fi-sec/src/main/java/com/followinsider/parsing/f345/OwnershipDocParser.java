@@ -19,26 +19,26 @@ public class OwnershipDocParser {
         return doc;
     }
 
-    private static void parseSecHeader(OwnershipDoc doc, String data) throws ParseException {
+    private static void parseSecHeader(OwnershipDoc doc, String data) {
         String header = StringUtils.substring(data, "<SEC-HEADER>", "</SEC-HEADER>");
 
         if (header != null) {
             String metadata = header.substring(0, header.indexOf("\n\n"));
             String[] fields = metadata.split("\n");
 
-            doc.setAccNum(parseStrField(fields[2]));
-            doc.setSubmissionType(parseStrField(fields[3]));
-            doc.setDocCount(parseIntField(fields[4]));
-            doc.setReportedAt(parseDateField(fields[5]));
-            doc.setFiledAt(parseDateField(fields[6]));
-            doc.setUpdatedAt(parseDateField(fields[7]));
+            doc.setAccNum(parseString(fields[2]));
+            doc.setSubmissionType(parseString(fields[3]));
+            doc.setDocCount(parseInt(fields[4]));
+            doc.setReportedAt(parseDate(fields[5]));
+            doc.setFiledAt(parseDate(fields[6]));
+            doc.setUpdatedAt(parseDate(fields[7])); // optional
         }
     }
 
     private static void parseXmlForm(OwnershipDoc doc, String data) throws ParseException {
         String xml = StringUtils.substring(data, "<XML>", "</XML>");
         if (xml == null) {
-            throw new ParseException("<XML> is missing", -1);
+            throw new ParseException("<XML> field is missing", -1);
         }
         xml = xml.trim();
         if (xml.startsWith("<xml>")) {
@@ -47,8 +47,9 @@ public class OwnershipDocParser {
         try {
             OwnershipForm form = new XmlMapper().readValue(xml, OwnershipForm.class);
             doc.setOwnershipForm(form);
+
         } catch (JsonProcessingException e) {
-            throw new ParseException("Failed to map XML onto OwnershipForm.class", -1);
+            throw new ParseException("Failed to map XML onto OwnershipForm.class: " + e.getMessage(), -1);
         }
     }
 
@@ -62,15 +63,15 @@ public class OwnershipDocParser {
         doc.setXmlUrl(xmlUrl);
     }
 
-    private static Integer parseIntField(String field) {
-        return Integer.parseInt(parseStrField(field));
+    private static Integer parseInt(String field) {
+        return Integer.parseInt(parseString(field));
     }
 
-    private static Date parseDateField(String field) throws ParseException {
-        return DateUtils.parse(parseStrField(field), "yyyyMMdd");
+    private static Date parseDate(String field) {
+        return DateUtils.tryParse(parseString(field), "yyyyMMdd").orElse(null);
     }
 
-    private static String parseStrField(String field) {
+    private static String parseString(String field) {
         return field.substring(field.lastIndexOf("\t") + 1);
     }
 

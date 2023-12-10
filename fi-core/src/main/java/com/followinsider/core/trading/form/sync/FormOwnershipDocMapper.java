@@ -1,5 +1,6 @@
 package com.followinsider.core.trading.form.sync;
 
+import com.followinsider.common.utils.StringUtils;
 import com.followinsider.core.trading.company.Company;
 import com.followinsider.core.trading.form.Form;
 import com.followinsider.core.trading.insider.Insider;
@@ -103,9 +104,11 @@ public class FormOwnershipDocMapper {
         FootnoteValue<Double> priceField = amounts.getTransactionPricePerShare();
         FootnoteID priceFootnoteID = priceField.getFootnoteId();
 
-        String priceFootnote = priceFootnoteID != null && priceFootnoteID.getId() != null
-                ? footnotes.get(priceFootnoteID.getId())
-                : null;
+        String priceFootnote = null;
+        if (priceFootnoteID != null && priceFootnoteID.getId() != null) {
+            priceFootnote = footnotes.get(priceFootnoteID.getId());
+            priceFootnote = StringUtils.overflow(priceFootnote, 1000);
+        }
 
         return Trade.builder()
                 .securityTitle(securityTitle)
@@ -119,8 +122,10 @@ public class FormOwnershipDocMapper {
     }
 
     private static TradeType getTradeType(NonDerivativeTransaction transaction) {
-        TransactionCode transactionCode = transaction.getTransactionCoding().getTransactionCode();
-        return switch (transactionCode) {
+        Transaction.Coding coding = transaction.getTransactionCoding();
+        if (coding == null) return null;
+
+        return switch (coding.getTransactionCode()) {
             case PURCHASE -> TradeType.BUY;
             case SALE -> TradeType.SELL;
             default -> null;

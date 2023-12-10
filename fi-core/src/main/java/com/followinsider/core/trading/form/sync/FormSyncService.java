@@ -139,7 +139,8 @@ public class FormSyncService {
             return FormOwnershipDocMapper.map(doc);
 
         } catch (Exception e) {
-            FailedForm failedForm = new FailedForm(ref, e.getMessage());
+            String error = e.getMessage() == null ? "Something went wrong" : e.getMessage();
+            FailedForm failedForm = new FailedForm(ref, error);
             failedForms.add(failedForm);
         }
         return null;

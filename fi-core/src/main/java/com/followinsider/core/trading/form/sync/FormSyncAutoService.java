@@ -3,11 +3,14 @@ package com.followinsider.core.trading.form.sync;
 import com.followinsider.common.entities.ExecMode;
 import com.followinsider.core.trading.quarter.FiscalQuarter;
 import com.followinsider.core.trading.quarter.FiscalQuarterService;
+import com.followinsider.core.trading.quarter.FiscalQuarterUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +24,16 @@ public class FormSyncAutoService {
     @Value("${app.auto_form_sync}")
     private boolean autoFormSync;
 
-    @Scheduled(fixedDelay = 10)
-    public void loadLatestUnloaded() {
+    @Bean
+    public void loadAllForms() {
         if (!autoFormSync) return;
 
-        FiscalQuarter fiscalQuarter = fiscalQuarterService.getLatestUnloaded();
-        formSyncService.syncFiscalQuarter(fiscalQuarter, ExecMode.SYNC);
+        List<FiscalQuarter> fiscalQuarters = fiscalQuarterService.getUnloaded();
+        FiscalQuarterUtils.sortDesc(fiscalQuarters);
+
+        for (FiscalQuarter fiscalQuarter : fiscalQuarters) {
+            formSyncService.syncFiscalQuarter(fiscalQuarter, ExecMode.SYNC);
+        }
     }
 
 }

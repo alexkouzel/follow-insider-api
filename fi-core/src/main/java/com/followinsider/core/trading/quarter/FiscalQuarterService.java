@@ -20,10 +20,8 @@ public class FiscalQuarterService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid year and/or quarter"));
     }
 
-    public FiscalQuarter getLatestUnloaded() {
-        List<FiscalQuarter> quarters = fiscalQuarterRepository.findBySyncStatus(SyncStatus.PENDING);
-        FiscalQuarterUtils.sortDesc(quarters);
-        return quarters.get(0);
+    public List<FiscalQuarter> getUnloaded() {
+        return fiscalQuarterRepository.findBySyncStatus(SyncStatus.PENDING);
     }
 
     public void save(FiscalQuarter fiscalQuarter) {

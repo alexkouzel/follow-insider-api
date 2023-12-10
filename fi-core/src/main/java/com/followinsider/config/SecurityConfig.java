@@ -41,7 +41,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(antMatcher("/forms")).hasRole("ADMIN")
+                        .requestMatchers(antMatcher("/forms"), antMatcher("/debug")).hasRole("ADMIN")
                         .requestMatchers(antMatcher("/actuator/health")).permitAll()
                         .anyRequest().authenticated()
                 )

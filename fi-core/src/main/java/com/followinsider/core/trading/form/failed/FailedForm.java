@@ -1,6 +1,7 @@
 package com.followinsider.core.trading.form.failed;
 
 import com.followinsider.common.entities.BaseEntity;
+import com.followinsider.common.utils.StringUtils;
 import com.followinsider.parsing.refs.FormRef;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public class FailedForm extends BaseEntity {
         this.accNum = ref.getAccNum();
         this.issuerCik = ref.getIssuerCik();
         this.filedAt = ref.getFiledAt();
-        this.error = error;
+        this.error = StringUtils.overflow(error, 255);
     }
 
 }
