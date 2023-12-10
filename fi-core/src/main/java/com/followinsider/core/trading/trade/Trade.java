@@ -37,7 +37,6 @@ public class Trade extends BaseEntity {
     @Column(nullable = false)
     private Date executedAt;
 
-    // TODO: Find out if it's nullable.
     private Double sharesLeft;
 
     @Enumerated(EnumType.ORDINAL)

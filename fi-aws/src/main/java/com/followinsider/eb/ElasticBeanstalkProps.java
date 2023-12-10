@@ -20,7 +20,7 @@ public class ElasticBeanstalkProps {
 
     private final String appName;
 
-    private final String alias;
+    private final String pre;
 
     private final String port;
 

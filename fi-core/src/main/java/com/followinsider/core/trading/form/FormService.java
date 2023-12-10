@@ -1,12 +1,14 @@
 package com.followinsider.core.trading.form;
 
+import com.followinsider.common.utils.CollectionUtils;
 import com.followinsider.parsing.refs.FormRef;
 import com.followinsider.common.utils.DateUtils;
-import com.followinsider.common.entities.Tuple2;
+import com.followinsider.common.entities.tuples.Tuple2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +22,8 @@ public class FormService {
     private final FormRepository formRepository;
 
     public List<FormRef> filterOldRefs(List<FormRef> refs) {
+        if (CollectionUtils.isEmpty(refs)) return new ArrayList<>();
+
         Tuple2<Date, Date> timePeriod = getTimeSpanByRefs(refs);
         Set<String> ids = formRepository.findIdsFiledBetween(timePeriod.first(), timePeriod.second());
 
@@ -31,6 +35,10 @@ public class FormService {
     private Tuple2<Date, Date> getTimeSpanByRefs(List<FormRef> refs) {
         Set<Date> dates = refs.stream().map(FormRef::getFiledAt).collect(Collectors.toSet());
         return DateUtils.getTimeSpan(dates);
+    }
+
+    public int count() {
+        return (int) formRepository.count();
     }
 
 }

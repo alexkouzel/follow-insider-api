@@ -8,7 +8,7 @@ import software.amazon.awscdk.StackProps;
 
 public class FollowInsiderApp {
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws Exception {
         App app = new App();
 
         Environment env = Environment.builder()
@@ -25,9 +25,9 @@ public class FollowInsiderApp {
                 .assetPath("../fi-core/build/libs/fi-core.jar")
                 .stackName("64bit Amazon Linux 2023 v4.1.1 running Corretto 17")
                 .appName("follow-insider")
-                .alias("fi")
+                .pre("follow-insider")
                 .port("5000")
-                .https(true)
+                .https(false)
                 .build());
 
         app.synth();

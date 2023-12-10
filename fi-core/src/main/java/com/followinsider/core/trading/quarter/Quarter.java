@@ -1,7 +1,8 @@
 package com.followinsider.core.trading.quarter;
 
 import com.followinsider.common.entities.BaseEntity;
-import com.followinsider.core.trading.form.sync.SyncStatus;
+import com.followinsider.common.entities.sync.SyncStatus;
+import com.followinsider.common.entities.sync.Synchronizable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -16,7 +17,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Table(name = "fiscal_quarter")
-public class FiscalQuarter extends BaseEntity {
+public class Quarter extends BaseEntity implements Synchronizable {
 
     @Column(nullable = false)
     private int yearVal;
@@ -29,7 +30,7 @@ public class FiscalQuarter extends BaseEntity {
 
     private Integer formNum;
 
-    public FiscalQuarter(int yearVal, int quarterVal) {
+    public Quarter(int yearVal, int quarterVal) {
         this.yearVal = yearVal;
         this.quarterVal = quarterVal;
     }

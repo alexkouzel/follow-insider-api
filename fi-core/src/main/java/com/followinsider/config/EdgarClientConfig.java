@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EdgarClientConfig {
 
-    @Value("${app.edgar_user_agent}")
+    @Value("${trading.edgar_user_agent}")
     private String userAgent;
 
     @Bean

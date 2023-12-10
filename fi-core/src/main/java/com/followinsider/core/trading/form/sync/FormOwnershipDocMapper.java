@@ -157,13 +157,13 @@ public class FormOwnershipDocMapper {
                 .getTransactionPricePerShare()
                 .getValue();
 
-        if (sharePrice == null) return null;
+        if (sharePrice == null || sharePrice <= 0) return null;
 
         Double valueLeft = postAmounts
                 .getValueOwnedFollowingTransaction()
                 .getValue();
 
-        if (valueLeft == null) return null;
+        if (valueLeft == null || valueLeft <= 0) return null;
 
         return valueLeft / sharePrice;
     }

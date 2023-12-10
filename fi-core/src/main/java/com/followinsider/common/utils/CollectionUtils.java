@@ -9,15 +9,17 @@ import java.util.List;
 @UtilityClass
 public class CollectionUtils {
 
-    public static <T> boolean isEmpty(Collection<T> list) {
-        return list == null || list.isEmpty();
+    public static <T> boolean isEmpty(Collection<T> collection) {
+        return collection == null || collection.isEmpty();
     }
-    
+
+    public static <T> List<T> filterClass(List<Object> list, Class<T> c) {
+        return list.stream().filter(c::isInstance).map(c::cast).toList();
+    }
+
     public static List<Integer> generateNums(int from, int to) {
         List<Integer> nums = new ArrayList<>(to - from);
-        for (int i = from; i <= to; i++) {
-            nums.add(i);
-        }
+        for (int i = from; i <= to; i++) nums.add(i);
         return nums;
     }
 

@@ -8,8 +8,4 @@ import java.util.Set;
 
 @Repository
 public interface FailedFormRepository extends JpaRepository<FailedForm, String> {
-
-    @Query("SELECT f.accNum FROM FailedForm f")
-    Set<String> findAllIds();
-
 }

@@ -49,9 +49,9 @@ public class FormRefLoader {
         }
     }
 
-    public List<FormRef> loadByQuarter(int year, int quarter) {
+    public List<FormRef> loadByQuarter(int yearVal, int quarterVal) {
         try {
-            String url = String.format(FULL_INDEX_URL, year, quarter);
+            String url = String.format(FULL_INDEX_URL, yearVal, quarterVal);
             InputStream stream = client.loadStream(url, "text/html");
             List<FormRef> refs = new IndexFeedParser().parse(stream);
             return filterRefs(refs);

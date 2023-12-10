@@ -1,4 +1,4 @@
-package com.followinsider.core.trading.form.sync;
+package com.followinsider.common.entities.sync;
 
 public enum SyncStatus {
 

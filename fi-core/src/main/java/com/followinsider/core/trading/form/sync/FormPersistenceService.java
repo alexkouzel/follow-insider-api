@@ -33,30 +33,32 @@ public class FormPersistenceService {
     public void saveForms(List<Form> forms, String source) {
         List<Company> companies = new ArrayList<>();
         List<Insider> insiders = new ArrayList<>();
-        int tradeNum = 0;
 
         for (Form form : forms) {
             companies.add(form.getCompany());
             insiders.add(form.getInsider());
-            tradeNum += form.getTrades().size();
         }
 
-        int savedCompanyNum = saveCompanies(companies);
-        int savedInsiderNum = saveInsiders(insiders);
+        int companyNum = saveCompanies(companies);
+        int insiderNum = saveInsiders(insiders);
 
+        updateRefs(forms);
+        formRepository.saveAll(forms);
+
+        log.info("Saved {} :: forms: {}, trades: {}, companies: {}, insiders: {}",
+                source, forms.size(), countTrades(forms), companyNum, insiderNum);
+    }
+
+    private int countTrades(List<Form> forms) {
+        return forms.stream().mapToInt(form -> form.getTrades().size()).sum();
+    }
+
+    private void updateRefs(List<Form> forms) {
         for (Form form : forms) {
             form.setCompany(companyRepository.getReferenceById(form.getCompany().getCik()));
             form.setInsider(insiderRepository.getReferenceById(form.getInsider().getCik()));
-
-            for (Trade trade : form.getTrades()) {
-                trade.setForm(form);
-            }
+            form.getTrades().forEach(trade -> trade.setForm(form));
         }
-
-        formRepository.saveAll(forms);
-
-        log.info("Saved :: {} :: forms: {}, trades: {}, companies: {}, insiders: {}",
-                source, forms.size(), tradeNum, savedCompanyNum, savedInsiderNum);
     }
 
     private int saveCompanies(List<Company> companies) {

@@ -8,23 +8,25 @@ import software.amazon.awscdk.services.s3.assets.AssetProps;
 import software.amazon.awscdk.services.ec2.*;
 import software.constructs.Construct;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ElasticBeanstalkStack extends Stack {
 
-    public ElasticBeanstalkStack(Construct scope, ElasticBeanstalkProps props) {
-        super(scope, props.getAlias() + "-eb-stack", props.getStackProps());
-        String alias = props.getAlias();
+    public ElasticBeanstalkStack(Construct scope, ElasticBeanstalkProps props) throws Exception {
+        super(scope, props.getPre() + "-eb-stack", props.getStackProps());
+        String pre = props.getPre();
 
         // ElasticBeanStalk application
-        var app = new CfnApplication(this, alias + "-app",
+        var app = new CfnApplication(this, pre + "-app",
                 CfnApplicationProps.builder()
                         .applicationName(props.getAppName())
                         .build());
 
         // S3 asset with the JAR file
-        var asset = new Asset(this, alias + "-asset",
+        var asset = new Asset(this, pre + "-asset",
                 AssetProps.builder()
                         .path(props.getAssetPath())
                         .build());
@@ -35,7 +37,7 @@ public class ElasticBeanstalkStack extends Stack {
                 .build();
 
         // App version from the S3 asset defined earlier
-        var version = new CfnApplicationVersion(this, props.getAlias() + "-version",
+        var version = new CfnApplicationVersion(this, pre + "-version",
                 CfnApplicationVersionProps.builder()
                         .applicationName(props.getAppName())
                         .sourceBundle(sourceBundle)
@@ -45,7 +47,7 @@ public class ElasticBeanstalkStack extends Stack {
         version.getNode().addDependency(app);
 
         // IAM role and instance profile
-        var role = new Role(this, alias + "-iam-role",
+        var role = new Role(this, pre + "-iam-role",
                 RoleProps.builder()
                         .assumedBy(new ServicePrincipal("ec2.amazonaws.com"))
                         .build());
@@ -53,7 +55,7 @@ public class ElasticBeanstalkStack extends Stack {
         IManagedPolicy policy = ManagedPolicy.fromAwsManagedPolicyName("AWSElasticBeanstalkWebTier");
         role.addManagedPolicy(policy);
 
-        String profileName = props.getAlias() + "-iam-profile";
+        String profileName = pre + "-iam-profile";
         var profile = new CfnInstanceProfile(this, profileName,
                 CfnInstanceProfileProps.builder()
                         .instanceProfileName(profileName)
@@ -71,8 +73,9 @@ public class ElasticBeanstalkStack extends Stack {
                 .collect(Collectors.joining(","));
 
         // Option settings of application environment
-        boolean https = props.isHttps();
         String certificateArn = System.getenv("CERTIFICATE_ARN");
+        boolean https = props.isHttps();
+
         List<CfnEnvironment.OptionSettingProperty> settings = new CfnSettingsBuilder()
 
                 /* Elastic Beanstalk */
@@ -103,7 +106,7 @@ public class ElasticBeanstalkStack extends Stack {
                 .build();
 
         // Elastic Beanstalk environment to run the application
-        String envName = alias + "-eb-env";
+        String envName = pre + "-eb-env";
         new CfnEnvironment(this, envName,
                 CfnEnvironmentProps.builder()
                         .applicationName(app.getApplicationName())

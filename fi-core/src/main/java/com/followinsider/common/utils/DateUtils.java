@@ -1,6 +1,6 @@
 package com.followinsider.common.utils;
 
-import com.followinsider.common.entities.Tuple2;
+import com.followinsider.common.entities.tuples.Tuple2;
 import lombok.experimental.UtilityClass;
 
 import java.text.DateFormat;
