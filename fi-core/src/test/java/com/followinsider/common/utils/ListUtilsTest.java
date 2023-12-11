@@ -1,13 +1,12 @@
 package com.followinsider.common.utils;
 
-import com.followinsider.common.utils.CollectionUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CollectionUtilsTest {
+public class ListUtilsTest {
 
     @Test
     public void testMap() {
@@ -17,14 +16,14 @@ public class CollectionUtilsTest {
 
     @Test
     public void testGenerateNums() {
-        List<Integer> nums = CollectionUtils.generateNums(4, 10);
+        List<Integer> nums = ListUtils.generateNums(4, 10);
         assertEquals(List.of(4, 5, 6, 7, 8, 9, 10), nums);
     }
     
     @Test
     public void testPartition() {
-        List<Integer> nums = CollectionUtils.generateNums(1, 8);
-        List<List<Integer>> groups = CollectionUtils.divideToNum(nums, 4);
+        List<Integer> nums = ListUtils.generateNums(1, 8);
+        List<List<Integer>> groups = ListUtils.divideToNum(nums, 4);
         assertEquals(List.of(1, 2), groups.get(0));
         assertEquals(List.of(3, 4), groups.get(1));
         assertEquals(List.of(5, 6), groups.get(2));
@@ -33,8 +32,8 @@ public class CollectionUtilsTest {
 
     @Test
     public void testDivide() {
-        List<Integer> nums = CollectionUtils.generateNums(1, 7);
-        List<List<Integer>> groups = CollectionUtils.divideBySize(nums, 4);
+        List<Integer> nums = ListUtils.generateNums(1, 7);
+        List<List<Integer>> groups = ListUtils.divideBySize(nums, 4);
         assertEquals(List.of(1, 2, 3, 4), groups.get(0));
         assertEquals(List.of(5, 6, 7), groups.get(1));
     }

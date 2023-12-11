@@ -10,6 +10,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
 
@@ -30,11 +33,13 @@ public class EmailService {
 
     public void sendFileEmail(String to, String path, String subject,
                               Map<String, String> valueMap) throws MessagingException {
+        try {
+            String body = Files.readString(Path.of(path));
+            sendEmail(to, subject, body, valueMap);
 
-        String body = IOUtils.loadResourceFile(path)
-                .orElseThrow(() -> new MessagingException("Missing template: " + path));
-
-        sendEmail(to, subject, body, valueMap);
+        } catch (IOException e) {
+            throw new MessagingException("Missing template: " + path);
+        }
     }
 
     private void sendEmail(String to, String subject, String body,

@@ -1,9 +1,9 @@
 package com.followinsider.core.trading.form;
 
-import com.followinsider.common.utils.CollectionUtils;
+import com.followinsider.common.utils.ListUtils;
+import com.followinsider.loaders.FormRefLoader;
 import com.followinsider.parsing.refs.FormRef;
 import com.followinsider.common.utils.DateUtils;
-import com.followinsider.common.entities.tuples.Tuple2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,20 +21,28 @@ public class FormService {
 
     private final FormRepository formRepository;
 
-    public List<FormRef> filterOldRefs(List<FormRef> refs) {
-        if (CollectionUtils.isEmpty(refs)) return new ArrayList<>();
+    private final FormRefLoader formRefLoader;
 
-        Tuple2<Date, Date> timePeriod = getTimeSpanByRefs(refs);
-        Set<String> ids = formRepository.findIdsFiledBetween(timePeriod.first(), timePeriod.second());
+    public String[] getQuarterRange(int year, int quarter) {
+        List<FormRef> refs = formRefLoader.loadByQuarter(year, quarter);
+        Date[] timeRange = getTimeRangeByRefs(refs);
+        return DateUtils.formatDates(timeRange, "dd-MM-yyyy");
+    }
+
+    public List<FormRef> filterOldRefs(List<FormRef> refs) {
+        if (ListUtils.isEmpty(refs)) return new ArrayList<>();
+
+        Date[] timeRange = getTimeRangeByRefs(refs);
+        Set<String> ids = formRepository.findIdsFiledBetween(timeRange[0], timeRange[1]);
 
         return refs.stream()
                 .filter(ref -> !ids.contains(ref.getAccNum()))
                 .collect(Collectors.toList());
     }
 
-    private Tuple2<Date, Date> getTimeSpanByRefs(List<FormRef> refs) {
+    private Date[] getTimeRangeByRefs(List<FormRef> refs) {
         Set<Date> dates = refs.stream().map(FormRef::getFiledAt).collect(Collectors.toSet());
-        return DateUtils.getTimeSpan(dates);
+        return DateUtils.getTimeRange(dates);
     }
 
     public int count() {

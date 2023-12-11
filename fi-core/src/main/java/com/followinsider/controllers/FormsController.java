@@ -1,13 +1,10 @@
 package com.followinsider.controllers;
 
+import com.followinsider.core.trading.form.FormService;
 import com.followinsider.core.trading.form.sync.FormSyncProgress;
 import com.followinsider.core.trading.form.sync.FormSyncService;
-import com.followinsider.core.trading.quarter.Quarter;
-import com.followinsider.core.trading.quarter.QuarterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/forms")
@@ -15,6 +12,16 @@ import java.util.List;
 public class FormsController {
 
     private final FormSyncService formSyncService;
+
+    private final FormService formService;
+
+    @GetMapping("/quarter-range")
+    public String[] getQuarterRange(
+            @RequestParam("year") int year,
+            @RequestParam("quarter") int quarter
+    ) {
+        return formService.getQuarterRange(year, quarter);
+    }
 
     @GetMapping("/sync/progress")
     public FormSyncProgress getSyncProgress() {

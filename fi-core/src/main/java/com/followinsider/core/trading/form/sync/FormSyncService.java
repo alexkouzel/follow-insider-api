@@ -2,7 +2,7 @@ package com.followinsider.core.trading.form.sync;
 
 import com.followinsider.common.entities.sync.SyncProgress;
 import com.followinsider.common.entities.sync.SyncStatus;
-import com.followinsider.common.utils.CollectionUtils;
+import com.followinsider.common.utils.ListUtils;
 import com.followinsider.common.utils.StringUtils;
 import com.followinsider.core.trading.form.*;
 import com.followinsider.core.trading.quarter.Quarter;
@@ -134,7 +134,7 @@ public class FormSyncService {
     }
 
     private SyncStatus syncRefsInBatches(List<FormRef> refs, String source) {
-        List<List<FormRef>> batches = CollectionUtils.divideBySize(refs, formBatchSize);
+        List<List<FormRef>> batches = ListUtils.divideBySize(refs, formBatchSize);
         List<SyncStatus> statuses = new ArrayList<>();
 
         for (int i = 0; i < batches.size(); i++) {
@@ -149,10 +149,10 @@ public class FormSyncService {
     private SyncStatus syncRefs(List<FormRef> refs, String source) {
         List<Object> results = refs.parallelStream().map(this::loadByRef).toList();
 
-        List<Form> forms = CollectionUtils.filterClass(results, Form.class);
+        List<Form> forms = ListUtils.filterType(results, Form.class);
         formPersistenceService.saveForms(forms, source);
 
-        List<FailedForm> failedForms = CollectionUtils.filterClass(results, FailedForm.class);
+        List<FailedForm> failedForms = ListUtils.filterType(results, FailedForm.class);
         if (failedForms.isEmpty()) return SyncStatus.FULL;
 
         log.warn("Failed loading {} forms :: count: {}", source, failedForms.size());
@@ -173,7 +173,7 @@ public class FormSyncService {
 
     private String formatError(String error) {
         if (error == null) return "Something went wrong";
-        return StringUtils.overflow(error, 255);
+        return StringUtils.handleOverflow(error, 255);
     }
 
 }

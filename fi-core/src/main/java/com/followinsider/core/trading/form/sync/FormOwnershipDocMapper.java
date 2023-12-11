@@ -107,7 +107,7 @@ public class FormOwnershipDocMapper {
         String priceFootnote = null;
         if (priceFootnoteID != null && priceFootnoteID.getId() != null) {
             priceFootnote = footnotes.get(priceFootnoteID.getId());
-            priceFootnote = StringUtils.overflow(priceFootnote, 1000);
+            priceFootnote = StringUtils.handleOverflow(priceFootnote, 1000);
         }
 
         return Trade.builder()

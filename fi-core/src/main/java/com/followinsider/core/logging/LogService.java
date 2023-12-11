@@ -1,88 +1,54 @@
 package com.followinsider.core.logging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.followinsider.common.utils.IOUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class LogService {
 
-    @Setter
-    @Value("${logging.file.name}")
-    private String logsPath;
+    @Value("${logging.dir}")
+    private String logsDir;
 
-    @PostConstruct
-    public void init() {
-        clearLogs();
+    private final ObjectMapper objectMapper;
+
+    public void clearLogs() throws IOException {
+        Function<String, Boolean> verifier = line -> line.startsWith("app") && line.endsWith(".log");
+        IOUtils.clearDirectory(Path.of(logsDir), verifier);
     }
 
-    public List<Log> getLogs(int from, int to, Set<String> exclude) {
-        return getLogs(from, to, exclude, true);
-    }
-
-    public List<Log> getLogs(int from, int to, Set<String> exclude, boolean reverseOrder) {
-        Deque<Log> logs = new ArrayDeque<>();
-
-        Path projectRoot = Paths.get(System.getProperty("user.dir"));
-        Path path = projectRoot.resolve(logsPath);
-
-        try (LineNumberReader reader = new LineNumberReader(Files.newBufferedReader(path))) {
-            ObjectMapper mapper = new ObjectMapper();
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                int lineNumber = reader.getLineNumber();
-                if (lineNumber >= from && lineNumber <= to) {
-                    Log log = mapper.readValue(line, Log.class);
-                    if (anyCaseContains(log.getType(), exclude)) {
-                        continue;
-                    }
-                    if (reverseOrder) {
-                        logs.addFirst(log);
-                    } else {
-                        logs.add(log);
-                    }
-                } else if (lineNumber > to) {
-                    break;
-                }
-            }
-        } catch (IOException e) {
-            log.error("Failed loading logs :: {}", e.getMessage());
-        }
-        return new ArrayList<>(logs);
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public void clearLogs() {
-        try {
-            new FileWriter(logsPath, false).close();
-        } catch (IOException e) {
-            log.error("Failed clearing logs :: {}", e.getMessage());
+    public List<Log> getFileLogs(String filename, LogLevel level) throws IOException {
+        Path path = Path.of(logsDir + "/" + filename);
+        try (Stream<String> stream = Files.lines(path)) {
+            return getStreamLogs(stream, level);
         }
     }
 
-    private boolean anyCaseContains(String value, Set<String> values) {
-        if (value == null) return false;
-        value = value.toUpperCase();
-        return values.stream()
-                .filter(Objects::nonNull)
-                .map(String::toUpperCase)
-                .anyMatch(value::equals);
+    private List<Log> getStreamLogs(Stream<String> stream, LogLevel level) {
+        return stream
+                .map(this::parseLog)
+                .filter(log -> log.level().ordinal() >= level.ordinal())
+                .collect(Collectors.toList());
+    }
+
+    @SneakyThrows
+    private Log parseLog(String line) {
+        return objectMapper.readValue(line, Log.class);
     }
 
 }
