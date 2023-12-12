@@ -42,7 +42,7 @@ public class FormService {
 
     private Date[] getTimeRangeByRefs(List<FormRef> refs) {
         Set<Date> dates = refs.stream().map(FormRef::filedAt).collect(Collectors.toSet());
-        return DateUtils.getTimeRange(dates);
+        return DateUtils.getMinMax(dates);
     }
 
     public int count() {

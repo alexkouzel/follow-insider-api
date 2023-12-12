@@ -9,4 +9,5 @@ public record FormSyncProgress(
         int formsFailed,
 
         SyncProgress quarterProgress
+
 ) {}

@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 @UtilityClass
 public class StringUtils {
 
+    /** If text is longer than {@code length}, it is truncated and "..." is appended. */
     public String handleOverflow(String text, int length) {
         return text.length() > length
                 ? text.substring(0, length - 3) + "..."

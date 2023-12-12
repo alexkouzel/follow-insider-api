@@ -9,4 +9,5 @@ public record Company(
         String symbol,
 
         String exchange
+
 ) {}

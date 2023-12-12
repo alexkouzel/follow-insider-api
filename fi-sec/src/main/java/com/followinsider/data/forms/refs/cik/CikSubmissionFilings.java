@@ -19,7 +19,7 @@ public class CikSubmissionFilings {
 
     @Getter
     @Setter
-    public class Recent {
+    public static class Recent {
 
         private List<String> accessionNumber;
 

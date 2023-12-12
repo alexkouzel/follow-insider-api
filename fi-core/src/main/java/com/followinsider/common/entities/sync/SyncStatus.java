@@ -2,10 +2,19 @@ package com.followinsider.common.entities.sync;
 
 public enum SyncStatus {
 
+    /** About to be synchronized. */
     PENDING,
+
+    /** Failed to synchronize. */
     FAILED,
+
+    /** Only specific parts of the data failed to synchronise. */
     PARTIAL,
+
+    /** Fully synchronized and is ready to be verified. */
     FULL,
-    VERIFIED;
+
+    /** Fully synchronized and verified. */
+    VERIFIED
 
 }

@@ -1,8 +1,5 @@
 package com.followinsider.common.entities.sync;
 
-import lombok.Builder;
-
-@Builder
 public record SyncProgress(
 
         int total,
@@ -16,4 +13,5 @@ public record SyncProgress(
         int full,
 
         int verified
+
 ) {}

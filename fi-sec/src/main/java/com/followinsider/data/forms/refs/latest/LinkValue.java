@@ -1,7 +1,6 @@
 package com.followinsider.data.forms.refs.latest;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
