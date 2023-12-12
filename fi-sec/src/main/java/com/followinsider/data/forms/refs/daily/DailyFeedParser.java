@@ -31,7 +31,6 @@ public class DailyFeedParser {
         // Parse issuer CIK
         int issuerCikIdx = parts[1].indexOf(">") + 1;
         String issuerCik = parts[1].substring(issuerCikIdx);
-        String paddedIssuerCik = StringUtils.pad(issuerCik, 10, '0');
 
         // Parse accession number
         int accNumIdx = parts[0].indexOf(issuerCik) + issuerCik.length() + 1;
@@ -46,7 +45,7 @@ public class DailyFeedParser {
         String dateValue = entry.substring(0, entry.indexOf(" "));
         Date filedAt = DateUtils.parse(dateValue, "MM-dd-yyyy");
 
-        return new FormRef(accNum, paddedIssuerCik, type, filedAt);
+        return new FormRef(accNum, issuerCik, type, filedAt);
     }
 
 }

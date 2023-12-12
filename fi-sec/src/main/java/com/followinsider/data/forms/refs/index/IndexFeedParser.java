@@ -43,7 +43,6 @@ public class IndexFeedParser {
 
         // Parse issuer CIK
         String issuerCik = parts[0];
-        issuerCik = StringUtils.pad(issuerCik, 10, '0');
 
         // Parse form type
         FormType type = FormType.ofValue(parts[2]);

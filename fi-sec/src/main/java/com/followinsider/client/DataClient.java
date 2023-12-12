@@ -39,7 +39,7 @@ public abstract class DataClient {
 
     protected abstract InputStream extractStream(HttpResponse<InputStream> response) throws IOException;
 
-    protected abstract void handleError(int statusCode);
+    protected abstract void handleError(HttpResponse response);
 
     public <T> T loadJsonType(String url, Class<T> type) throws IOException {
         return loadType(url, type, jsonMapper);
@@ -79,9 +79,8 @@ public abstract class DataClient {
             var responseType = HttpResponse.BodyHandlers.ofInputStream();
             HttpResponse<InputStream> response = client.send(request, responseType);
 
-            int statusCode = response.statusCode();
-            if (statusCode != 200) {
-                handleError(statusCode);
+            if (response.statusCode() != 200) {
+                handleError(response);
                 return Optional.empty();
             }
             InputStream stream = extractStream(response);

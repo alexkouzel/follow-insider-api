@@ -24,8 +24,8 @@ public class SimpleClient extends DataClient {
     }
 
     @Override
-    protected void handleError(int statusCode) {
-        System.out.println("[HTTP] Error: " + statusCode);
+    protected void handleError(HttpResponse response) {
+        System.out.println("[HTTP] Error: " + response.statusCode());
     }
 
 }

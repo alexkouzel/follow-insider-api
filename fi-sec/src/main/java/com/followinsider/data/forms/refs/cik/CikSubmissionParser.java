@@ -21,7 +21,7 @@ public class CikSubmissionParser {
         for (int i = 0; i < formNum; i++) {
 
             String accNum = recent.getAccessionNumber().get(i);
-            String issuerCik = StringUtils.pad(submission.getCik(), 10, '0');
+            String issuerCik = submission.getCik();
             FormType type = FormType.ofValue(recent.getForm().get(i));
             Date filedAt = recent.getFilingDate().get(i);
 

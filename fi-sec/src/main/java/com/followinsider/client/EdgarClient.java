@@ -51,11 +51,15 @@ public class EdgarClient extends DataClient {
     }
 
     @Override
-    protected void handleError(int statusCode) {
-        if (statusCode == 429) {
-            rateLimiter.handleTooManyRequests();
-        } else {
-            rateLimiter.handleUnknownError(statusCode);
+    protected void handleError(HttpResponse response) {
+        int statusCode = response.statusCode();
+        switch (response.statusCode()) {
+            case 429 -> rateLimiter.handleTooManyRequests();
+            case 301 -> {
+                String location = response.headers().firstValue("Location").orElse(null);
+                System.out.println("[EDGAR] Redirected to: " + location);
+            }
+            default -> rateLimiter.handleUnknownError(statusCode);
         }
     }
 

@@ -46,7 +46,7 @@ public class FormRefLoaderTest {
         assertNotNull(ref.filedAt());
 
         assertEquals(20, ref.accNum().length());
-        assertEquals(10, ref.issuerCik().length());
+        assertTrue(ref.issuerCik().length() <= 10);
     }
 
 }
