@@ -15,5 +15,5 @@ public record Log(
         String message,
 
         String stackTrace
-`
+
 ) {}
