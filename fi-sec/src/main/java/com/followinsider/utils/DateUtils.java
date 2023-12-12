@@ -12,7 +12,7 @@ import java.util.TimeZone;
 @UtilityClass
 public class DateUtils {
 
-    public static Optional<Date> tryParse(String value, String pattern) {
+    public Optional<Date> tryParse(String value, String pattern) {
         try {
             return Optional.of(parse(value, pattern));
         } catch (ParseException e) {
@@ -20,7 +20,7 @@ public class DateUtils {
         }
     }
 
-    public static Date parse(String value, String pattern) throws ParseException {
+    public Date parse(String value, String pattern) throws ParseException {
         DateFormat format = new SimpleDateFormat(pattern);
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         return format.parse(value);

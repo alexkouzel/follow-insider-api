@@ -1,6 +1,5 @@
 package com.followinsider.core.email;
 
-import com.followinsider.common.utils.IOUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

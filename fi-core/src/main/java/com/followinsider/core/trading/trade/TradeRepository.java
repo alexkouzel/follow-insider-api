@@ -9,8 +9,4 @@ import java.util.List;
 
 @Repository
 public interface TradeRepository extends JpaRepository<Trade, Integer> {
-
-    @Query("SELECT t FROM Trade t WHERE t.executedAt BETWEEN :date1 AND :date2")
-    List<Trade> findExecutedBetween(Date date1, Date date2);
-
 }

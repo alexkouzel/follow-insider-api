@@ -12,7 +12,7 @@ import java.util.List;
 @UtilityClass
 public class QuarterUtils {
 
-    public static List<Tuple2<Integer, Integer>> generate(
+    public List<Tuple2<Integer, Integer>> generate(
             int fromYear, int fromQuarter, int toYear, int toQuarter) {
 
         List<Tuple2<Integer, Integer>> quarters = new ArrayList<>();
@@ -28,12 +28,12 @@ public class QuarterUtils {
         return quarters;
     }
 
-    public static void sortDesc(List<Quarter> quarters) {
+    public void sortDesc(List<Quarter> quarters) {
         sortAsc(quarters);
         Collections.reverse(quarters);
     }
 
-    public static void sortAsc(List<Quarter> quarters) {
+    public void sortAsc(List<Quarter> quarters) {
         Comparator<Quarter> comparator = Comparator
                 .comparingInt(Quarter::getYearVal)
                 .thenComparingInt(Quarter::getQuarterVal);

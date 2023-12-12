@@ -11,16 +11,7 @@ import java.util.function.Consumer;
 @UtilityClass
 public class StringUtils {
 
-    public static void readByLine(InputStream stream, Consumer<String> consumer) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                consumer.accept(line);
-            }
-        }
-    }
-
-    public static String handleOverflow(String text, int length) {
+    public String handleOverflow(String text, int length) {
         return text.length() > length
                 ? text.substring(0, length - 3) + "..."
                 : text;

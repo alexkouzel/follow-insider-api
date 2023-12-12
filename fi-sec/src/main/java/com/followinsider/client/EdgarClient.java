@@ -22,6 +22,10 @@ public class EdgarClient extends DataClient {
         this.userAgent = userAgent;
     }
 
+    public EdgarClient() {
+        this("TestCompany test@gmail.com");
+    }
+
     @Override
     protected HttpRequest buildRequest(String url, String contentType) {
         return HttpRequest.newBuilder(URI.create(url))

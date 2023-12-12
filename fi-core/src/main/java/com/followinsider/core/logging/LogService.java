@@ -1,8 +1,6 @@
 package com.followinsider.core.logging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.followinsider.common.utils.IOUtils;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +26,10 @@ public class LogService {
     private final ObjectMapper objectMapper;
 
     public void clearLogs() throws IOException {
-        Function<String, Boolean> verifier = line -> line.startsWith("app") && line.endsWith(".log");
-        IOUtils.clearDirectory(Path.of(logsDir), verifier);
+        // TODO: Implement this.
+
+//        Function<String, Boolean> verifier = line -> line.startsWith("app") && line.endsWith(".log");
+//        IOUtils.clearDirectory(Path.of(logsDir), verifier);
     }
 
     public List<Log> getFileLogs(String filename, LogLevel level) throws IOException {

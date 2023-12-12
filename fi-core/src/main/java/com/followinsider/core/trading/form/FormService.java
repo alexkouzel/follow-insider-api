@@ -1,8 +1,8 @@
 package com.followinsider.core.trading.form;
 
 import com.followinsider.common.utils.ListUtils;
-import com.followinsider.loaders.FormRefLoader;
-import com.followinsider.parsing.refs.FormRef;
+import com.followinsider.data.forms.refs.FormRefLoader;
+import com.followinsider.data.forms.refs.FormRef;
 import com.followinsider.common.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,12 +36,12 @@ public class FormService {
         Set<String> ids = formRepository.findIdsFiledBetween(timeRange[0], timeRange[1]);
 
         return refs.stream()
-                .filter(ref -> !ids.contains(ref.getAccNum()))
+                .filter(ref -> !ids.contains(ref.accNum()))
                 .collect(Collectors.toList());
     }
 
     private Date[] getTimeRangeByRefs(List<FormRef> refs) {
-        Set<Date> dates = refs.stream().map(FormRef::getFiledAt).collect(Collectors.toSet());
+        Set<Date> dates = refs.stream().map(FormRef::filedAt).collect(Collectors.toSet());
         return DateUtils.getTimeRange(dates);
     }
 

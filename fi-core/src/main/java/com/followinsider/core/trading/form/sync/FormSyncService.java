@@ -9,10 +9,10 @@ import com.followinsider.core.trading.quarter.Quarter;
 import com.followinsider.core.trading.form.failed.FailedForm;
 import com.followinsider.core.trading.form.failed.FailedFormRepository;
 import com.followinsider.core.trading.quarter.QuarterService;
-import com.followinsider.loaders.FormRefLoader;
-import com.followinsider.loaders.OwnershipDocLoader;
-import com.followinsider.parsing.f345.OwnershipDoc;
-import com.followinsider.parsing.refs.FormRef;
+import com.followinsider.data.forms.refs.FormRefLoader;
+import com.followinsider.data.forms.f345.OwnershipDocLoader;
+import com.followinsider.data.forms.f345.OwnershipDoc;
+import com.followinsider.data.forms.refs.FormRef;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -163,7 +163,7 @@ public class FormSyncService {
     private Object loadByRef(FormRef ref) {
         try {
             OwnershipDoc doc = ownershipDocLoader.loadByRef(ref);
-            return FormOwnershipDocMapper.map(doc);
+            return FormMapper.mapOwnershipDoc(doc);
 
         } catch (Exception e) {
             String error = formatError(e.getMessage());
