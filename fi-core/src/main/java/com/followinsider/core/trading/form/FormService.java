@@ -23,6 +23,10 @@ public class FormService {
 
     private final FormRefLoader formRefLoader;
 
+    public Form findLast() {
+        return formRepository.findTopByOrderByFiledAtDesc();
+    }
+
     public String[] getQuarterRange(int year, int quarter) {
         List<FormRef> refs = formRefLoader.loadByQuarter(year, quarter);
         Date[] timeRange = getTimeRangeByRefs(refs);

@@ -53,26 +53,29 @@ public class FormSyncService {
     }
 
     @Async
-    public void syncCurrentQuarter() {
+    public void syncLastDays() {
         // TODO: Implement this.
-        // Go day by day until the beginning of the previous quarter.
+    }
+    
+    @Async
+    public void verifyQuarters() {
+        // TODO: Implement this.
     }
 
     @Async
     @Transactional
     public void syncFailed() {
         List<FailedForm> failedForms = failedFormRepository.findAll();
-        failedFormRepository.deleteAll();
-
         List<FormRef> refs = failedForms.stream().map(FailedForm::toRef).toList();
+        failedFormRepository.deleteAll();
         safeSyncRefs(refs, "form_failed");
     }
 
     @Async
     public void syncByStatus(SyncStatus status) {
-        quarterService
-                .getBySyncStatus(status)
-                .forEach(this::syncQuarter);
+        List<Quarter> quarters = quarterService.findBy(status);
+        quarters.sort(QuarterUtils.comparatorDesc());
+        quarters.forEach(this::syncQuarter);
     }
 
     @Async
@@ -94,13 +97,8 @@ public class FormSyncService {
     }
 
     @Async
-    public void syncYear(int yearVal) {
-        quarterService.getByYear(yearVal).forEach(this::syncQuarter);
-    }
-
-    @Async
     public void syncQuarter(int yearVal, int quarterVal) {
-        Quarter quarter = quarterService.getByYearAndQuarter(yearVal, quarterVal);
+        Quarter quarter = quarterService.findByOrCreate(yearVal, quarterVal);
         syncQuarter(quarter);
     }
 

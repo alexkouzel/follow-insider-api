@@ -13,4 +13,6 @@ public interface FormRepository extends JpaRepository<Form, String> {
     @Query("SELECT f.accNum FROM Form f WHERE f.filedAt BETWEEN :date1 AND :date2")
     Set<String> findIdsFiledBetween(Date date1, Date date2);
 
+    Form findTopByOrderByFiledAtDesc();
+
 }

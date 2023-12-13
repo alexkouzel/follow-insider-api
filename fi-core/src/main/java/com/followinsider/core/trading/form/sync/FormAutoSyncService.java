@@ -46,7 +46,6 @@ public class FormAutoSyncService {
 //        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 //        scheduler.scheduleWithFixedDelay(this::syncLatest, 0, 2, TimeUnit.MINUTES);
 //        scheduler.scheduleAtFixedRate(this::syncLastDay, 0, 1, TimeUnit.DAYS);
-//        scheduler.scheduleAtFixedRate(this::syncLastQuarter, 0, 30, TimeUnit.DAYS);
     }
 
     private void syncLatest() {
@@ -61,16 +60,6 @@ public class FormAutoSyncService {
 
     private void syncLastDay() {
         formSyncService.syncDaysAgo(1);
-    }
-
-    private void syncLastQuarter() {
-        Quarter quarter = new Quarter(QuarterUtils.current());
-
-        if (!quarterService.exists(quarter)) {
-            log.info("New quarter discovered :: {}", QuarterUtils.alias(quarter));
-            quarter = quarterService.save(quarter);
-            formSyncService.syncQuarter(quarter);
-        }
     }
 
 }

@@ -18,9 +18,14 @@ public class FormsSyncController {
         return formSyncService.getProgress();
     }
 
-    @PostMapping("/current-quarter")
-    public void syncCurrentQuarter() {
-        formSyncService.syncCurrentQuarter();
+    @PostMapping("/last-days")
+    public void syncLastDays() {
+        formSyncService.syncLastDays();
+    }
+
+    @PostMapping("/verify-quarters")
+    public void verifyQuarters() {
+        formSyncService.verifyQuarters();
     }
 
     @PostMapping("/failed")
@@ -46,11 +51,6 @@ public class FormsSyncController {
     @PostMapping("/company/{cik}")
     public void syncCompany(@PathVariable String cik) {
         formSyncService.syncCompany(cik);
-    }
-
-    @PostMapping("/year/{year}")
-    public void syncYear(@PathVariable int year) {
-        formSyncService.syncYear(year);
     }
 
     @PostMapping("/year/{year}/quarter/{quarter}")

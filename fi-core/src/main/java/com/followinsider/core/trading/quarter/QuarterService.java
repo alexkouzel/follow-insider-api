@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,18 +21,8 @@ public class QuarterService {
     @Transactional
     public void init() {
         if (quarterRepository.count() != 0) return;
-
-        List<Quarter> quarters = QuarterUtils
-                .generate(2005, 2023).stream()
-                .map(vals -> new Quarter(vals.first(), vals.second()))
-                .toList();
-
+        List<Quarter> quarters = QuarterUtils.generate(2005, 2023);
         quarterRepository.saveAll(quarters);
-    }
-
-    public Quarter save(Quarter quarter) {
-        // TODO: Validate before saving/updating.
-        return quarterRepository.save(quarter);
     }
 
     public SyncProgress getSyncProgress() {
@@ -39,28 +30,36 @@ public class QuarterService {
         return SyncUtils.getProgress(quarters);
     }
 
-    public List<Quarter> getBySyncStatus(SyncStatus syncStatus) {
-        List<Quarter> quarters = quarterRepository.findBySyncStatus(syncStatus);
-        QuarterUtils.sortDesc(quarters);
-        return quarters;
+    public Quarter findByOrCreate(int yearVal, int quarterVal) {
+        return findBy(yearVal, quarterVal).orElseGet(() -> {
+            Quarter quarter = new Quarter(yearVal, quarterVal);
+            return quarterRepository.save(quarter);
+        });
     }
 
-    public List<Quarter> getByYear(int yearVal) {
-        return quarterRepository.findByYearVal(yearVal);
+    public Optional<Quarter> findBy(int yearVal, int quarterVal) {
+        return quarterRepository.findByYearValAndQuarterVal(yearVal, quarterVal);
     }
 
-    public Quarter getByYearAndQuarter(int year, int quarter) {
-        return quarterRepository
-                .findByYearValAndQuarterVal(year, quarter)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid year and/or quarter"));
+    public List<Quarter> findBy(SyncStatus syncStatus) {
+        return quarterRepository.findBySyncStatus(syncStatus);
+    }
+
+    public Quarter save(Quarter quarter) {
+        return quarterRepository.save(quarter);
+    }
+
+    public Quarter save(int yearVal, int quarterVal) {
+        Quarter quarter = new Quarter(yearVal, quarterVal);
+        return quarterRepository.save(quarter);
     }
 
     public boolean exists(Quarter quarter) {
         return exists(quarter.getYearVal(), quarter.getQuarterVal());
     }
 
-    public boolean exists(int year, int quarter) {
-        return quarterRepository.existsByYearValAndQuarterVal(year, quarter);
+    public boolean exists(int yearVal, int quarterVal) {
+        return quarterRepository.existsByYearValAndQuarterVal(yearVal, quarterVal);
     }
 
 }

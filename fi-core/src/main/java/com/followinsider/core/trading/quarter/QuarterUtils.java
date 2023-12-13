@@ -1,24 +1,13 @@
 package com.followinsider.core.trading.quarter;
 
-import com.followinsider.common.entities.tuples.Tuple2;
 import lombok.experimental.UtilityClass;
 
-import java.time.LocalDate;
-import java.time.temporal.IsoFields;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 @UtilityClass
 public class QuarterUtils {
-
-    public Tuple2<Integer, Integer> current() {
-        LocalDate now = LocalDate.now();
-        int year = now.getYear();
-        int quarter = now.get(IsoFields.QUARTER_OF_YEAR);
-        return new Tuple2<>(year, quarter);
-    }
 
     public String alias(Quarter quarter) {
         return alias(quarter.getYearVal(), quarter.getQuarterVal());
@@ -28,37 +17,40 @@ public class QuarterUtils {
         return yearVal + "Q" + quarterVal;
     }
 
-    public List<Tuple2<Integer, Integer>> generate(int fromYear, int toYear) {
+    public List<Quarter> generate(int fromYear, int toYear) {
         return generate(fromYear, 1, toYear, 4);
     }
 
-    public List<Tuple2<Integer, Integer>> generate(
-            int fromYear, int fromQuarter, int toYear, int toQuarter) {
-
-        List<Tuple2<Integer, Integer>> quarters = new ArrayList<>();
+    public List<Quarter> generate(int fromYear, int fromQtr, int toYear, int toQtr) {
+        List<Quarter> quarters = new ArrayList<>();
 
         for (int year = fromYear; year <= toYear; year++) {
-            int fromIdx = year == fromYear ? fromQuarter : 1;
-            int toIdx = year == toYear ? toQuarter : 4;
+            int startQtr = (year == fromYear) ? fromQtr : 1;
+            int endQtr = (year == toYear) ? toQtr : 4;
 
-            for (int quarter = fromIdx; quarter <= toIdx; quarter++) {
-                quarters.add(new Tuple2<>(year, quarter));
+            for (int quarter = startQtr; quarter <= endQtr; quarter++) {
+                quarters.add(new Quarter(year, quarter));
             }
         }
         return quarters;
     }
 
     public void sortDesc(List<Quarter> quarters) {
-        sortAsc(quarters);
-        Collections.reverse(quarters);
+        quarters.sort(comparatorDesc());
     }
 
     public void sortAsc(List<Quarter> quarters) {
-        Comparator<Quarter> comparator = Comparator
+        quarters.sort(comparatorAsc());
+    }
+
+    public Comparator<Quarter> comparatorDesc() {
+        return comparatorAsc().reversed();
+    }
+
+    public Comparator<Quarter> comparatorAsc() {
+        return Comparator
                 .comparingInt(Quarter::getYearVal)
                 .thenComparingInt(Quarter::getQuarterVal);
-
-        quarters.sort(comparator);
     }
 
 }
