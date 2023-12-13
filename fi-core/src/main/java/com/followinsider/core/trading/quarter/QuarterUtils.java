@@ -1,9 +1,10 @@
 package com.followinsider.core.trading.quarter;
 
 import com.followinsider.common.entities.tuples.Tuple2;
-import com.followinsider.common.entities.sync.SyncProgress;
 import lombok.experimental.UtilityClass;
 
+import java.time.LocalDate;
+import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,6 +12,25 @@ import java.util.List;
 
 @UtilityClass
 public class QuarterUtils {
+
+    public Tuple2<Integer, Integer> current() {
+        LocalDate now = LocalDate.now();
+        int year = now.getYear();
+        int quarter = now.get(IsoFields.QUARTER_OF_YEAR);
+        return new Tuple2<>(year, quarter);
+    }
+
+    public String alias(Quarter quarter) {
+        return alias(quarter.getYearVal(), quarter.getQuarterVal());
+    }
+
+    public String alias(int yearVal, int quarterVal) {
+        return yearVal + "Q" + quarterVal;
+    }
+
+    public List<Tuple2<Integer, Integer>> generate(int fromYear, int toYear) {
+        return generate(fromYear, 1, toYear, 4);
+    }
 
     public List<Tuple2<Integer, Integer>> generate(
             int fromYear, int fromQuarter, int toYear, int toQuarter) {

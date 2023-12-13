@@ -5,11 +5,17 @@ import lombok.experimental.UtilityClass;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @UtilityClass
 public class ListUtils {
+
+    public <T> List<T> filter(List<T> list, Predicate<T> filter) {
+        return list.stream().filter(filter).collect(Collectors.toList());
+    }
 
     /** Checks if a list is null or empty. */
     public <T> boolean isEmpty(List<T> list) {
@@ -38,6 +44,7 @@ public class ListUtils {
 
     /** Divides a list into a list of lists of a specific size. */
     public <T> List<List<T>> divideBySize(List<T> list, int size) {
+        if (list.size() < size) return List.of(list);
         return new ArrayList<>(list.stream()
                 .collect(Collectors.groupingBy(e -> (list.indexOf(e) / size)))
                 .values());

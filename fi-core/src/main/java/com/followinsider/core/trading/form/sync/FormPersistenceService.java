@@ -86,7 +86,9 @@ public class FormPersistenceService {
     }
 
     private <T> Set<T> getEntityIds(List<? extends Identifiable<T>> entities) {
-        return entities.stream().map(Identifiable::getId).collect(Collectors.toSet());
+        return entities.stream()
+                .map(Identifiable::getId)
+                .collect(Collectors.toSet());
     }
 
 }

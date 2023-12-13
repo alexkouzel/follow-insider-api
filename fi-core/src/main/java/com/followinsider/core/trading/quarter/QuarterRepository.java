@@ -16,4 +16,6 @@ public interface QuarterRepository extends JpaRepository<Quarter, Integer> {
 
     List<Quarter> findByYearVal(int yearVal);
 
+    boolean existsByYearValAndQuarterVal(int yearVal, int quarterVal);
+
 }

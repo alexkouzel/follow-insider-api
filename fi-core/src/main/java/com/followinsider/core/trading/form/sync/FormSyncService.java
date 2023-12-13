@@ -9,6 +9,7 @@ import com.followinsider.core.trading.quarter.Quarter;
 import com.followinsider.core.trading.form.failed.FailedForm;
 import com.followinsider.core.trading.form.failed.FailedFormRepository;
 import com.followinsider.core.trading.quarter.QuarterService;
+import com.followinsider.core.trading.quarter.QuarterUtils;
 import com.followinsider.data.forms.refs.FormRefLoader;
 import com.followinsider.data.forms.f345.OwnershipDocLoader;
 import com.followinsider.data.forms.f345.OwnershipDoc;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -38,7 +40,9 @@ public class FormSyncService {
 
     private final FormService formService;
 
-    @Value("${trading.form_bunch_size}")
+    private static final int MAX_ERROR_LENGTH = 255;
+
+    @Value("${trading.form_batch_size}")
     private int formBatchSize;
 
     public FormSyncProgress getProgress() {
@@ -49,21 +53,19 @@ public class FormSyncService {
     }
 
     @Async
-    public void syncFailed() {
-        List<FailedForm> failedForms = failedFormRepository.findAll();
-        List<FormRef> refs = failedForms.stream().map(FailedForm::toRef).toList();
-        syncRefs(refs, "form_failed");
+    public void syncCurrentQuarter() {
+        // TODO: Implement this.
+        // Go day by day until the beginning of the previous quarter.
     }
 
     @Async
-    public void syncByStatus(String statusVal) {
-        try {
-            SyncStatus status = SyncStatus.valueOf(statusVal);
-            syncByStatus(status);
+    @Transactional
+    public void syncFailed() {
+        List<FailedForm> failedForms = failedFormRepository.findAll();
+        failedFormRepository.deleteAll();
 
-        } catch (IllegalArgumentException e) {
-            log.error("Invalid sync status :: {}", statusVal);
-        }
+        List<FormRef> refs = failedForms.stream().map(FailedForm::toRef).toList();
+        safeSyncRefs(refs, "form_failed");
     }
 
     @Async
@@ -86,7 +88,7 @@ public class FormSyncService {
     }
 
     @Async
-    public void syncCik(String cik) {
+    public void syncCompany(String cik) {
         List<FormRef> refs = formRefLoader.loadByCik(cik);
         safeSyncRefs(refs, "CIK " + cik);
     }
@@ -104,7 +106,7 @@ public class FormSyncService {
 
     @Async
     public void syncQuarter(Quarter quarter) {
-        if (quarter.getSyncStatus() == SyncStatus.FULL) return;
+        if (quarter.getSyncStatus().isFull()) return;
 
         int yearVal = quarter.getYearVal();
         int quarterVal = quarter.getQuarterVal();
@@ -112,14 +114,13 @@ public class FormSyncService {
         List<FormRef> refs = formRefLoader.loadByQuarter(yearVal, quarterVal);
         quarter.setFormNum(refs.size());
 
-        String source = yearVal + "Q" + quarterVal;
-        SyncStatus syncStatus = safeSyncRefs(refs, source);
+        SyncStatus syncStatus = safeSyncRefs(refs, QuarterUtils.alias(quarter));
         quarter.setSyncStatus(syncStatus);
 
         quarterService.save(quarter);
     }
 
-    private SyncStatus safeSyncRefs(List<FormRef> refs, String source) {
+    public SyncStatus safeSyncRefs(List<FormRef> refs, String source) {
         try {
             List<FormRef> newRefs = formService.filterOldRefs(refs);
             if (newRefs.isEmpty()) return SyncStatus.FULL;
@@ -135,8 +136,9 @@ public class FormSyncService {
 
     private SyncStatus syncRefsInBatches(List<FormRef> refs, String source) {
         List<List<FormRef>> batches = ListUtils.divideBySize(refs, formBatchSize);
-        List<SyncStatus> statuses = new ArrayList<>();
+        if (batches.size() == 1) return syncRefs(batches.get(0), source);
 
+        List<SyncStatus> statuses = new ArrayList<>();
         for (int i = 0; i < batches.size(); i++) {
             String batchSource = String.format("%s %d/%d", source, i + 1, batches.size());
             SyncStatus status = syncRefs(batches.get(i), batchSource);
@@ -153,13 +155,17 @@ public class FormSyncService {
         formPersistenceService.saveForms(forms, source);
 
         List<FailedForm> failedForms = ListUtils.filterType(results, FailedForm.class);
-        if (failedForms.isEmpty()) return SyncStatus.FULL;
 
-        log.warn("Failed loading {} forms :: count: {}", source, failedForms.size());
-        failedFormRepository.saveAll(failedForms);
-        return SyncStatus.PARTIAL;
+        if (!failedForms.isEmpty()) {
+            log.warn("Failed loading {} forms :: count: {}", source, failedForms.size());
+            failedFormRepository.saveAll(failedForms);
+            return SyncStatus.PARTIAL;
+        }
+
+        return SyncStatus.FULL;
     }
 
+    // Returns Form or FailedForm
     private Object loadByRef(FormRef ref) {
         try {
             OwnershipDoc doc = ownershipDocLoader.loadByRef(ref);
@@ -172,8 +178,9 @@ public class FormSyncService {
     }
 
     private String formatError(String error) {
-        if (error == null) return "Something went wrong";
-        return StringUtils.handleOverflow(error, 255);
+        return error != null
+                ? StringUtils.handleOverflow(error, MAX_ERROR_LENGTH)
+                : "Something went wrong";
     }
 
 }

@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class FormRefLoader {
@@ -30,6 +31,7 @@ public class FormRefLoader {
 
     private static final String SUBMISSIONS_URL = "https://data.sec.gov/submissions/CIK%s.json";
 
+    // e.g. https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&start=0&count=200&output=atom
     private static final String LATEST_FEED_URL =
             "https://www.sec.gov/cgi-bin/browse-edgar" +
                     "?action=getcurrent" +
@@ -66,6 +68,7 @@ public class FormRefLoader {
         }
     }
 
+    // possible 'count': 10, 20, 40, 80, 100
     public List<FormRef> loadLatest(int start, int count) {
         try {
             String url = String.format(LATEST_FEED_URL, formType.getValue(), start, count);
@@ -91,14 +94,11 @@ public class FormRefLoader {
     }
 
     private List<FormRef> filterRefs(List<FormRef> refs) {
-        Map<String, FormRef> refMap = new HashMap<>();
-
-        for (FormRef ref : refs) {
-            refMap.put(ref.accNum(), ref);
-        }
-        return refMap.values().stream()
+        return refs.stream()
+                .collect(Collectors.toMap(FormRef::accNum, r -> r, (r1, r2) -> r1))
+                .values().stream()
                 .filter(form -> form.type() == formType)
-                .toList();
+                .collect(Collectors.toList());
     }
 
 }

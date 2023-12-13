@@ -35,9 +35,7 @@ public class FormService {
         Date[] timeRange = getTimeRangeByRefs(refs);
         Set<String> ids = formRepository.findIdsFiledBetween(timeRange[0], timeRange[1]);
 
-        return refs.stream()
-                .filter(ref -> !ids.contains(ref.accNum()))
-                .collect(Collectors.toList());
+        return ListUtils.filter(refs, ref -> !ids.contains(ref.accNum()));
     }
 
     private Date[] getTimeRangeByRefs(List<FormRef> refs) {
