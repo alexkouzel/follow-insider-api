@@ -16,24 +16,12 @@ import java.util.stream.IntStream;
 @UtilityClass
 public class ListUtils {
 
-    public <T> List<T> generate(int number, Function<Integer, T> generator) {
-        return generate(0, number, generator);
-    }
-
-    public <T> List<T> generate(int from, int to, Function<Integer, T> generator) {
-        List<T> list = new ArrayList<>();
-        for (int i = from; i < to; i++) {
-            list.add(generator.apply(i));
-        }
-        return list;
+    public <T> boolean isEmpty(List<T> list) {
+        return list == null || list.isEmpty();
     }
 
     public <T> List<T> filter(List<T> list, Predicate<T> filter) {
         return list.stream().filter(filter).collect(Collectors.toList());
-    }
-
-    public <T> boolean isEmpty(List<T> list) {
-        return list == null || list.isEmpty();
     }
 
     public <T> List<T> filterType(List<Object> list, Class<T> type) {
@@ -44,8 +32,13 @@ public class ListUtils {
     }
 
     public List<Integer> generateNums(int from, int to) {
+        return generate(from, to, i -> i);
+    }
+
+    public <T> List<T> generate(int from, int to, Function<Integer, T> generator) {
         return IntStream
                 .rangeClosed(from, to).boxed()
+                .map(generator)
                 .collect(Collectors.toList());
     }
 
@@ -54,9 +47,10 @@ public class ListUtils {
     }
 
     public <T> List<List<T>> divideBySize(List<T> list, int size) {
-        if (list.size() < size) return List.of(list);
-        return new ArrayList<>(list.stream()
-                .collect(Collectors.groupingBy(e -> (list.indexOf(e) / size)))
+        return list.size() < size
+                ? List.of(list)
+                : new ArrayList<>(list.stream()
+                .collect(Collectors.groupingBy(i -> list.indexOf(i) / size))
                 .values());
     }
 

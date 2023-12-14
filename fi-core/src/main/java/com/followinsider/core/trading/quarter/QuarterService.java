@@ -3,6 +3,9 @@ package com.followinsider.core.trading.quarter;
 import com.followinsider.common.entities.sync.SyncProgress;
 import com.followinsider.common.entities.sync.SyncStatus;
 import com.followinsider.common.utils.SyncUtils;
+import com.followinsider.core.trading.quarter.entities.Quarter;
+import com.followinsider.core.trading.quarter.entities.QuarterRange;
+import com.followinsider.core.trading.quarter.entities.QuarterVals;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +24,10 @@ public class QuarterService {
     @Transactional
     public void init() {
         if (quarterRepository.count() != 0) return;
-        List<Quarter> quarters = QuarterUtils.generate(2005, 2023);
+
+        QuarterRange range = new QuarterRange(2005, 1, 2023, 4);
+        List<Quarter> quarters = range.generate().stream().map(Quarter::new).toList();
+
         quarterRepository.saveAll(quarters);
     }
 
@@ -30,15 +36,16 @@ public class QuarterService {
         return SyncUtils.getProgress(quarters);
     }
 
-    public Quarter findByOrCreate(int yearVal, int quarterVal) {
-        return findBy(yearVal, quarterVal).orElseGet(() -> {
-            Quarter quarter = new Quarter(yearVal, quarterVal);
-            return quarterRepository.save(quarter);
-        });
+    public List<Quarter> findOrSaveBy(List<QuarterVals> vals) {
+        return vals.stream().map(this::findOrSaveBy).toList();
     }
 
-    public Optional<Quarter> findBy(int yearVal, int quarterVal) {
-        return quarterRepository.findByYearValAndQuarterVal(yearVal, quarterVal);
+    public Quarter findOrSaveBy(QuarterVals vals) {
+        return findBy(vals).orElseGet(() -> save(new Quarter(vals)));
+    }
+
+    public Optional<Quarter> findBy(QuarterVals vals) {
+        return quarterRepository.findByYearAndQuarter(vals.year(), vals.quarter());
     }
 
     public List<Quarter> findBy(SyncStatus syncStatus) {
@@ -47,19 +54,6 @@ public class QuarterService {
 
     public Quarter save(Quarter quarter) {
         return quarterRepository.save(quarter);
-    }
-
-    public Quarter save(int yearVal, int quarterVal) {
-        Quarter quarter = new Quarter(yearVal, quarterVal);
-        return quarterRepository.save(quarter);
-    }
-
-    public boolean exists(Quarter quarter) {
-        return exists(quarter.getYearVal(), quarter.getQuarterVal());
-    }
-
-    public boolean exists(int yearVal, int quarterVal) {
-        return quarterRepository.existsByYearValAndQuarterVal(yearVal, quarterVal);
     }
 
 }

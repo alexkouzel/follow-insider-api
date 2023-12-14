@@ -8,17 +8,13 @@ public enum SyncStatus {
     /** Failed to synchronize. */
     FAILED,
 
-    /** Only specific parts of the data failed to synchronise. */
+    /** Only part of the data is synchronized. */
     PARTIAL,
 
-    /** Fully synchronized and is ready to be verified. */
+    /** Fully synchronized */
     FULL,
 
-    /** Fully synchronized and verified. */
+    /** Fully synchronized and verified */
     VERIFIED;
-
-    public boolean isFull() {
-        return this == FULL || this == VERIFIED;
-    }
 
 }

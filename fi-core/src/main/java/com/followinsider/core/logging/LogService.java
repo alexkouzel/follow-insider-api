@@ -25,11 +25,8 @@ public class LogService {
 
     private final ObjectMapper objectMapper;
 
-    public void clearLogs() throws IOException {
-        // TODO: Implement this.
-
-//        Function<String, Boolean> verifier = line -> line.startsWith("app") && line.endsWith(".log");
-//        IOUtils.clearDirectory(Path.of(logsDir), verifier);
+    public void ping() {
+        log.info("--- PING ---");
     }
 
     public List<Log> getFileLogs(String filename, LogLevel level) throws IOException {

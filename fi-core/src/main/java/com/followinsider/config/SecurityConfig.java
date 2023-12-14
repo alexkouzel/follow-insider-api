@@ -27,22 +27,11 @@ public class SecurityConfig {
     private String adminPassword;
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
-        UserDetails admin = User.withUsername(adminUsername)
-                .password(passwordEncoder.encode(adminPassword))
-                .roles("USER", "ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin);
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(antMatcher("/forms"), antMatcher("/debug")).hasRole("ADMIN")
                         .requestMatchers(antMatcher("/actuator/health")).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().hasRole("ADMIN")
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
@@ -50,8 +39,21 @@ public class SecurityConfig {
     }
 
     @Bean
+    public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
+        UserDetails admin = getAdmin(passwordEncoder);
+        return new InMemoryUserDetailsManager(admin);
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    private UserDetails getAdmin(PasswordEncoder passwordEncoder) {
+        return User.withUsername(adminUsername)
+                .password(passwordEncoder.encode(adminPassword))
+                .roles("USER", "ADMIN")
+                .build();
     }
 
 }

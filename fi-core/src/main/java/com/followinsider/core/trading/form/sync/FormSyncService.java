@@ -1,19 +1,22 @@
 package com.followinsider.core.trading.form.sync;
 
+import com.followinsider.common.entities.TimeRange;
 import com.followinsider.common.entities.sync.SyncProgress;
 import com.followinsider.common.entities.sync.SyncStatus;
 import com.followinsider.common.utils.ListUtils;
 import com.followinsider.common.utils.StringUtils;
 import com.followinsider.core.trading.form.*;
-import com.followinsider.core.trading.quarter.Quarter;
+import com.followinsider.core.trading.quarter.*;
 import com.followinsider.core.trading.form.failed.FailedForm;
 import com.followinsider.core.trading.form.failed.FailedFormRepository;
-import com.followinsider.core.trading.quarter.QuarterService;
-import com.followinsider.core.trading.quarter.QuarterUtils;
-import com.followinsider.data.forms.refs.FormRefLoader;
-import com.followinsider.data.forms.f345.OwnershipDocLoader;
-import com.followinsider.data.forms.f345.OwnershipDoc;
-import com.followinsider.data.forms.refs.FormRef;
+import com.followinsider.core.trading.quarter.entities.Quarter;
+import com.followinsider.core.trading.quarter.entities.QuarterRange;
+import com.followinsider.core.trading.quarter.entities.QuarterVals;
+import com.followinsider.forms.refs.FormRefLoader;
+import com.followinsider.forms.f345.OwnershipDocLoader;
+import com.followinsider.forms.f345.OwnershipDoc;
+import com.followinsider.forms.refs.FormRef;
+import com.followinsider.forms.refs.FormRefUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,20 +56,37 @@ public class FormSyncService {
     }
 
     @Async
-    public void syncLastDays() {
-        // TODO: Implement this.
+    public void verifyQuarters(String from, String to) {
+        System.out.println(from);
+        System.out.println(to);
+        verifyQuarters(new QuarterRange(from, to));
     }
-    
+
     @Async
-    public void verifyQuarters() {
-        // TODO: Implement this.
+    public void verifyQuarters(QuarterRange range) {
+        List<Quarter> quarters = quarterService.findOrSaveBy(range.generate());
+        sortQuartersDesc(quarters);
+        for (Quarter quarter : quarters) {
+            verifyQuarter(quarter);
+        }
+    }
+
+    @Async
+    public void verifyQuarter(Quarter quarter) {
+        if (isQuarterFull(quarter)) {
+            quarter.setSyncStatus(SyncStatus.VERIFIED);
+            quarterService.save(quarter);
+        } else {
+            String source = quarter.getVals().getAlias();
+            log.warn("Failed to verify quarter {}", source);
+        }
     }
 
     @Async
     @Transactional
     public void syncFailed() {
         List<FailedForm> failedForms = failedFormRepository.findAll();
-        List<FormRef> refs = failedForms.stream().map(FailedForm::toRef).toList();
+        List<FormRef> refs = failedForms.stream().map(FailedForm::getRef).toList();
         failedFormRepository.deleteAll();
         safeSyncRefs(refs, "form_failed");
     }
@@ -74,19 +94,29 @@ public class FormSyncService {
     @Async
     public void syncByStatus(SyncStatus status) {
         List<Quarter> quarters = quarterService.findBy(status);
-        quarters.sort(QuarterUtils.comparatorDesc());
+        sortQuartersDesc(quarters);
         quarters.forEach(this::syncQuarter);
     }
 
     @Async
+    public void syncLastDays(int days) {
+        for (int i = 0; i < days; i++) syncDaysAgo(i);
+    }
+
+    @Async
     public void syncDaysAgo(int daysAgo) {
+        syncDaysAgo(daysAgo, daysAgo + " days ago");
+    }
+
+    @Async
+    public void syncDaysAgo(int daysAgo, String source) {
         List<FormRef> refs = formRefLoader.loadDaysAgo(daysAgo);
-        safeSyncRefs(refs, daysAgo + " days ago");
+        safeSyncRefs(refs, source);
     }
 
     @Async
     public void syncLatest(int count) {
-        List<FormRef> refs = formRefLoader.loadLatest(0, 200);
+        List<FormRef> refs = formRefLoader.loadLatest(0, count);
         safeSyncRefs(refs, "latest " + count);
     }
 
@@ -97,24 +127,32 @@ public class FormSyncService {
     }
 
     @Async
-    public void syncQuarter(int yearVal, int quarterVal) {
-        Quarter quarter = quarterService.findByOrCreate(yearVal, quarterVal);
-        syncQuarter(quarter);
+    public void syncQuarter(String alias) {
+        QuarterVals vals = new QuarterVals(alias);
+        syncQuarter(quarterService.findOrSaveBy(vals));
     }
 
     @Async
     public void syncQuarter(Quarter quarter) {
-        if (quarter.getSyncStatus().isFull()) return;
+        QuarterVals vals = quarter.getVals();
+        List<FormRef> refs = formRefLoader
+                .loadByQuarter(vals.year(), vals.quarter());
 
-        int yearVal = quarter.getYearVal();
-        int quarterVal = quarter.getQuarterVal();
+        String source = vals.getAlias();
+        Integer formNum = quarter.getFormNum();
+        boolean noNewForms = formNum != null && formNum == refs.size();
+        boolean fullSync = quarter.getSyncStatus() == SyncStatus.FULL;
 
-        List<FormRef> refs = formRefLoader.loadByQuarter(yearVal, quarterVal);
-        quarter.setFormNum(refs.size());
-
-        SyncStatus syncStatus = safeSyncRefs(refs, QuarterUtils.alias(quarter));
+        if (fullSync && noNewForms) {
+            log.warn("Quarter {} is already fully synchronized", source);
+            return;
+        }
+        if (formNum != null && formNum != refs.size()) {
+            log.warn("Number of forms changed for quarter {}", source);
+        }
+        SyncStatus syncStatus = safeSyncRefs(refs, source);
         quarter.setSyncStatus(syncStatus);
-
+        quarter.setFormNum(refs.size());
         quarterService.save(quarter);
     }
 
@@ -133,10 +171,11 @@ public class FormSyncService {
     }
 
     private SyncStatus syncRefsInBatches(List<FormRef> refs, String source) {
-        List<List<FormRef>> batches = ListUtils.divideBySize(refs, formBatchSize);
-        if (batches.size() == 1) return syncRefs(batches.get(0), source);
+        if (refs.size() <= formBatchSize) return syncRefs(refs, source);
 
+        List<List<FormRef>> batches = ListUtils.divideBySize(refs, formBatchSize);
         List<SyncStatus> statuses = new ArrayList<>();
+
         for (int i = 0; i < batches.size(); i++) {
             String batchSource = String.format("%s %d/%d", source, i + 1, batches.size());
             SyncStatus status = syncRefs(batches.get(i), batchSource);
@@ -153,14 +192,11 @@ public class FormSyncService {
         formPersistenceService.saveForms(forms, source);
 
         List<FailedForm> failedForms = ListUtils.filterType(results, FailedForm.class);
+        if (failedForms.isEmpty()) return SyncStatus.FULL;
 
-        if (!failedForms.isEmpty()) {
-            log.warn("Failed loading {} forms :: count: {}", source, failedForms.size());
-            failedFormRepository.saveAll(failedForms);
-            return SyncStatus.PARTIAL;
-        }
-
-        return SyncStatus.FULL;
+        log.warn("Failed loading {} forms :: count: {}", source, failedForms.size());
+        failedFormRepository.saveAll(failedForms);
+        return SyncStatus.PARTIAL;
     }
 
     // Returns Form or FailedForm
@@ -173,6 +209,22 @@ public class FormSyncService {
             String error = formatError(e.getMessage());
             return new FailedForm(ref, error);
         }
+    }
+
+    private boolean isQuarterFull(Quarter quarter) {
+        List<FormRef> refs = formRefLoader.loadByQuarter(
+                quarter.getYear(), quarter.getQuarter());
+
+        TimeRange timeRange = FormRefUtils.getTimeRange(refs);
+        int expectedRefSize = formService.countBetween(timeRange);
+        return expectedRefSize == refs.size();
+    }
+
+    private void sortQuartersDesc(List<Quarter> quarters) {
+        quarters.sort(Comparator
+                .comparingInt(Quarter::getYear)
+                .thenComparingInt(Quarter::getQuarter)
+                .reversed());
     }
 
     private String formatError(String error) {

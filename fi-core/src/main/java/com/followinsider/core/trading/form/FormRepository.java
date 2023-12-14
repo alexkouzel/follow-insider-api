@@ -15,4 +15,12 @@ public interface FormRepository extends JpaRepository<Form, String> {
 
     Form findTopByOrderByFiledAtDesc();
 
+    Form findTopByOrderByFiledAtAsc();
+
+    int countByFiledAtBetween(Date date1, Date date2);
+
+    int countByFiledAtBefore(Date date);
+
+    int countByFiledAtAfter(Date date);
+
 }

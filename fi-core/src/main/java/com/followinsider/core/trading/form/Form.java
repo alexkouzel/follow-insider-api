@@ -38,7 +38,10 @@ public class Form implements Identifiable<String> {
     private Insider insider;
 
     @ElementCollection
-    @CollectionTable(name = "insider_title", joinColumns = @JoinColumn(name = "acc_num"))
+    @CollectionTable(
+            name = "insider_title",
+            joinColumns = @JoinColumn(name = "acc_num")
+    )
     private Set<String> insiderTitles;
 
     @Column(nullable = false)

@@ -1,14 +1,9 @@
 package com.followinsider.core.trading.form.sync;
 
-import com.followinsider.common.utils.ListUtils;
-import com.followinsider.core.trading.quarter.Quarter;
-import com.followinsider.core.trading.quarter.QuarterService;
-import com.followinsider.core.trading.quarter.QuarterUtils;
-import com.followinsider.data.forms.refs.FormRef;
-import com.followinsider.data.forms.refs.FormRefLoader;
-import jakarta.annotation.PostConstruct;
+import com.followinsider.forms.refs.FormRef;
+import com.followinsider.forms.refs.FormRefLoader;
+import com.followinsider.forms.refs.FormRefUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,50 +11,37 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class FormAutoSyncService {
-
-    private final QuarterService quarterService;
 
     private final FormSyncService formSyncService;
 
     private final FormRefLoader formRefLoader;
 
-    private Set<String> prevIds = new HashSet<>();
+    private Set<String> latestAccNums = new HashSet<>();
 
     @Value("${trading.form_auto_sync}")
     private boolean formAutoSync;
 
-    @PostConstruct
-    public void init() {
+    @Scheduled(cron = "0 */2 * * * *") // every 2 minutes
+    public void syncLatest() {
         if (!formAutoSync) return;
 
-        // TODO: Test all scheduled tasks.
-
-//        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-//        scheduler.scheduleWithFixedDelay(this::syncLatest, 0, 2, TimeUnit.MINUTES);
-//        scheduler.scheduleAtFixedRate(this::syncLastDay, 0, 1, TimeUnit.DAYS);
-    }
-
-    private void syncLatest() {
         List<FormRef> refs = formRefLoader.loadLatest(0, 100);
-        List<FormRef> newRefs = ListUtils.filter(refs, ref -> !prevIds.contains(ref.accNum()));
+        List<FormRef> newRefs = FormRefUtils.filterAccNums(refs, latestAccNums);
+        if (newRefs.isEmpty()) return;
 
-        if (!newRefs.isEmpty()) {
-            formSyncService.safeSyncRefs(newRefs, "(auto) latest");
-            prevIds = refs.stream().map(FormRef::accNum).collect(Collectors.toSet());
-        }
+        formSyncService.safeSyncRefs(newRefs, "latest 100 (auto)");
+        latestAccNums = FormRefUtils.getAccNums(refs);
     }
 
+    @Scheduled(cron = "0 0 2 * * *") // every day at 2:00
     private void syncLastDay() {
-        formSyncService.syncDaysAgo(1);
+        if (!formAutoSync) return;
+        formSyncService.syncDaysAgo(0, "last day (auto)");
     }
 
 }

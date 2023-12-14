@@ -1,8 +1,8 @@
 package com.followinsider.core.trading.form.failed;
 
 import com.followinsider.common.entities.BaseEntity;
-import com.followinsider.data.forms.refs.FormRef;
-import com.followinsider.data.forms.refs.FormType;
+import com.followinsider.forms.refs.FormRef;
+import com.followinsider.forms.FormType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +34,7 @@ public class FailedForm extends BaseEntity {
         this.error = error;
     }
 
-    public FormRef toRef() {
+    public FormRef getRef() {
         return new FormRef(accNum, issuerCik, FormType.F4, filedAt);
     }
 
