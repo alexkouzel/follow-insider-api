@@ -12,4 +12,8 @@ public enum SyncStatus {
 
     VERIFIED;
 
+    public boolean isFull() {
+        return this == FULL || this == VERIFIED;
+    }
+
 }

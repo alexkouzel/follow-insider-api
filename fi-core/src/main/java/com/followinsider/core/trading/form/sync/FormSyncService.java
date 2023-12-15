@@ -54,56 +54,35 @@ public class FormSyncService {
         int formsTotal = formService.countAll();
         int formsFailed = (int) failedFormRepository.count();
         QuarterSyncProgress quarterProgress = quarterService.getSyncProgress();
-        FormSyncProgress progress = new FormSyncProgress(formsTotal, formsFailed, quarterProgress);
-        log.info("Current form sync progress :: {}", progress);
-        return progress;
+        return new FormSyncProgress(formsTotal, formsFailed, quarterProgress);
     }
 
     @Async
-    public void verifyFullQuarters() {
-        log.info("Started verifying full quarters");
+    public void verify() {
         List<Quarter> quarters = quarterService.findBy(SyncStatus.FULL);
+        sortQuartersDesc(quarters);
         quarters.forEach(this::verifyQuarter);
     }
 
     @Async
-    public void verifyQuarter(String alias) {
-        Quarter quarter = quarterService.findOrSaveBy(new QuarterVals(alias));
-        verifyQuarter(quarter);
-    }
-
-    @Async
     public void verifyQuarter(Quarter quarter) {
-        String alias = quarter.getAlias();
-
-        if (quarter.getSyncStatus() != SyncStatus.FULL) {
-            log.warn("Failed verifying {} :: Sync status should be full", alias);
-            return;
-        }
-        List<FormRef> refs = formRefLoader
-                .loadByQuarter(quarter.getYear(), quarter.getQuarter());
-
-        if (!verifyRefs(refs, alias)) return;
-
-        quarter.setSyncStatus(SyncStatus.VERIFIED);
-        quarterService.save(quarter);
-
-        log.info("Successfully verified {} :: count: {}",
-                alias, quarter.getFormNum());
-    }
-
-    private boolean verifyRefs(List<FormRef> refs, String source) {
+        List<FormRef> refs = formRefLoader.loadByQuarter(quarter.getYear(), quarter.getQuarter());
+        refs = FormRefUtils.removeDups(refs);
         TimeRange timeRange = FormRefUtils.getTimeRange(refs);
 
         int actual = formService.countBetween(timeRange);
-        int expected = refs.size();
+        int expected = refs.size() - quarter.getInvalidFormNum();
 
-        boolean verified = expected == actual;
+        if (actual == expected) {
+            quarter.setSyncStatus(SyncStatus.VERIFIED);
+            quarterService.save(quarter);
 
-        if (!verified)
-            log.warn("Failed verifying {} :: expected: {}, actual: {}", source, expected, actual);
-
-        return verified;
+            log.info("Successfully verified {} :: count: {}",
+                    quarter.getAlias(), quarter.getFormNum());
+        } else {
+            log.warn("Failed verifying {} :: expected: {}, actual: {}",
+                    quarter.getAlias(), expected, actual);
+        }
     }
 
     @Async
@@ -112,7 +91,6 @@ public class FormSyncService {
         List<FailedForm> failedForms = failedFormRepository.findAll();
         failedFormRepository.deleteAll();
 
-        log.info("Synchronizing failed forms :: count: {}", failedForms.size());
         List<FormRef> refs = ListUtils.map(failedForms, FailedForm::getRef);
         safeSyncRefs(refs, "form_failed");
     }
@@ -162,24 +140,14 @@ public class FormSyncService {
 
     @Async
     public void syncQuarter(Quarter quarter) {
-        QuarterVals vals = quarter.getVals();
-        List<FormRef> refs = formRefLoader
-                .loadByQuarter(vals.year(), vals.quarter());
-
-        String source = vals.getAlias();
-        Integer formNum = quarter.getFormNum();
-
-        boolean noNewForms = formNum != null && formNum == refs.size();
-        boolean fullSync = quarter.getSyncStatus() == SyncStatus.FULL;
-
-        if (fullSync && noNewForms) {
-            log.warn("Quarter {} is already fully synchronized", source);
+        if (quarter.getSyncStatus().isFull()) {
+            log.warn("Quarter {} is already fully synchronized", quarter.getAlias());
             return;
         }
-        if (formNum != null && formNum != refs.size()) {
-            log.warn("Number of forms changed for quarter {}", source);
-        }
-        SyncStatus syncStatus = safeSyncRefs(refs, source);
+        QuarterVals vals = quarter.getVals();
+        List<FormRef> refs = formRefLoader.loadByQuarter(vals.year(), vals.quarter());
+        SyncStatus syncStatus = safeSyncRefs(refs, vals.getAlias());
+
         quarter.setSyncStatus(syncStatus);
         quarter.setFormNum(refs.size());
         quarterService.save(quarter);

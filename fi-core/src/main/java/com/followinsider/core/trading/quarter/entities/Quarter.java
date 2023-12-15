@@ -29,6 +29,8 @@ public class Quarter extends BaseEntity {
 
     private Integer formNum;
 
+    private int invalidFormNum = 0;
+
     public Quarter(QuarterVals vals) {
         this.year = vals.year();
         this.quarter = vals.quarter();

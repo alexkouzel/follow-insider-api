@@ -18,14 +18,9 @@ public class FormsSyncController {
         return formSyncService.getProgress();
     }
 
-    @PostMapping("/verify/full-quarters")
-    public void verifyFullQuarters() {
-        formSyncService.verifyFullQuarters();
-    }
-
-    @PostMapping("/verify/quarter/{alias}")
-    public void verifyQuarter(@PathVariable String alias) {
-        formSyncService.verifyQuarter(alias);
+    @PostMapping("/verify")
+    public void verify() {
+        formSyncService.verify();
     }
 
     @PostMapping("/failed")
