@@ -32,16 +32,16 @@ public class FormOwnershipDocMapper {
     private static final int MAX_FOOTNOTE_LENGTH = 1000;
 
     public Form apply(OwnershipDoc doc) {
-        OwnershipForm form = doc.getOwnershipForm();
+        OwnershipForm form = doc.ownershipForm();
 
         return Form.builder()
-                .accNum(doc.getAccNum())
+                .accNum(doc.accNum())
+                .filedAt(doc.filedAt())
+                .xmlUrl(doc.xmlUrl())
                 .company(getCompany(form))
                 .insider(getInsider(form))
                 .insiderTitles(getInsiderTitles(form))
                 .trades(getTrades(form))
-                .filedAt(doc.getFiledAt())
-                .xmlUrl(doc.getXmlUrl())
                 .build();
     }
 

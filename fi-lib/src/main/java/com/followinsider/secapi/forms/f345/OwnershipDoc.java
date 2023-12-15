@@ -1,31 +1,17 @@
 package com.followinsider.secapi.forms.f345;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDate;
-import java.util.Date;
 
-@Getter
-@Setter
-public class OwnershipDoc {
+public record OwnershipDoc(
 
-    private OwnershipForm ownershipForm;
+        String accNum,
 
-    private String txtUrl;
+        String txtUrl,
 
-    private String xmlUrl;
+        String xmlUrl,
 
-    private String accNum;
+        LocalDate filedAt,
 
-    private String submissionType;
+        OwnershipForm ownershipForm
 
-    private LocalDate reportedAt;
-
-    private LocalDate filedAt;
-
-    private LocalDate updatedAt;
-
-    private int docCount;
-
-}
+) {}

@@ -3,12 +3,13 @@ package com.followinsider.secapi.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.GZIPInputStream;
 
+@Slf4j
 public class EdgarClient extends DataClient {
 
     private final String userAgent;
@@ -27,13 +29,7 @@ public class EdgarClient extends DataClient {
     }
 
     public EdgarClient() {
-        this("TestCompany test@gmail.com",
-                DataClientProps.builder()
-                        .rateLimiter(new RateLimiter(TimeUnit.SECONDS, 10))
-                        .jsonMapper(new ObjectMapper().registerModule(new JavaTimeModule()))
-                        .xmlMapper(new XmlMapper().registerModule(new JavaTimeModule()))
-                        .maxRetries(3)
-                        .build());
+        this("TestCompany test@gmail.com", defaultClientProps());
     }
 
     @Override
@@ -63,14 +59,30 @@ public class EdgarClient extends DataClient {
 
     @Override
     protected void handleError(HttpResponse<?> response) {
-        switch (response.statusCode()) {
-            case 301 -> {
-                String location = response.headers().firstValue("Location").orElse(null);
-                System.out.println("[EDGAR] Redirected to: " + location);
-            }
-            case 429 -> rateLimiter.applyDelaySeq(TimeUnit.MINUTES, 30, 60, 120);
-            default -> rateLimiter.applyDelaySeq(TimeUnit.SECONDS, 20, 120, 600);
+        if (response.statusCode() == 429) {
+            log.error("[EDGAR] Too Many Requests :: Freezing client for 30/60/120 min");
+            rateLimiter.applyDelaySequence(TimeUnit.MINUTES, 30, 60, 120);
+        } else {
+            log.error("[EDGAR] Unknown error :: {}",response.statusCode());
+            rateLimiter.applyFixedDelay(TimeUnit.SECONDS, 1);
         }
+    }
+
+    private static DataClientProps defaultClientProps() {
+        RateLimiter rateLimiter = new RateLimiter(TimeUnit.SECONDS, 10);
+
+        ObjectMapper jsonMapper = new ObjectMapper();
+        jsonMapper.registerModule(new JavaTimeModule());
+
+        XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.registerModule(new JavaTimeModule());
+
+        return DataClientProps.builder()
+                .rateLimiter(rateLimiter)
+                .jsonMapper(jsonMapper)
+                .xmlMapper(xmlMapper)
+                .maxRetries(3)
+                .build();
     }
 
 }

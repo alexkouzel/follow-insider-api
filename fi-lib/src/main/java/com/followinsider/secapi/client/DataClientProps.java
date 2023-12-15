@@ -1,8 +1,10 @@
 package com.followinsider.secapi.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.Builder;
 import lombok.Getter;
+import org.slf4j.Logger;
 
 import java.net.http.HttpClient;
 
@@ -14,7 +16,7 @@ public class DataClientProps {
 
     private final ObjectMapper jsonMapper;
 
-    private final ObjectMapper xmlMapper;
+    private final XmlMapper xmlMapper;
 
     private final int maxRetries;
 

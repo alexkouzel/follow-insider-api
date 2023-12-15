@@ -42,8 +42,8 @@ public class RateLimiter {
         }
     }
 
-    public void applyDelaySeq(TimeUnit timeUnit, int... seq) {
-        applyDelay(timeUnit, backoff -> seq[backoff < seq.length ? backoff : seq.length - 1]);
+    public void applyDelaySequence(TimeUnit timeUnit, int... delays) {
+        applyDelay(timeUnit, backoff -> delays[backoff < delays.length ? backoff : delays.length - 1]);
     }
     
     public void applyFixedDelay(TimeUnit timeUnit, int delay) {

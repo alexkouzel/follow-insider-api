@@ -1,14 +1,11 @@
 package com.followinsider.core.trading.quarter;
 
-import com.followinsider.common.entities.TimeRange;
 import com.followinsider.core.trading.quarter.sync.QuarterSyncProgress;
-import com.followinsider.core.trading.quarter.sync.QuarterSyncStatus;
+import com.followinsider.common.SyncStatus;
 import com.followinsider.core.trading.quarter.entities.Quarter;
 import com.followinsider.core.trading.quarter.entities.QuarterRange;
 import com.followinsider.core.trading.quarter.entities.QuarterVals;
 import com.followinsider.core.trading.quarter.sync.QuarterSyncUtils;
-import com.followinsider.secapi.forms.refs.FormRef;
-import com.followinsider.secapi.forms.refs.FormRefUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,7 +40,7 @@ public class QuarterService {
         return quarterRepository.findByYearAndQuarter(vals.year(), vals.quarter());
     }
 
-    public List<Quarter> findBy(QuarterSyncStatus syncStatus) {
+    public List<Quarter> findBy(SyncStatus syncStatus) {
         return quarterRepository.findBySyncStatus(syncStatus);
     }
 

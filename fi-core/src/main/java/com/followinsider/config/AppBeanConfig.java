@@ -10,17 +10,18 @@ import com.followinsider.secapi.forms.refs.FormRefLoader;
 import com.followinsider.secapi.forms.f345.OwnershipDocLoader;
 import com.followinsider.secapi.forms.FormType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import java.net.http.HttpClient;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class AppBeanConfig {
 
     @Value("${trading.edgar_user_agent}")

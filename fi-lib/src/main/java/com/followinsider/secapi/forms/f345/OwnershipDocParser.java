@@ -1,83 +1,57 @@
 package com.followinsider.secapi.forms.f345;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.followinsider.common.utils.DateUtils;
 import com.followinsider.common.utils.StringUtils;
 import com.followinsider.secapi.forms.FormUrlParser;
-import lombok.experimental.UtilityClass;
+import com.followinsider.secapi.forms.refs.FormRef;
+import lombok.RequiredArgsConstructor;
 
 import java.text.ParseException;
-import java.time.LocalDate;
+import java.util.regex.Pattern;
 
-@UtilityClass
+@RequiredArgsConstructor
 public class OwnershipDocParser {
 
-    public OwnershipDoc parse(String text) throws ParseException {
-        OwnershipDoc doc = new OwnershipDoc();
-        parseSecHeader(doc, text);
-        parseXmlForm(doc, text);
-        parseUrls(doc, text);
-        return doc;
+    private final XmlMapper xmlMapper;
+
+    private static final Pattern NEW_LINE_PATTERN = Pattern.compile("\n");
+
+    public OwnershipDoc parse(String data, FormRef ref) throws ParseException {
+        return new OwnershipDoc(
+                ref.accNum(),
+                ref.getTxtUrl(),
+                getXmlUrl(data, ref),
+                ref.filedAt(),
+                getXmlForm(data)
+        );
     }
 
-    private void parseSecHeader(OwnershipDoc doc, String data) {
-        String header = StringUtils.substring(data, "<SEC-HEADER>", "</SEC-HEADER>");
-
-        if (header != null) {
-            String metadata = header.substring(0, header.indexOf("\n\n"));
-            String[] fields = metadata.split("\n");
-
-            doc.setAccNum(parseString(fields[2]));
-            doc.setSubmissionType(parseString(fields[3]));
-            doc.setDocCount(parseInt(fields[4]));
-            doc.setReportedAt(parseDate(fields[5]));
-            doc.setFiledAt(parseDate(fields[6]));
-            doc.setUpdatedAt(parseDate(fields[7])); // optional
-        }
+    private String getXmlUrl(String data, FormRef ref) {
+        String filename = StringUtils.substring(data, "<FILENAME>", "\n");
+        return FormUrlParser.getXmlUrl(ref.issuerCik(), ref.accNum(), filename);
     }
 
-    private void parseXmlForm(OwnershipDoc doc, String data) throws ParseException {
-        String xml = StringUtils.substring(data, "<XML>", "</XML>");
-        if (xml == null) {
-            throw new ParseException("<XML> field is missing", -1);
-        }
-        xml = xml.trim();
-        if (xml.startsWith("<xml>")) {
-            xml = xml.substring(xml.indexOf("\n") + 1);
-        }
+    private OwnershipForm getXmlForm(String data) throws ParseException {
         try {
-            ObjectMapper mapper = new XmlMapper().registerModule(new JavaTimeModule());
-            OwnershipForm form = mapper.readValue(xml, OwnershipForm.class);
-            doc.setOwnershipForm(form);
+            String xml = getXmlData(data);
+            return xmlMapper.readValue(xml, OwnershipForm.class);
 
         } catch (JsonProcessingException e) {
-            throw new ParseException("Failed to map XML onto OwnershipForm.class: " + e.getMessage(), -1);
+            throw new ParseException("Failed mapping OwnershipForm: " + e.getMessage(), -1);
         }
     }
 
-    private void parseUrls(OwnershipDoc doc, String data) {
-        String issuerCik = doc.getOwnershipForm().getIssuer().getIssuerCik();
-        String shortIssuerCik = StringUtils.trimLeft(issuerCik, '0');
-        String xmlFilename = StringUtils.substring(data, "<FILENAME>", "\n");
-        String xmlUrl = FormUrlParser.getXmlUrl(shortIssuerCik, doc.getAccNum(), xmlFilename);
-        String txtUrl = FormUrlParser.getTxtUrl(shortIssuerCik, doc.getAccNum());
-        doc.setTxtUrl(txtUrl);
-        doc.setXmlUrl(xmlUrl);
-    }
+    private String getXmlData(String data) throws ParseException {
+        String xml = StringUtils.substring(data, "<XML>", "</XML>");
+        if (xml == null) throw new ParseException("<XML> is missing", -1);
 
-    private Integer parseInt(String field) {
-        return Integer.parseInt(parseString(field));
-    }
-
-    private LocalDate parseDate(String field) {
-        return DateUtils.tryParse(parseString(field), "yyyyMMdd").orElse(null);
-    }
-
-    private String parseString(String field) {
-        return field.substring(field.lastIndexOf("\t") + 1);
+        xml = xml.trim();
+        if (xml.startsWith("<xml>")) {
+            xml = StringUtils.removeFirstLine(xml);
+        }
+        xml = NEW_LINE_PATTERN.matcher(xml).replaceAll("");
+        return xml;
     }
 
 }

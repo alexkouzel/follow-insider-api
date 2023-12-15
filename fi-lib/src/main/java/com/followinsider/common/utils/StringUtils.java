@@ -7,24 +7,29 @@ import java.util.Arrays;
 @UtilityClass
 public class StringUtils {
 
-    public String substring(String str, String open, String close) {
-        int start = str.indexOf(open);
+    public static String removeFirstLine(String value) {
+        int nextLineIdx = value.indexOf("\n") + 1;
+        return value.substring(nextLineIdx);
+    }
+
+    public String substring(String value, String open, String close) {
+        int start = value.indexOf(open);
         if (start == -1) return null;
 
-        int end = str.indexOf(close, start + open.length());
+        int end = value.indexOf(close, start + open.length());
         if (end == -1) return null;
 
-        return str.substring(start + open.length(), end);
+        return value.substring(start + open.length(), end);
     }
 
-    public String overflow(String text, int length) {
-        return overflow(text, length, "...");
+    public String overflow(String value, int length) {
+        return overflow(value, length, "...");
     }
 
-    public String overflow(String text, int length, String trail) {
-        return text.length() > length
-                ? text.substring(0, length - trail.length()) + trail
-                : text;
+    public String overflow(String value, int length, String trail) {
+        return value.length() > length
+                ? value.substring(0, length - trail.length()) + trail
+                : value;
     }
 
     public String trimLeft(String value, char c) {

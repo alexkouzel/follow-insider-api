@@ -2,7 +2,7 @@ package com.followinsider.controllers;
 
 import com.followinsider.core.trading.form.sync.FormSyncProgress;
 import com.followinsider.core.trading.form.sync.FormSyncService;
-import com.followinsider.core.trading.quarter.sync.QuarterSyncStatus;
+import com.followinsider.common.SyncStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +34,7 @@ public class FormsSyncController {
     }
 
     @PostMapping("/status/{status}")
-    public void syncStatus(@PathVariable QuarterSyncStatus status) {
+    public void syncStatus(@PathVariable SyncStatus status) {
         formSyncService.syncByStatus(status);
     }
 

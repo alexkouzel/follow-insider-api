@@ -5,6 +5,8 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import org.slf4j.Logger;
 
 import java.io.*;
 import java.net.http.HttpClient;
@@ -15,22 +17,24 @@ import java.util.Optional;
 
 public abstract class DataClient {
 
-    private final HttpClient client;
-
     protected final RateLimiter rateLimiter;
 
+    @Getter
     private final ObjectMapper jsonMapper;
 
-    private final ObjectMapper xmlMapper;
+    @Getter
+    private final XmlMapper xmlMapper;
 
     private final int maxRetries;
 
+    private final HttpClient client;
+
     public DataClient(DataClientProps props) {
-        this.client = HttpClient.newHttpClient();
         this.rateLimiter = props.getRateLimiter();
         this.jsonMapper = props.getJsonMapper();
         this.xmlMapper = props.getXmlMapper();
         this.maxRetries = props.getMaxRetries();
+        this.client = HttpClient.newHttpClient();
     }
 
     protected abstract HttpRequest buildRequest(String url, String contentType);

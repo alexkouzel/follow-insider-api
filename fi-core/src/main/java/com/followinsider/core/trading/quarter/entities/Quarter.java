@@ -1,7 +1,7 @@
 package com.followinsider.core.trading.quarter.entities;
 
 import com.followinsider.common.BaseEntity;
-import com.followinsider.core.trading.quarter.sync.QuarterSyncStatus;
+import com.followinsider.common.SyncStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -25,7 +25,7 @@ public class Quarter extends BaseEntity {
     private int quarter;
 
     @Enumerated
-    private QuarterSyncStatus syncStatus = QuarterSyncStatus.PENDING;
+    private SyncStatus syncStatus = SyncStatus.PENDING;
 
     private Integer formNum;
 

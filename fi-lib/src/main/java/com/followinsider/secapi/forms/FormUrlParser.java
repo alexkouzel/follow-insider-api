@@ -1,16 +1,15 @@
 package com.followinsider.secapi.forms;
 
-import com.followinsider.secapi.forms.refs.FormRef;
 import lombok.experimental.UtilityClass;
+
+import java.util.regex.Pattern;
 
 @UtilityClass
 public class FormUrlParser {
 
     private final String FORM_URL = "https://www.sec.gov/Archives/edgar/data/%s/%s/%s";
 
-    public String getTxtUrl(FormRef ref) {
-        return getTxtUrl(ref.issuerCik(), ref.accNum());
-    }
+    private final Pattern DASH_PATTERN = Pattern.compile("-");
 
     public String getTxtUrl(String issuerCik, String accNum) {
         return getUrl(issuerCik, accNum, accNum + ".txt");
@@ -22,7 +21,7 @@ public class FormUrlParser {
     }
 
     private String getUrl(String issuerCik, String accNum, String filename) {
-        String urlAccNum = accNum.replaceAll("-", "");
+        String urlAccNum = DASH_PATTERN.matcher(accNum).replaceAll("");
         return String.format(FORM_URL, issuerCik, urlAccNum, filename);
     }
 
