@@ -1,10 +1,11 @@
 package com.followinsider.core.trading.trade;
 
-import com.followinsider.common.entities.BaseEntity;
+import com.followinsider.common.BaseEntity;
 import com.followinsider.core.trading.form.Form;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -35,7 +36,7 @@ public class Trade extends BaseEntity {
     private String sharePriceFootnote;
 
     @Column(nullable = false)
-    private Date executedAt;
+    private LocalDate executedAt;
 
     private Double sharesLeft;
 

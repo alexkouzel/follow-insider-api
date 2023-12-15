@@ -1,8 +1,8 @@
 package com.followinsider.controllers;
 
-import com.followinsider.common.entities.sync.SyncStatus;
 import com.followinsider.core.trading.form.sync.FormSyncProgress;
 import com.followinsider.core.trading.form.sync.FormSyncService;
+import com.followinsider.core.trading.quarter.sync.QuarterSyncStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +18,14 @@ public class FormsSyncController {
         return formSyncService.getProgress();
     }
 
-    @PostMapping("/verify")
-    public void verify(@RequestParam("from") String from,
-                       @RequestParam("to") String to) {
-        formSyncService.verifyQuarters(from, to);
+    @PostMapping("/verify/full-quarters")
+    public void verifyFullQuarters() {
+        formSyncService.verifyFullQuarters();
+    }
+
+    @PostMapping("/verify/quarter/{alias}")
+    public void verifyQuarter(@PathVariable String alias) {
+        formSyncService.verifyQuarter(alias);
     }
 
     @PostMapping("/failed")
@@ -30,7 +34,7 @@ public class FormsSyncController {
     }
 
     @PostMapping("/status/{status}")
-    public void syncStatus(@PathVariable SyncStatus status) {
+    public void syncStatus(@PathVariable QuarterSyncStatus status) {
         formSyncService.syncByStatus(status);
     }
 

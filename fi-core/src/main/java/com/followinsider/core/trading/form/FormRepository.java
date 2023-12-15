@@ -1,26 +1,28 @@
 package com.followinsider.core.trading.form;
 
+import com.followinsider.core.trading.form.dtos.FormDto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Repository
 public interface FormRepository extends JpaRepository<Form, String> {
 
     @Query("SELECT f.accNum FROM Form f WHERE f.filedAt BETWEEN :date1 AND :date2")
-    Set<String> findIdsFiledBetween(Date date1, Date date2);
+    Set<String> findIdsFiledBetween(LocalDate date1, LocalDate date2);
 
-    Form findTopByOrderByFiledAtDesc();
+    FormDto findTopByOrderByFiledAtDesc();
 
-    Form findTopByOrderByFiledAtAsc();
+    FormDto findTopByOrderByFiledAtAsc();
 
-    int countByFiledAtBetween(Date date1, Date date2);
+    int countByFiledAtBetween(LocalDate date1, LocalDate date2);
 
-    int countByFiledAtBefore(Date date);
+    int countByFiledAtBefore(LocalDate date);
 
-    int countByFiledAtAfter(Date date);
+    int countByFiledAtAfter(LocalDate date);
 
 }

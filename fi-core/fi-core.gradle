@@ -7,7 +7,7 @@ plugins {
 dependencies {
 
     /* Modules */
-    implementation project(path: ':fi-sec')
+    implementation project(path: ':fi-lib')
 
     /* Website */
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -15,24 +15,23 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     /* Database & Caching */
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
 
-    /* Testing */
+    /* Data Formats */
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'org.modelmapper:modelmapper:2.1.1'
+
+    /* Logging & Testing */
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.4'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    /* Utilities */
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-    implementation 'org.modelmapper:modelmapper:2.1.1'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.4'
+    /* Services */
     implementation 'com.sun.mail:javax.mail:1.6.2'
 
-}
-
-test {
-    useJUnitPlatform()
 }

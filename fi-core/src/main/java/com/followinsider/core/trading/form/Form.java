@@ -7,6 +7,7 @@ import com.followinsider.core.trading.trade.Trade;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +46,7 @@ public class Form implements Identifiable<String> {
     private Set<String> insiderTitles;
 
     @Column(nullable = false)
-    private Date filedAt;
+    private LocalDate filedAt;
 
     @Column(nullable = false)
     private String xmlUrl;

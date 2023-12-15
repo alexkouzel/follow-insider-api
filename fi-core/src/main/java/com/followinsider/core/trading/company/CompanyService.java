@@ -13,12 +13,4 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
 
-    public List<Company> getAll() {
-        return companyRepository.findAll();
-    }
-
-    public Company getByCik(String cik) {
-        return companyRepository.findById(cik).orElse(null);
-    }
-
 }

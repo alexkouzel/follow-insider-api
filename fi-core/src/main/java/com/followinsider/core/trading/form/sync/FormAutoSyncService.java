@@ -1,8 +1,8 @@
 package com.followinsider.core.trading.form.sync;
 
-import com.followinsider.forms.refs.FormRef;
-import com.followinsider.forms.refs.FormRefLoader;
-import com.followinsider.forms.refs.FormRefUtils;
+import com.followinsider.secapi.forms.refs.FormRef;
+import com.followinsider.secapi.forms.refs.FormRefLoader;
+import com.followinsider.secapi.forms.refs.FormRefUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +40,7 @@ public class FormAutoSyncService {
     @Scheduled(cron = "0 0 2 * * *") // every day at 2:00
     private void syncLastDay() {
         if (!formAutoSync) return;
+
         formSyncService.syncDaysAgo(0, "last day (auto)");
     }
 

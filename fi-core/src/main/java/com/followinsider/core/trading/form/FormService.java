@@ -2,16 +2,17 @@ package com.followinsider.core.trading.form;
 
 import com.followinsider.common.entities.TimeRange;
 import com.followinsider.common.utils.ListUtils;
-import com.followinsider.core.trading.form.dto.FormDto;
+import com.followinsider.core.trading.form.dtos.FormDto;
 import com.followinsider.core.trading.quarter.entities.QuarterVals;
-import com.followinsider.forms.refs.FormRef;
-import com.followinsider.forms.refs.FormRefLoader;
-import com.followinsider.forms.refs.FormRefUtils;
+import com.followinsider.secapi.forms.refs.FormRef;
+import com.followinsider.secapi.forms.refs.FormRefLoader;
+import com.followinsider.secapi.forms.refs.FormRefUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -23,52 +24,50 @@ public class FormService {
 
     private final FormRefLoader formRefLoader;
 
-    private final ModelMapper modelMapper;
-
-    public int countBetween(TimeRange timeRange) {
-        return formRepository.countByFiledAtBetween(timeRange.from(), timeRange.to());
-    }
-
-    public int countBefore(Date date) {
-        return formRepository.countByFiledAtBefore(date);
-    }
-
-    public int countAfter(Date date) {
-        return formRepository.countByFiledAtAfter(date);
-    }
-
     public FormDto getFirst() {
-        return toDto(formRepository.findTopByOrderByFiledAtAsc());
-    }
-
-    public FormDto getQuarterFirst(String alias) {
-        return getQuarterFirst(new QuarterVals(alias));
-    }
-
-    public FormDto getQuarterFirst(QuarterVals vals) {
-        List<FormRef> refs = formRefLoader.loadByQuarter(vals.year(), vals.quarter());
-        return new FormDto(FormRefUtils.getFirst(refs));
+        return formRepository.findTopByOrderByFiledAtAsc();
     }
 
     public FormDto getLast() {
-        return toDto(formRepository.findTopByOrderByFiledAtDesc());
+        return formRepository.findTopByOrderByFiledAtDesc();
     }
 
-    public int count() {
+    public int countAll() {
         return (int) formRepository.count();
     }
 
-    public FormDto toDto(Form form) {
-        return modelMapper.map(form, FormDto.class);
+    public int countBetween(TimeRange timeRange) {
+        return countBetween(timeRange.from(), timeRange.to());
+    }
+
+    public int countBetween(LocalDate date1, LocalDate date2) {
+        if (date1 == null && date2 == null) return countAll();
+        if (date1 == null) return formRepository.countByFiledAtBefore(date2);
+        if (date2 == null) return formRepository.countByFiledAtAfter(date1);
+        return formRepository.countByFiledAtBetween(date1, date2);
     }
 
     public List<FormRef> filterOldRefs(List<FormRef> refs) {
         if (ListUtils.isEmpty(refs)) return new ArrayList<>();
 
         TimeRange timeRange = FormRefUtils.getTimeRange(refs);
-        Set<String> ids = formRepository.findIdsFiledBetween(timeRange.from(), timeRange.to());
+        Set<String> ids = getIdsBetween(timeRange);
 
-        return ListUtils.filter(refs, ref -> !ids.contains(ref.accNum()));
+        return FormRefUtils.filterAccNums(refs, ids);
+    }
+
+    public Set<String> getIdsBetween(TimeRange timeRange) {
+        return formRepository.findIdsFiledBetween(timeRange.from(), timeRange.to());
+    }
+
+    public FormRef getQuarterFirstRef(String alias) {
+        QuarterVals vals = new QuarterVals(alias);
+        List<FormRef> refs = formRefLoader.loadByQuarter(vals.year(), vals.quarter());
+        return FormRefUtils.getFirst(refs);
+    }
+
+    public FormRef getQuarterLastRef() {
+        return null;
     }
 
 }

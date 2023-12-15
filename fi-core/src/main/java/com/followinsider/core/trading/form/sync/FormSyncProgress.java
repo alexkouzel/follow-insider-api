@@ -1,6 +1,6 @@
 package com.followinsider.core.trading.form.sync;
 
-import com.followinsider.common.entities.sync.SyncProgress;
+import com.followinsider.core.trading.quarter.sync.QuarterSyncProgress;
 
 public record FormSyncProgress(
 
@@ -8,6 +8,6 @@ public record FormSyncProgress(
 
         int formsFailed,
 
-        SyncProgress quarterProgress
+        QuarterSyncProgress quarterProgress
 
 ) {}

@@ -13,12 +13,4 @@ public class TradeService {
 
     private final TradeRepository tradeRepository;
 
-    public List<Trade> getAll() {
-        return tradeRepository.findAll();
-    }
-
-    public Trade getById(int id) {
-        return tradeRepository.findById(id).orElse(null);
-    }
-
 }

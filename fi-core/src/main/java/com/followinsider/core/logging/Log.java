@@ -1,10 +1,10 @@
 package com.followinsider.core.logging;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record Log(
 
-        Date date,
+        LocalDate date,
 
         String thread,
 

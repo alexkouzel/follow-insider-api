@@ -1,15 +1,23 @@
 package com.followinsider.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.followinsider.client.EdgarClient;
-import com.followinsider.forms.refs.FormRefLoader;
-import com.followinsider.forms.f345.OwnershipDocLoader;
-import com.followinsider.forms.FormType;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.followinsider.secapi.client.DataClientProps;
+import com.followinsider.secapi.client.EdgarClient;
+import com.followinsider.secapi.client.RateLimiter;
+import com.followinsider.secapi.forms.refs.FormRefLoader;
+import com.followinsider.secapi.forms.f345.OwnershipDocLoader;
+import com.followinsider.secapi.forms.FormType;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+
+import java.net.http.HttpClient;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @RequiredArgsConstructor
@@ -24,13 +32,29 @@ public class AppBeanConfig {
     }
 
     @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+    @Primary
+    public ObjectMapper jsonMapper() {
+        ObjectMapper jsonMapper = new ObjectMapper();
+        jsonMapper.registerModule(new JavaTimeModule());
+        return jsonMapper;
     }
 
     @Bean
-    public EdgarClient edgarClient() {
-        return new EdgarClient(userAgent);
+    public XmlMapper xmlMapper() {
+        XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.registerModule(new JavaTimeModule());
+        return xmlMapper;
+    }
+
+    @Bean
+    public EdgarClient edgarClient(ObjectMapper jsonMapper, XmlMapper xmlMapper) {
+        return new EdgarClient(userAgent,
+                DataClientProps.builder()
+                        .rateLimiter(new RateLimiter(TimeUnit.SECONDS, 10))
+                        .jsonMapper(jsonMapper)
+                        .xmlMapper(xmlMapper)
+                        .maxRetries(3)
+                        .build());
     }
 
     @Bean

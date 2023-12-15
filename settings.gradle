@@ -1,6 +1,6 @@
 include 'fi-aws'
 include 'fi-core'
-include 'fi-sec'
+include 'fi-lib'
 
 rootProject.name = 'follow-insider-api'
 rootProject.children.each {project ->

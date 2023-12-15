@@ -1,11 +1,12 @@
 package com.followinsider.controllers;
 
+import com.followinsider.core.trading.form.dtos.FormDto;
 import com.followinsider.core.trading.form.FormService;
-import com.followinsider.core.trading.form.dto.FormDto;
+import com.followinsider.secapi.forms.refs.FormRef;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/forms")
@@ -19,29 +20,17 @@ public class FormsController {
         return formService.getFirst();
     }
 
-    @GetMapping("/first/quarter/{alias}")
-    public FormDto getFirstByQuarter(@PathVariable String alias) {
-        return formService.getQuarterFirst(alias);
-    }
-
     @GetMapping("/last")
     public FormDto getLast() {
         return formService.getLast();
     }
 
     @GetMapping("/count")
-    public int count() {
-        return formService.count();
-    }
-
-    @GetMapping("/count/before/{unixTime}")
-    public int countBefore(@PathVariable long unixTime) {
-        return formService.countBefore(new Date(unixTime));
-    }
-
-    @GetMapping("/count/after/{unixTime}")
-    public int countAfter(@PathVariable long unixTime) {
-        return formService.countAfter(new Date(unixTime));
+    public int count(
+            @RequestParam(required = false) LocalDate from,
+            @RequestParam(required = false) LocalDate to
+    ) {
+        return formService.countBetween(from, to);
     }
 
 }

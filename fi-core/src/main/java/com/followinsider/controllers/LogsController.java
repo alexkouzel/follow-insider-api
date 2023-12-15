@@ -17,17 +17,18 @@ public class LogsController {
 
     private final LogService logService;
 
-    @GetMapping
-    public List<Log> getFileLogs(
-            @RequestParam(value = "level", defaultValue = "INFO") LogLevel level,
-            @RequestParam(value = "file", defaultValue = "app.log") String file
-    ) throws IOException {
-        return logService.getFileLogs(file, level);
-    }
-
     @PostMapping("/ping")
     public void ping() {
         logService.ping();
+    }
+
+    @GetMapping
+    public List<Log> getFileLogs(
+            @RequestParam(value = "level", defaultValue = "INFO") LogLevel level,
+            @RequestParam(value = "file", defaultValue = "app.log") String file,
+            @RequestParam(value = "inverse", defaultValue = "true") boolean inverse
+    ) throws IOException {
+        return logService.getFileLogs(file, level, inverse);
     }
 
     @ExceptionHandler(IOException.class)

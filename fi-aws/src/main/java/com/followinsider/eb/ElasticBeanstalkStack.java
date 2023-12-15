@@ -8,9 +8,7 @@ import software.amazon.awscdk.services.s3.assets.AssetProps;
 import software.amazon.awscdk.services.ec2.*;
 import software.constructs.Construct;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ElasticBeanstalkStack extends Stack {

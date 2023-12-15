@@ -1,13 +1,13 @@
 package com.followinsider.core.trading.form.sync;
 
 import com.followinsider.common.entities.Identifiable;
-import com.followinsider.core.trading.company.CompanyRepository;
-import com.followinsider.core.trading.insider.InsiderRepository;
+import com.followinsider.common.utils.ListUtils;
 import com.followinsider.core.trading.company.Company;
+import com.followinsider.core.trading.company.CompanyRepository;
 import com.followinsider.core.trading.form.Form;
 import com.followinsider.core.trading.insider.Insider;
+import com.followinsider.core.trading.insider.InsiderRepository;
 import com.followinsider.core.trading.form.FormRepository;
-import com.followinsider.core.trading.trade.Trade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,12 +1,13 @@
 package com.followinsider.core.trading.form.failed;
 
-import com.followinsider.common.entities.BaseEntity;
-import com.followinsider.forms.refs.FormRef;
-import com.followinsider.forms.FormType;
+import com.followinsider.common.BaseEntity;
+import com.followinsider.secapi.forms.refs.FormRef;
+import com.followinsider.secapi.forms.FormType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -22,7 +23,7 @@ public class FailedForm extends BaseEntity {
     private String issuerCik;
 
     @Column(nullable = false)
-    private Date filedAt;
+    private LocalDate filedAt;
 
     @Column(nullable = false)
     private String error;

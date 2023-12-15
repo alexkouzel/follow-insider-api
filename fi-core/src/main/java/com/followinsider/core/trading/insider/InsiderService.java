@@ -13,12 +13,4 @@ public class InsiderService {
 
     private final InsiderRepository insiderRepository;
 
-    public List<Insider> getAll() {
-        return insiderRepository.findAll();
-    }
-
-    public Insider getByCik(String cik) {
-        return insiderRepository.findById(cik).orElse(null);
-    }
-
 }
