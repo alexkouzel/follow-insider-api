@@ -1,0 +1,13 @@
+server:
+  port: 5000
+
+sec:
+  edgar_user_agent: ${EDGAR_USER_AGENT}
+  form_batch_size: 2500
+  form_auto_load: true
+
+spring.datasource:
+  url: ${DATABASE_URL}
+  username: ${DATABASE_USERNAME}
+  password: ${DATABASE_PASSWORD}
+  driver-class-name: org.postgresql.Driver

@@ -1,0 +1,24 @@
+spring:
+  profiles.active: prod
+  application.name: follow-insider
+
+spring.jpa:
+  database: POSTGRESQL
+  hibernate.ddl-auto: update
+  open-in-view: true
+  properties.hibernate:
+    jdbc.lob.non_contextual_creation: true
+    jdbc.batch_size: 32
+    order_inserts: true
+    order_updates: false
+
+admin:
+  username: ${ADMIN_USERNAME}
+  password: ${ADMIN_PASSWORD}
+
+email:
+  username: ${EMAIL_USERNAME}
+  password: ${EMAIL_PASSWORD}
+  sender: ${EMAIL_SENDER}
+
+logging.file.name: logs/app.log

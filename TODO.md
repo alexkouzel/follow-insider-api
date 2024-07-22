@@ -1,3 +1,0 @@
-- [ ] Improve logging quality
-- [ ] Sync most failed forms
-- [ ] Auto form sync

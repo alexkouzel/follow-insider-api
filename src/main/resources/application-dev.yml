@@ -1,0 +1,13 @@
+server:
+  port: 5000
+
+sec:
+  edgar_user_agent: ${EDGAR_USER_AGENT}
+  form_batch_size: 250
+  form_auto_load: false
+
+spring.datasource:
+  url: jdbc:h2:mem:db
+  username: sa
+  password: password
+  driver-class-name: org.h2.Driver
