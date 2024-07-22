@@ -1,20 +1,12 @@
-.gradle
+### Build ###
 build/
-!gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+### Gradle ###
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
+gradle.properties
 
 ### IntelliJ IDEA ###
 .idea
@@ -35,14 +27,6 @@ out/
 ### VS Code ###
 .vscode/
 
-### AWS CDK ###
-*.swp
-cdk.context.json
-.cdk.staging/
-cdk.out/
-
 ### Other ###
-.env/
 logs/
-application.yml
-application-*.yml
+.env.sh
