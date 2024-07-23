@@ -76,7 +76,7 @@ public class FormLoaderService implements FormLoader {
     @Override
     @Async
     public void loadByCik(String cik) {
-        String source = "CIK " + cik;
+        String source = "cik " + cik;
         loadByRefLoader(source, () -> filingReferenceLoader.loadByCik(cik));
     }
 
@@ -128,7 +128,7 @@ public class FormLoaderService implements FormLoader {
             return;
         }
         loadByRefLoader(source,
-                () -> filingReferenceLoader.loadByQuarter(vals.year(), vals.quarter()))
+                () -> filingReferenceLoader.loadByFiscalQuarter(vals.year(), vals.quarter()))
                 .ifPresent((progress) -> updateFiscalQuarterForms(forms, progress));
     }
 
@@ -266,12 +266,12 @@ public class FormLoaderService implements FormLoader {
     }
 
     private void logLoadedFormBatch(String source, int batchIdx, int batchCount, int batchSize, int loaded) {
-        log.info("Loaded form batch :: source: '{}', batch: {}/{}, size: {}, loaded: {}",
-                source, batchIdx, batchCount, batchSize, loaded);
+        log.info("Loaded {}/{} form batch :: source: '{}', size: {}, loaded: {}",
+                batchIdx, batchCount, source, batchSize, loaded);
     }
 
     private void logLoadedForms(String source, FormLoaderProgress progress) {
-        log.info("Loaded forms :: source: '{}', total: {}, filtered: {}, loaded: {}, failed: {}",
+        log.info("Finished loading forms :: source: '{}', total: {}, filtered: {}, loaded: {}, failed: {}",
                 source, progress.total(), progress.filtered(), progress.loaded(), progress.failed());
     }
 

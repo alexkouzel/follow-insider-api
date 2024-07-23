@@ -21,7 +21,7 @@ public class FormLoaderScheduledService {
 
     @Scheduled(cron = "0 */5 * * * *") // every 5 minutes
     public void loadLatestForms() {
-        if (formAutoLoad) return;
+        if (!formAutoLoad) return;
         formLoader.loadLatest();
     }
 

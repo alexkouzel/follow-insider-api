@@ -22,11 +22,13 @@ public class Company implements Identifiable<String> {
     @Column(length = 10)
     private String cik;
 
-    @Column(length = 10)
-    private String symbol;
-
     @Column(nullable = false)
     private String name;
+
+    @Column(length = 10)
+    private String ticker;
+
+    private String exchange;
 
     @OneToMany(mappedBy = "company")
     private List<Form> forms;

@@ -4,8 +4,8 @@ public interface CompanyView {
 
     String getCik();
 
-    String getSymbol();
-
     String getName();
+
+    String getTicker();
 
 }

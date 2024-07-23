@@ -60,7 +60,7 @@ public class FormConverterService implements FormConverter {
         return Company.builder()
                 .cik(issuer.getIssuerCik())
                 .name(issuer.getIssuerName())
-                .symbol(issuer.getIssuerTradingSymbol())
+                .ticker(issuer.getIssuerTradingSymbol())
                 .build();
     }
 

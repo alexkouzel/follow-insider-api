@@ -1,6 +1,7 @@
 package com.followinsider.config;
 
 import com.alexkouzel.client.EdgarClient;
+import com.alexkouzel.company.ListedCompanyLoader;
 import com.alexkouzel.filing.reference.FilingReferenceLoader;
 import com.alexkouzel.filing.type.f345.OwnershipDocumentLoader;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,11 @@ public class EdgarConfig {
     @Bean
     public FilingReferenceLoader filingMetadataLoader(EdgarClient edgarClient) {
         return new FilingReferenceLoader(edgarClient);
+    }
+
+    @Bean
+    public ListedCompanyLoader listedCompanyLoader(EdgarClient edgarClient) {
+        return new ListedCompanyLoader(edgarClient);
     }
 
     private Consumer<Integer> statusCodeHandler() {
