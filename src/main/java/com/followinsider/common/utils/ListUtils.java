@@ -64,11 +64,11 @@ public class ListUtils {
     }
 
     public <T> List<List<T>> splitBySize(List<T> list, int size) {
-        return list.size() < size
-                ? List.of(list)
-                : new ArrayList<>(list.stream()
-                .collect(Collectors.groupingBy(i -> list.indexOf(i) / size))
-                .values());
+        List<List<T>> result = new ArrayList<>();
+        for (int i = 0; i < list.size(); i += size) {
+            result.add(new ArrayList<>(list.subList(i, Math.min(list.size(), i + size))));
+        }
+        return result;
     }
 
 }

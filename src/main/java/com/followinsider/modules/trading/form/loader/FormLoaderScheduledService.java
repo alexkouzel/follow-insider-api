@@ -19,10 +19,10 @@ public class FormLoaderScheduledService {
     @Value("${sec.form_auto_load}")
     private boolean formAutoLoad;
 
-    @Scheduled(cron = "0 */2 * * * *") // every 2 minutes
+    @Scheduled(cron = "0 */5 * * * *") // every 5 minutes
     public void loadLatestForms() {
-        if (!formAutoLoad) return;
-        latestAccNos = formLoader.updateLatest(latestAccNos);
+        if (formAutoLoad) return;
+        formLoader.loadLatest();
     }
 
     @Scheduled(cron = "0 0 2 * * *") // every day at 2:00
@@ -31,8 +31,6 @@ public class FormLoaderScheduledService {
         formLoader.loadLastDays(1);
     }
 
-    public void loadLastFiscalQuarterForms() {
-        // TODO: Implement this.
-    }
+    // TODO: Implement loadLastFiscalQuarterForms().
 
 }

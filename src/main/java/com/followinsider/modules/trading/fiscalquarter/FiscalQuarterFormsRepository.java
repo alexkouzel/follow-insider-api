@@ -8,11 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FiscalQuarterFormsRepository extends JpaRepository<FiscalQuarterForms, Integer> {
 
     @Query("SELECT fqf.fiscalQuarter FROM FiscalQuarterForms fqf WHERE fqf.loaderStatus = :loaderStatus")
     List<FiscalQuarter> findByLoaderStatus(FormLoaderStatus loaderStatus);
+
+    Optional<FiscalQuarterForms> findByFiscalQuarter(FiscalQuarter fiscalQuarter);
 
 }

@@ -27,4 +27,8 @@ public class FiscalQuarterForms {
 
     private Integer formCount;
 
+    public FiscalQuarterForms(FiscalQuarter fiscalQuarter) {
+        this.fiscalQuarter = fiscalQuarter;
+    }
+
 }
