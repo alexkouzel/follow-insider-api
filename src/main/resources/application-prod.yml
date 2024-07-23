@@ -1,13 +1,17 @@
 server:
   port: 5000
 
+admin:
+  username: ${PROD_ADMIN_USERNAME}
+  password: ${PROD_ADMIN_PASSWORD}
+
 sec:
-  edgar_user_agent: ${EDGAR_USER_AGENT}
+  user_agent: ${PROD_SEC_USER_AGENT}
   form_batch_size: 2500
   form_auto_load: true
 
 spring.datasource:
-  url: ${DATABASE_URL}
-  username: ${DATABASE_USERNAME}
-  password: ${DATABASE_PASSWORD}
-  driver-class-name: org.postgresql.Driver
+  url: ${PROD_DB_URL}
+  username: ${PROD_DB_USERNAME}
+  password: ${PROD_DB_PASSWORD}
+  driver-class-name: ${PROD_DB_DRIVER}

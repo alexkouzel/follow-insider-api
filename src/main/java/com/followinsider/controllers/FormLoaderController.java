@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/forms/loader")
+@RequestMapping("/formloader")
 @RequiredArgsConstructor
-public class FormsLoaderController {
+public class FormLoaderController {
 
     private final FormLoader formLoader;
 

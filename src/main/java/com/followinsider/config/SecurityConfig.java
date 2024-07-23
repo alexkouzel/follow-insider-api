@@ -32,10 +32,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 antMatcher("/actuator/health"),
-                                antMatcher("/fiscalquarters/**"),
+                                antMatcher("/fiscal/**"),
                                 antMatcher("/companies/**"),
-                                antMatcher("/insiders/**")
-//                                antMatcher("/forms/**")
+                                antMatcher("/insiders/**"),
+                                antMatcher("/forms/**")
                         ).permitAll()
                         .anyRequest().hasRole("ADMIN")
                 )
