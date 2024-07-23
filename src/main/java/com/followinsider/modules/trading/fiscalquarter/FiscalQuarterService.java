@@ -1,9 +1,6 @@
 package com.followinsider.modules.trading.fiscalquarter;
 
-import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarter;
-import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterView;
-import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterRange;
-import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterVals;
+import com.followinsider.modules.trading.fiscalquarter.models.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,23 +17,18 @@ public class FiscalQuarterService {
 
     private final FiscalQuarterRepository fiscalQuarterRepository;
 
+    private final FiscalQuarterFormsRepository fiscalQuarterFormsRepository;
+
     @Transactional
     @PostConstruct
     public void init() {
         if (fiscalQuarterRepository.count() != 0) return;
 
-        LocalDate now = LocalDate.now();
+        List<FiscalQuarter> fiscalQuarters = generate();
+        fiscalQuarters = fiscalQuarterRepository.saveAll(fiscalQuarters);
 
-        var from = new FiscalQuarterVals(2005, 1);
-        var to = new FiscalQuarterVals(now.getYear(), now.get(IsoFields.QUARTER_OF_YEAR));
-
-        List<FiscalQuarter> fiscalQuarters = new FiscalQuarterRange(from, to)
-                .generate()
-                .stream()
-                .map(FiscalQuarter::new)
-                .toList();
-
-        fiscalQuarterRepository.saveAll(fiscalQuarters);
+        List<FiscalQuarterForms> fiscalQuartersForms = generateForms(fiscalQuarters);
+        fiscalQuarterFormsRepository.saveAll(fiscalQuartersForms);
     }
 
     public List<FiscalQuarterView> getAll() {
@@ -56,6 +49,27 @@ public class FiscalQuarterService {
 
     public long countYears() {
         return fiscalQuarterRepository.countYears();
+    }
+
+    public List<FiscalQuarterFormsView> getFormLoaderProgress() {
+        return fiscalQuarterFormsRepository.findAllViews();
+    }
+
+    private List<FiscalQuarterForms> generateForms(List<FiscalQuarter> fiscalQuarters) {
+        return fiscalQuarters.stream().map(FiscalQuarterForms::new).toList();
+    }
+
+    private List<FiscalQuarter> generate() {
+        LocalDate now = LocalDate.now();
+
+        var from = new FiscalQuarterVals(2005, 1);
+        var to = new FiscalQuarterVals(now.getYear(), now.get(IsoFields.QUARTER_OF_YEAR));
+
+        return new FiscalQuarterRange(from, to)
+                .generate()
+                .stream()
+                .map(FiscalQuarter::new)
+                .toList();
     }
 
 }

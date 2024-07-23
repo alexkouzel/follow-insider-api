@@ -2,7 +2,7 @@ package com.followinsider.modules.trading.fiscalquarter.models;
 
 public interface FiscalQuarterView {
 
-    int getId();
+    String getId();
 
     int getYear();
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FiscalQuarterRepository extends JpaRepository<FiscalQuarter, Integer> {
+public interface FiscalQuarterRepository extends JpaRepository<FiscalQuarter, String> {
 
     @Query("SELECT fq FROM FiscalQuarter fq")
     List<FiscalQuarterView> findAllViews();

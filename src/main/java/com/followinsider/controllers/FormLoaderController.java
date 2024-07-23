@@ -1,9 +1,12 @@
 package com.followinsider.controllers;
 
+import com.followinsider.modules.trading.fiscalquarter.FiscalQuarterService;
+import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterFormsView;
 import com.followinsider.modules.trading.form.loader.FormLoader;
-import com.followinsider.modules.trading.form.loader.FormLoaderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/formloader")
@@ -12,9 +15,11 @@ public class FormLoaderController {
 
     private final FormLoader formLoader;
 
+    private final FiscalQuarterService fiscalQuarterService;
+
     @GetMapping("/progress")
-    public void progress() {
-        // TODO: Implement this.
+    public List<FiscalQuarterFormsView> progress() {
+        return fiscalQuarterService.getFormLoaderProgress();
     }
 
     @PostMapping("/latest")
@@ -40,11 +45,6 @@ public class FormLoaderController {
     @PostMapping("/from/{from}/to/{to}")
     public void range(@PathVariable String from, @PathVariable String to) {
         formLoader.loadFiscalQuarterRange(from, to);
-    }
-
-    @PostMapping("/status/{status}")
-    public void status(@PathVariable FormLoaderStatus status) {
-        formLoader.loadByLoaderStatus(status);
     }
 
 }

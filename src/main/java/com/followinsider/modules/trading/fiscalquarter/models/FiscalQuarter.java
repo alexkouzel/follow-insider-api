@@ -1,9 +1,7 @@
 package com.followinsider.modules.trading.fiscalquarter.models;
 
-import com.followinsider.common.entities.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.followinsider.common.entities.Identifiable;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -11,10 +9,13 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@EqualsAndHashCode
+@ToString
 @Table(name = "fiscal_quarter")
-public class FiscalQuarter extends BaseEntity {
+public class FiscalQuarter implements Identifiable<String> {
+
+    @Id
+    private String id;
 
     @Column(nullable = false, name = "year_val")
     private int year;
@@ -23,6 +24,7 @@ public class FiscalQuarter extends BaseEntity {
     private int quarter;
 
     public FiscalQuarter(FiscalQuarterVals vals) {
+        this.id = vals.toAlias();
         this.year = vals.year();
         this.quarter = vals.quarter();
     }

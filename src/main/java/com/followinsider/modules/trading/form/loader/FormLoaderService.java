@@ -92,14 +92,6 @@ public class FormLoaderService implements FormLoader {
 
     @Override
     @Async
-    public void loadByLoaderStatus(FormLoaderStatus formLoaderStatus) {
-        fiscalQuarterFormsRepository
-                .findByLoaderStatus(formLoaderStatus)
-                .forEach(this::loadFiscalQuarter);
-    }
-
-    @Override
-    @Async
     public void loadFiscalQuarter(int year, int quarter) {
         FiscalQuarter fiscalQuarter = fiscalQuarterRepository.findByYearAndQuarter(year, quarter);
 
@@ -123,7 +115,7 @@ public class FormLoaderService implements FormLoader {
         FiscalQuarterVals vals = forms.getFiscalQuarter().getVals();
         String source = vals.toAlias();
 
-        if (forms.getLoaderStatus() == FormLoaderStatus.FULL) {
+        if (forms.isFull()) {
             logLoadingAborted(source, "already fully loaded");
             return;
         }
@@ -133,8 +125,8 @@ public class FormLoaderService implements FormLoader {
     }
 
     private void updateFiscalQuarterForms(FiscalQuarterForms forms, FormLoaderProgress progress) {
-        forms.setFormCount(progress.total());
-        forms.setLoaderStatus(progress.getStatus());
+        forms.setTotal(progress.total());
+        forms.setLoaded(progress.loaded());
         fiscalQuarterFormsRepository.save(forms);
     }
 

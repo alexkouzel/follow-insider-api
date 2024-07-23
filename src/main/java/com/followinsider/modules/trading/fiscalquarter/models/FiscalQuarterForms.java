@@ -1,6 +1,5 @@
 package com.followinsider.modules.trading.fiscalquarter.models;
 
-import com.followinsider.modules.trading.form.loader.FormLoaderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,19 +15,22 @@ public class FiscalQuarterForms {
 
     @Id
     @Column(name = "fiscal_quarter_id")
-    private long id;
+    private String id;
 
     @OneToOne
-    @PrimaryKeyJoinColumn(name = "fiscal_quarter_id", referencedColumnName = "id")
+    @JoinColumn(name = "fiscal_quarter_id", referencedColumnName = "id", insertable = false, updatable = false)
     private FiscalQuarter fiscalQuarter;
 
-    @Enumerated
-    private FormLoaderStatus loaderStatus = FormLoaderStatus.PENDING;
+    private Integer total;
 
-    private Integer formCount;
+    private Integer loaded;
 
     public FiscalQuarterForms(FiscalQuarter fiscalQuarter) {
-        this.fiscalQuarter = fiscalQuarter;
+        this.id = fiscalQuarter.getId();
+    }
+
+    public boolean isFull() {
+        return total != null && total.equals(loaded);
     }
 
 }

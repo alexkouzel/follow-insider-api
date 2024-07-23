@@ -10,8 +10,6 @@ public interface FormLoader {
 
     void loadFiscalQuarterRange(String from, String to);
 
-    void loadByLoaderStatus(FormLoaderStatus formLoaderStatus);
-
     void loadFiscalQuarter(int year, int quarter);
 
 }

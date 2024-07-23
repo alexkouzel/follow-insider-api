@@ -23,15 +23,4 @@ public record FiscalQuarterRange(FiscalQuarterVals from, FiscalQuarterVals to) {
         return result;
     }
 
-    public static FiscalQuarterRange fromAlias(String alias) {
-        String[] parts = alias.split("-");
-        var from = new FiscalQuarterVals(parts[0]);
-        var to = new FiscalQuarterVals(parts[1]);
-        return new FiscalQuarterRange(from, to);
-    }
-
-    public String toAlias() {
-        return from.toAlias() + "-" + to.toAlias();
-    }
-
 }

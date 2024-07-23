@@ -8,12 +8,6 @@ public record FormLoaderProgress(int total, int filtered, int loaded, int failed
         this(total, filtered, loaded, total - filtered - loaded);
     }
 
-    public FormLoaderStatus getStatus() {
-        return failed == 0
-                ? FormLoaderStatus.FULL
-                : FormLoaderStatus.PARTIAL;
-    }
-
     public static FormLoaderProgress combine(List<FormLoaderProgress> progresses) {
         int total = 0;
         int filtered = 0;
