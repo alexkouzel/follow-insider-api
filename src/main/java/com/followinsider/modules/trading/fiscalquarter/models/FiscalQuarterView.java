@@ -1,6 +1,8 @@
 package com.followinsider.modules.trading.fiscalquarter.models;
 
-public interface FiscalQuarterDto {
+public interface FiscalQuarterView {
+
+    int getId();
 
     int getYear();
 

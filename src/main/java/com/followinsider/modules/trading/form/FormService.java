@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.form;
 
-import com.followinsider.modules.trading.form.models.FormDto;
+import com.followinsider.modules.trading.form.models.FormView;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -19,9 +19,9 @@ public class FormService {
 
     private static final int DEFAULT_PAGE_SIZE = 20;
 
-    public List<FormDto> getPage(int page) {
+    public List<FormView> getPage(int page) {
         Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE);
-        return formRepository.findAllDtos(pageable);
+        return formRepository.findAllViews(pageable);
     }
 
     public int countBetween(LocalDate date1, LocalDate date2) {

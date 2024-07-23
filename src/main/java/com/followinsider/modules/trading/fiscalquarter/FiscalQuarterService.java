@@ -1,7 +1,7 @@
 package com.followinsider.modules.trading.fiscalquarter;
 
 import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarter;
-import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterDto;
+import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterView;
 import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterRange;
 import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterVals;
 import jakarta.annotation.PostConstruct;
@@ -38,15 +38,15 @@ public class FiscalQuarterService {
         fiscalQuarterRepository.saveAll(fiscalQuarters);
     }
 
-    public List<FiscalQuarterDto> getAll() {
-        return fiscalQuarterRepository.findAllDtos();
+    public List<FiscalQuarterView> getAll() {
+        return fiscalQuarterRepository.findAllViews();
     }
 
-    public FiscalQuarterDto getFirst() {
+    public FiscalQuarterView getFirst() {
         return fiscalQuarterRepository.findFirstByOrderByYearAscQuarterAsc();
     }
 
-    public FiscalQuarterDto getLast() {
+    public FiscalQuarterView getLast() {
         return fiscalQuarterRepository.findFirstByOrderByYearDescQuarterDesc();
     }
 

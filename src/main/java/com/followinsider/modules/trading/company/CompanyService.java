@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.company;
 
-import com.followinsider.modules.trading.company.models.CompanyDto;
+import com.followinsider.modules.trading.company.models.CompanyView;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -18,13 +18,13 @@ public class CompanyService {
 
     private static final int DEFAULT_PAGE_SIZE = 20;
 
-    public List<CompanyDto> getPage(int page) {
+    public List<CompanyView> getPage(int page) {
         Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE);
-        return companyRepository.findAllDtos(pageable);
+        return companyRepository.findAllViews(pageable);
     }
 
-    public CompanyDto getByCik(String cik) {
-        return companyRepository.findDtoById(cik);
+    public CompanyView getByCik(String cik) {
+        return companyRepository.findViewsById(cik);
     }
 
 }

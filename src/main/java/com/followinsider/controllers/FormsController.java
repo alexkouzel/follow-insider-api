@@ -1,7 +1,7 @@
 package com.followinsider.controllers;
 
 import com.followinsider.modules.trading.form.FormService;
-import com.followinsider.modules.trading.form.models.FormDto;
+import com.followinsider.modules.trading.form.models.FormView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +16,7 @@ public class FormsController {
     private final FormService formService;
 
     @GetMapping
-    public List<FormDto> page(@RequestParam(defaultValue = "0") int page) {
+    public List<FormView> page(@RequestParam(defaultValue = "0") int page) {
         return formService.getPage(page);
     }
 

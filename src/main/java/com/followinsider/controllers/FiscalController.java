@@ -1,6 +1,6 @@
 package com.followinsider.controllers;
 
-import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterDto;
+import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterView;
 import com.followinsider.modules.trading.fiscalquarter.FiscalQuarterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,17 +17,17 @@ public class FiscalController {
     private final FiscalQuarterService fiscalQuarterService;
 
     @GetMapping("/quarters")
-    public List<FiscalQuarterDto> all() {
+    public List<FiscalQuarterView> all() {
         return fiscalQuarterService.getAll();
     }
 
     @GetMapping("/quarters/first")
-    public FiscalQuarterDto first() {
+    public FiscalQuarterView first() {
         return fiscalQuarterService.getFirst();
     }
 
     @GetMapping("/quarters/last")
-    public FiscalQuarterDto last() {
+    public FiscalQuarterView last() {
         return fiscalQuarterService.getLast();
     }
 

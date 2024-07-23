@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.company.models;
 
-public interface CompanyDto {
+public interface CompanyView {
 
     String getCik();
 

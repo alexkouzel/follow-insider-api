@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.insider.models;
 
-public interface InsiderDto {
+public interface InsiderView {
 
     String getCik();
 

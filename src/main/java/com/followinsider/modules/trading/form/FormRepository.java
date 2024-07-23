@@ -1,7 +1,7 @@
 package com.followinsider.modules.trading.form;
 
 import com.followinsider.modules.trading.form.models.Form;
-import com.followinsider.modules.trading.form.models.FormDto;
+import com.followinsider.modules.trading.form.models.FormView;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +15,7 @@ import java.util.Set;
 public interface FormRepository extends JpaRepository<Form, String> {
 
     @Query("SELECT f FROM Form f")
-    List<FormDto> findAllDtos(Pageable pageable);
+    List<FormView> findAllViews(Pageable pageable);
 
     @Query("SELECT f.accNo FROM Form f WHERE f.filedAt BETWEEN :date1 AND :date2")
     Set<String> findIdsFiledBetween(LocalDate date1, LocalDate date2);

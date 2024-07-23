@@ -2,7 +2,7 @@ package com.followinsider.modules.trading.trade.models;
 
 import java.time.LocalDate;
 
-public interface TradeDto {
+public interface TradeView {
 
     String getSecurityTitle();
 

@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.insider;
 
-import com.followinsider.modules.trading.insider.models.InsiderDto;
+import com.followinsider.modules.trading.insider.models.InsiderView;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -18,13 +18,13 @@ public class InsiderService {
 
     private static final int DEFAULT_PAGE_SIZE = 20;
 
-    public List<InsiderDto> getPage(int page) {
+    public List<InsiderView> getPage(int page) {
         Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE);
-        return insiderRepository.findAllDtos(pageable);
+        return insiderRepository.findAllViews(pageable);
     }
 
-    public InsiderDto getByCik(String cik) {
-        return insiderRepository.findDtoById(cik);
+    public InsiderView getByCik(String cik) {
+        return insiderRepository.findViewById(cik);
     }
 
 }

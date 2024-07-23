@@ -1,7 +1,7 @@
 package com.followinsider.controllers;
 
 import com.followinsider.modules.trading.insider.InsiderService;
-import com.followinsider.modules.trading.insider.models.InsiderDto;
+import com.followinsider.modules.trading.insider.models.InsiderView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +15,12 @@ public class InsidersController {
     private final InsiderService insiderService;
 
     @GetMapping
-    public List<InsiderDto> page(@RequestParam(defaultValue = "0") int page) {
+    public List<InsiderView> page(@RequestParam(defaultValue = "0") int page) {
         return insiderService.getPage(page);
     }
 
     @GetMapping("/{cik}")
-    public InsiderDto cik(@PathVariable String cik) {
+    public InsiderView cik(@PathVariable String cik) {
         return insiderService.getByCik(cik);
     }
 

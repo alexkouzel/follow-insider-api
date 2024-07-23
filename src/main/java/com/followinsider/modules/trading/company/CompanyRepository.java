@@ -1,7 +1,7 @@
 package com.followinsider.modules.trading.company;
 
 import com.followinsider.modules.trading.company.models.Company;
-import com.followinsider.modules.trading.company.models.CompanyDto;
+import com.followinsider.modules.trading.company.models.CompanyView;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,10 +14,10 @@ import java.util.Set;
 public interface CompanyRepository extends JpaRepository<Company, String> {
 
     @Query("SELECT c FROM Company c")
-    List<CompanyDto> findAllDtos(Pageable pageable);
+    List<CompanyView> findAllViews(Pageable pageable);
 
     @Query("SELECT c FROM Company c WHERE c.cik = :cik")
-    CompanyDto findDtoById(String cik);
+    CompanyView findViewsById(String cik);
 
     @Query("SELECT c.cik FROM Company c WHERE c.cik IN :ids")
     Set<String> findIdsPresentIn(Set<String> ids);
