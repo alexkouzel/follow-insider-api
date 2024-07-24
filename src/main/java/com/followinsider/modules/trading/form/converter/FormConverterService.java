@@ -1,6 +1,5 @@
 package com.followinsider.modules.trading.form.converter;
 
-import com.alexkouzel.filing.FilingUrlBuilder;
 import com.alexkouzel.filing.type.f345.OwnershipDocument;
 import com.alexkouzel.filing.type.f345.OwnershipForm;
 import com.alexkouzel.filing.type.f345.footnote.Footnote;
@@ -41,17 +40,12 @@ public class FormConverterService implements FormConverter {
         return Form.builder()
                 .accNo(doc.accNo())
                 .filedAt(doc.filedAt())
-                .xmlUrl(getXmlUrl(doc))
+                .xmlFilename(doc.xmlFilename())
                 .company(getCompany(form))
                 .insider(getInsider(form))
                 .insiderTitles(getInsiderTitles(form))
                 .trades(getTrades(form))
                 .build();
-    }
-
-    private String getXmlUrl(OwnershipDocument doc) {
-        String issuerCik = doc.ownershipForm().getIssuer().getIssuerCik();
-        return FilingUrlBuilder.buildXmlUrl(issuerCik, doc.accNo(), doc.xmlFilename());
     }
 
     private Company getCompany(OwnershipForm form) {
@@ -117,13 +111,15 @@ public class FormConverterService implements FormConverter {
         if (!isDirect) return null;
 
         NonDerivativeTransactionAmounts amounts = transaction.getTransactionAmounts();
+        PostTransactionAmounts postAmounts = transaction.getPostTransactionAmounts();
+
         String securityTitle = transaction.getSecurityTitle().getValue();
+        Double shareCount = amounts.getTransactionShares().getValue();
         LocalDate executedAt = transaction.getTransactionDate().getValue();
-        Double shareNum = amounts.getTransactionShares().getValue();
-        Double sharesLeft = getSharesLeft(transaction);
 
         FootnoteValue<Double> priceField = amounts.getTransactionPricePerShare();
         FootnoteID priceFootnoteID = priceField.getFootnoteId();
+        Double sharePrice = priceField.getValue();
 
         String priceFootnote = null;
         if (priceFootnoteID != null && priceFootnoteID.getId() != null) {
@@ -132,13 +128,14 @@ public class FormConverterService implements FormConverter {
         }
 
         return Trade.builder()
-                .securityTitle(securityTitle)
                 .type(tradeType)
-                .shareNum(shareNum)
-                .sharesLeft(sharesLeft)
-                .sharePrice(priceField.getValue())
-                .sharePriceFootnote(priceFootnote)
+                .securityTitle(securityTitle)
+                .shareCount(shareCount)
                 .executedAt(executedAt)
+                .valueLeft(getValueLeft(postAmounts))
+                .sharesLeft(getSharesLeft(postAmounts))
+                .sharePrice(sharePrice)
+                .sharePriceFootnote(priceFootnote)
                 .build();
     }
 
@@ -153,6 +150,18 @@ public class FormConverterService implements FormConverter {
         };
     }
 
+    private Double getValueLeft(PostTransactionAmounts postAmounts) {
+        return postAmounts.getValueOwnedFollowingTransaction() != null
+                ? postAmounts.getValueOwnedFollowingTransaction().getValue()
+                : null;
+    }
+
+    private Double getSharesLeft(PostTransactionAmounts postAmounts) {
+        return postAmounts.getSharesOwnedFollowingTransaction() != null
+                ? postAmounts.getSharesOwnedFollowingTransaction().getValue()
+                : null;
+    }
+
     private Map<String, String> getFootnotes(OwnershipForm form) {
         FootnoteContainer wrapper = form.getFootnotes();
         if (wrapper == null || wrapper.getFootnote() == null) {
@@ -163,30 +172,6 @@ public class FormConverterService implements FormConverter {
             footnotes.put(footnote.getId(), footnote.getValue());
         }
         return footnotes;
-    }
-
-    private Double getSharesLeft(NonDerivativeTransaction transaction) {
-        PostTransactionAmounts postAmounts = transaction.getPostTransactionAmounts();
-        FootnoteValue<Double> sharesOwnedField = postAmounts.getSharesOwnedFollowingTransaction();
-
-        if (sharesOwnedField != null) {
-            return sharesOwnedField.getValue();
-        }
-
-        Double sharePrice = transaction
-                .getTransactionAmounts()
-                .getTransactionPricePerShare()
-                .getValue();
-
-        if (sharePrice == null || sharePrice <= 0) return null;
-
-        Double valueLeft = postAmounts
-                .getValueOwnedFollowingTransaction()
-                .getValue();
-
-        if (valueLeft == null || valueLeft <= 0) return null;
-
-        return valueLeft / sharePrice;
     }
 
 }

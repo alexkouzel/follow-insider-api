@@ -8,4 +8,6 @@ public interface CompanyView {
 
     String getTicker();
 
+    String getExchange();
+
 }

@@ -5,16 +5,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Service
 @RequiredArgsConstructor
 public class FormLoaderScheduledService {
 
     private final FormLoader formLoader;
-
-    private Set<String> latestAccNos = new HashSet<>();
 
     @Value("${edgar.form_auto_load}")
     private boolean formAutoLoad;

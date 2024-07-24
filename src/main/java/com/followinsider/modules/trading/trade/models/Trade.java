@@ -26,7 +26,7 @@ public class Trade extends BaseEntity {
     private String securityTitle;
 
     @Column(nullable = false)
-    private double shareNum;
+    private double shareCount;
 
     // If null, then indicated in the footnote
     private Double sharePrice;
@@ -38,6 +38,8 @@ public class Trade extends BaseEntity {
     private LocalDate executedAt;
 
     private Double sharesLeft;
+
+    private Double valueLeft;
 
     @Enumerated(EnumType.ORDINAL)
     private TradeType type;

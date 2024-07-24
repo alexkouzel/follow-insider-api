@@ -39,7 +39,7 @@ public class Form implements Identifiable<String> {
     @ElementCollection
     @CollectionTable(
             name = "insider_title",
-            joinColumns = @JoinColumn(name = "acc_num")
+            joinColumns = @JoinColumn(name = "acc_no")
     )
     private Set<String> insiderTitles;
 
@@ -47,7 +47,7 @@ public class Form implements Identifiable<String> {
     private LocalDate filedAt;
 
     @Column(nullable = false)
-    private String xmlUrl;
+    private String xmlFilename;
 
     @Override
     public String getId() {

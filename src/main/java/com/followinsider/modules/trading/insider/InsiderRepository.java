@@ -13,6 +13,9 @@ import java.util.Set;
 @Repository
 public interface InsiderRepository extends JpaRepository<Insider, String> {
 
+    @Query("SELECT i FROM Insider i WHERE i.cik LIKE :text% OR UPPER(i.name) LIKE %:text%")
+    List<InsiderView> findLike(String text, Pageable pageable);
+
     @Query("SELECT i FROM Insider i")
     List<InsiderView> findAllViews(Pageable pageable);
 

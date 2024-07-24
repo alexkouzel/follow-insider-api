@@ -6,7 +6,7 @@ public interface TradeView {
 
     String getSecurityTitle();
 
-    Double getShareNum();
+    Double getShareCount();
 
     Double getSharePrice();
 
@@ -15,6 +15,8 @@ public interface TradeView {
     LocalDate getExecutedAt();
 
     Double getSharesLeft();
+
+    Double getValueLeft();
 
     TradeType getType();
 

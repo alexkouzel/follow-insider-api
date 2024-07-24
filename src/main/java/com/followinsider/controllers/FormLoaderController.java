@@ -32,9 +32,9 @@ public class FormLoaderController {
         formLoader.loadLastDays(days);
     }
 
-    @PostMapping("/cik/{cik}")
-    public void cik(@PathVariable String cik) {
-        formLoader.loadByCik(cik);
+    @PostMapping("/company/{cik}")
+    public void company(@PathVariable String cik) {
+        formLoader.loadByCompany(cik);
     }
 
     @PostMapping("/year/{year}/quarter/{quarter}")

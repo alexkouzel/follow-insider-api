@@ -41,7 +41,7 @@ public class EdgarConfig {
     private Consumer<Integer> statusCodeHandler() {
         return (statusCode) -> {
             if (statusCode != 200) {
-                log.error("Failed loading EDGAR data :: status_code: {}", statusCode);
+                log.error("Failed EDGAR data loading :: status_code: {}", statusCode);
             }
         };
     }

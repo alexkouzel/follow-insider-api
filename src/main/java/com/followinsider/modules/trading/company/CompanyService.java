@@ -1,60 +1,62 @@
 package com.followinsider.modules.trading.company;
 
-import com.alexkouzel.client.exceptions.HttpRequestException;
-import com.alexkouzel.company.ListedCompany;
-import com.alexkouzel.company.ListedCompanyLoader;
+import com.followinsider.modules.trading.company.loader.CompanyLoader;
 import com.followinsider.modules.trading.company.models.Company;
 import com.followinsider.modules.trading.company.models.CompanyView;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
 
-    private final ListedCompanyLoader listedCompanyLoader;
+    private final CompanyLoader companyLoader;
 
-    private static final int DEFAULT_PAGE_SIZE = 20;
+    private static final int PAGE_SIZE = 20;
+
+    private static final int MAX_SEARCH_LIMIT = 10;
 
     @PostConstruct
-    public void init() throws HttpRequestException {
-        if (companyRepository.count() != 0) return;
-
-        List<Company> companies = listedCompanyLoader
-                .loadAll()
-                .stream()
-                .map(this::convert)
-                .collect(Collectors.toList());
-
-        companyRepository.saveAll(companies);
-    }
-
-    private Company convert(ListedCompany company) {
-        return Company.builder()
-                .cik(company.id())
-                .name(company.name())
-                .ticker(company.ticker())
-                .exchange(company.exchange())
-                .build();
+    public void init() {
+        if (companyRepository.count() == 0) {
+            companyLoader.loadAll();
+        }
     }
 
     public List<CompanyView> getPage(int page) {
-        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE);
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         return companyRepository.findAllViews(pageable);
     }
 
     public CompanyView getByCik(String cik) {
-        return companyRepository.findViewsById(cik);
+        return companyRepository.findViewById(cik);
+    }
+
+    public List<CompanyView> search(String text, int limit) {
+        text = text.toUpperCase();
+        limit = Math.min(limit, MAX_SEARCH_LIMIT);
+        Pageable pageable = PageRequest.of(0, limit);
+        return companyRepository.findLike(text, pageable);
+    }
+
+    public void saveAll(List<Company> companies) {
+        companyRepository.saveAll(companies);
+    }
+
+    public Set<String> getCiksPresentIn(Set<String> ids) {
+        return companyRepository.findIdsPresentIn(ids);
+    }
+
+    public Company getReferenceByCik(String cik) {
+        return companyRepository.getReferenceById(cik);
     }
 
 }

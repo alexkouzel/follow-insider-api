@@ -25,7 +25,7 @@ public class Company implements Identifiable<String> {
     @Column(nullable = false)
     private String name;
 
-    @Column(length = 10)
+    @Column(nullable = false, length = 10)
     private String ticker;
 
     private String exchange;

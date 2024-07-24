@@ -13,11 +13,17 @@ import java.util.Set;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, String> {
 
+    @Query("SELECT c FROM Company c " +
+            "WHERE c.cik LIKE :text% " +
+            "OR c.ticker LIKE :text% " +
+            "OR UPPER(c.name) LIKE %:text%")
+    List<CompanyView> findLike(String text, Pageable pageable);
+
     @Query("SELECT c FROM Company c")
     List<CompanyView> findAllViews(Pageable pageable);
 
     @Query("SELECT c FROM Company c WHERE c.cik = :cik")
-    CompanyView findViewsById(String cik);
+    CompanyView findViewById(String cik);
 
     @Query("SELECT c.cik FROM Company c WHERE c.cik IN :ids")
     Set<String> findIdsPresentIn(Set<String> ids);

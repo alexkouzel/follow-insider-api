@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FiscalQuarterRepository extends JpaRepository<FiscalQuarter, String> {
@@ -14,11 +15,11 @@ public interface FiscalQuarterRepository extends JpaRepository<FiscalQuarter, St
     @Query("SELECT fq FROM FiscalQuarter fq")
     List<FiscalQuarterView> findAllViews();
 
-    FiscalQuarter findByYearAndQuarter(int year, int quarter);
-
     FiscalQuarterView findFirstByOrderByYearDescQuarterDesc();
 
     FiscalQuarterView findFirstByOrderByYearAscQuarterAsc();
+
+    Optional<FiscalQuarter> findByYearAndQuarter(int year, int quarter);
 
     @Query("SELECT COUNT(DISTINCT fq.year) FROM FiscalQuarter fq")
     long countYears();

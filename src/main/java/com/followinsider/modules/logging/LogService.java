@@ -77,7 +77,7 @@ public class LogService {
         try {
             return jsonMapper.readValue(line, Log.class);
         } catch (JsonProcessingException e) {
-            log.error("Failed to parse a log :: line: '{}', error: '{}'", line, e.getMessage());
+            log.error("Failed log parsing :: line: '{}', error: '{}'", line, e.getMessage());
             return null;
         }
     }

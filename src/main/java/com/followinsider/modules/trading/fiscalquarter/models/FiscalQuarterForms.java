@@ -18,7 +18,12 @@ public class FiscalQuarterForms {
     private String id;
 
     @OneToOne
-    @JoinColumn(name = "fiscal_quarter_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(
+            name = "fiscal_quarter_id",
+            referencedColumnName = "id",
+            insertable = false,
+            updatable = false
+    )
     private FiscalQuarter fiscalQuarter;
 
     private Integer total;
