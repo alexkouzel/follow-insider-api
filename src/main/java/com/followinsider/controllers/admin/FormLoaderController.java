@@ -1,4 +1,4 @@
-package com.followinsider.controllers;
+package com.followinsider.controllers.admin;
 
 import com.followinsider.modules.trading.fiscalquarter.FiscalQuarterService;
 import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterFormsView;

@@ -1,4 +1,4 @@
-package com.followinsider.controllers;
+package com.followinsider.controllers.admin;
 
 import com.followinsider.modules.logging.Log;
 import com.followinsider.modules.logging.LogLevel;

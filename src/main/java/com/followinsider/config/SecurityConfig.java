@@ -33,8 +33,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 antMatcher("/actuator/health"),
                                 antMatcher("/fiscal/**"),
-                                antMatcher("/companies/**"),
                                 antMatcher("/insiders/**"),
+                                antMatcher("/companies/**"),
+                                antMatcher("/search/**"),
                                 antMatcher("/forms/**")
                         ).permitAll()
                         .anyRequest().hasRole("ADMIN")
