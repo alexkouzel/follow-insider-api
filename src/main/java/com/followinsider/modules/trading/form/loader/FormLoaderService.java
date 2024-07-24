@@ -49,7 +49,7 @@ public class FormLoaderService implements FormLoader {
 
     private final FormRepository formRepository;
 
-    @Value("${sec.form_batch_size}")
+    @Value("${edgar.form_batch_size}")
     private int formBatchSize;
 
     @Override

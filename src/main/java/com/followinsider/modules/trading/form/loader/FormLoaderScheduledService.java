@@ -16,7 +16,7 @@ public class FormLoaderScheduledService {
 
     private Set<String> latestAccNos = new HashSet<>();
 
-    @Value("${sec.form_auto_load}")
+    @Value("${edgar.form_auto_load}")
     private boolean formAutoLoad;
 
     @Scheduled(cron = "0 */5 * * * *") // every 5 minutes

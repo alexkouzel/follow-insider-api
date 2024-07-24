@@ -5,8 +5,8 @@ admin:
   username: ${DEV_ADMIN_USERNAME}
   password: ${DEV_ADMIN_PASSWORD}
 
-sec:
-  user_agent: ${DEV_SEC_USER_AGENT}
+edgar:
+  user_agent: ${DEV_EDGAR_USER_AGENT}
   form_batch_size: 250
   form_auto_load: false
 

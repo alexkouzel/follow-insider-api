@@ -5,8 +5,8 @@ admin:
   username: ${PROD_ADMIN_USERNAME}
   password: ${PROD_ADMIN_PASSWORD}
 
-sec:
-  user_agent: ${PROD_SEC_USER_AGENT}
+edgar:
+  user_agent: ${PROD_EDGAR_USER_AGENT}
   form_batch_size: 2500
   form_auto_load: true
 

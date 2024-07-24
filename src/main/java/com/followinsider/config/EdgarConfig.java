@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 @Configuration
 public class EdgarConfig {
 
-    @Value("${sec.user_agent}")
+    @Value("${edgar.user_agent}")
     private String userAgent;
 
     @Bean
