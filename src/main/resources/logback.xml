@@ -15,7 +15,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <fileNamePattern>${PATH}/app-%i.log</fileNamePattern>
             <minIndex>1</minIndex>
-            <maxIndex>1</maxIndex>
+            <maxIndex>2</maxIndex>
         </rollingPolicy>
 
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
@@ -26,16 +26,16 @@
             <providers>
                 <timestamp>
                     <timeZone>UTC</timeZone>
-                    <fieldName>date</fieldName>
+                    <fieldName>timestamp</fieldName>
                 </timestamp>
                 <threadName>
-                    <fieldName>thread</fieldName>
+                    <fieldName>threadName</fieldName>
                 </threadName>
                 <logLevel>
-                    <fieldName>level</fieldName>
+                    <fieldName>logLevel</fieldName>
                 </logLevel>
                 <loggerName>
-                    <fieldName>path</fieldName>
+                    <fieldName>loggerName</fieldName>
                 </loggerName>
                 <message>
                     <fieldName>message</fieldName>

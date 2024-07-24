@@ -19,5 +19,3 @@ email:
   username: ${EMAIL_USERNAME}
   password: ${EMAIL_PASSWORD}
   sender: ${EMAIL_SENDER}
-
-logging.file.name: logs/app.log

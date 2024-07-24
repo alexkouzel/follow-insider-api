@@ -7,11 +7,6 @@ import java.util.Arrays;
 @UtilityClass
 public class StringUtils {
 
-    public static String removeFirstLine(String value) {
-        int nextLineIdx = value.indexOf("\n") + 1;
-        return value.substring(nextLineIdx);
-    }
-
     public String substring(String value, String open, String close) {
         int start = value.indexOf(open);
         if (start == -1) return null;

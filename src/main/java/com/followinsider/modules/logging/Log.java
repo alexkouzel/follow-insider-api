@@ -4,13 +4,13 @@ import java.time.LocalDate;
 
 public record Log(
 
-        LocalDate date,
+        LocalDate timestamp,
 
-        String thread,
+        String threadName,
 
-        LogLevel level,
+        LogLevel logLevel,
 
-        String path,
+        String loggerName,
 
         String message,
 
