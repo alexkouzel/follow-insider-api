@@ -252,7 +252,7 @@ public class FormLoaderService implements FormLoader {
     }
 
     private void logLoadingStarted(String source, int totalForms, int batchCount) {
-        log.info("Started form loading :: source: '{}', total: {}, batch_count: {}, batch_size: {}",
+        log.info("Started form loading :: source: '{}', form_count: {}, batch_count: {}, batch_size: {}",
                 source, totalForms, batchCount, formBatchSize);
     }
 
