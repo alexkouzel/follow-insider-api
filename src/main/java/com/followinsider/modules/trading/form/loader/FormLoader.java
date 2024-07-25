@@ -6,7 +6,7 @@ public interface FormLoader {
 
     void loadLastDays(int days);
 
-    void loadByCompany(String cik);
+    void loadByCompany(int cik);
 
     void loadFiscalQuarterRange(String from, String to);
 

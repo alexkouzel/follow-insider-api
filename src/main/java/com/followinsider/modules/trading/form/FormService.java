@@ -24,11 +24,11 @@ public class FormService {
         return formRepository.findAllViews(pageable);
     }
 
-    public List<FormView> getByCompanyCik(String cik) {
+    public List<FormView> getByCompanyCik(int cik) {
         return formRepository.findAllByCompanyCik(cik);
     }
 
-    public List<FormView> getByInsiderCik(String cik) {
+    public List<FormView> getByInsiderCik(int cik) {
         return formRepository.findAllByInsiderCik(cik);
     }
 

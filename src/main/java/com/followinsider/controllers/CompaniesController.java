@@ -24,12 +24,12 @@ public class CompaniesController {
     }
 
     @GetMapping("/{cik}")
-    public CompanyView cik(@PathVariable String cik) {
+    public CompanyView cik(@PathVariable int cik) {
         return companyService.getByCik(cik);
     }
 
     @GetMapping("/{cik}/forms")
-    public List<FormView> forms(@PathVariable String cik) {
+    public List<FormView> forms(@PathVariable int cik) {
         return formService.getByCompanyCik(cik);
     }
 

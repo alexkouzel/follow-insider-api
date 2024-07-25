@@ -11,18 +11,18 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public interface InsiderRepository extends JpaRepository<Insider, String> {
+public interface InsiderRepository extends JpaRepository<Insider, Integer> {
 
-    @Query("SELECT i FROM Insider i WHERE i.cik LIKE :text% OR UPPER(i.name) LIKE %:text%")
+    @Query("SELECT i FROM Insider i WHERE str(i.cik) LIKE :text% OR UPPER(i.name) LIKE %:text%")
     List<InsiderView> findLike(String text, Pageable pageable);
 
     @Query("SELECT i FROM Insider i")
     List<InsiderView> findAllViews(Pageable pageable);
 
     @Query("SELECT i FROM Insider i WHERE i.cik = :cik")
-    InsiderView findViewById(String cik);
+    InsiderView findViewById(int cik);
 
     @Query("SELECT i.cik FROM Insider i WHERE i.cik IN :ids")
-    Set<String> findIdsPresentIn(Set<String> ids);
+    Set<Integer> findIdsPresentIn(Set<Integer> ids);
 
 }

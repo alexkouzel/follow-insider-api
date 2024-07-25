@@ -53,8 +53,8 @@ public class FormSaverService implements FormSaver {
     }
 
     private void saveCompanies(List<Company> companies) {
-        Set<String> ciks = getEntityIds(companies);
-        Set<String> savedCiks = companyService.getCiksPresentIn(ciks);
+        Set<Integer> ciks = getEntityIds(companies);
+        Set<Integer> savedCiks = companyService.getCiksPresentIn(ciks);
 
         List<Company> newCompanies = companies.stream()
                 .filter(company -> !savedCiks.contains(company.getCik()))
@@ -64,8 +64,8 @@ public class FormSaverService implements FormSaver {
     }
 
     private void saveInsiders(List<Insider> insiders) {
-        Set<String> ciks = getEntityIds(insiders);
-        Set<String> savedCiks = insiderService.getCiksPresentIn(ciks);
+        Set<Integer> ciks = getEntityIds(insiders);
+        Set<Integer> savedCiks = insiderService.getCiksPresentIn(ciks);
 
         List<Insider> newInsiders = insiders.stream()
                 .filter(insider -> !savedCiks.contains(insider.getCik()))

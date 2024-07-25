@@ -28,7 +28,7 @@ public class Trade extends BaseEntity {
     @Column(nullable = false)
     private double shareCount;
 
-    // If null, then indicated in the footnote
+    // If null, then sharePriceFootnote is not null
     private Double sharePrice;
 
     @Column(length = 1000)
@@ -37,8 +37,10 @@ public class Trade extends BaseEntity {
     @Column(nullable = false)
     private LocalDate executedAt;
 
+    // If null, then valueLeft is not null
     private Double sharesLeft;
 
+    // If null, then sharesLeft is not null
     private Double valueLeft;
 
     @Enumerated(EnumType.ORDINAL)

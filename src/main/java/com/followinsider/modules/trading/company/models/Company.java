@@ -16,11 +16,10 @@ import java.util.List;
 @EqualsAndHashCode(exclude = "forms")
 @ToString(exclude = "forms")
 @Table(name = "company")
-public class Company implements Identifiable<String> {
+public class Company implements Identifiable<Integer> {
 
     @Id
-    @Column(length = 10)
-    private String cik;
+    private int cik;
 
     @Column(nullable = false)
     private String name;
@@ -34,7 +33,7 @@ public class Company implements Identifiable<String> {
     private List<Form> forms;
 
     @Override
-    public String getId() {
+    public Integer getId() {
         return cik;
     }
 

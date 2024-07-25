@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public interface CompanyRepository extends JpaRepository<Company, String> {
+public interface CompanyRepository extends JpaRepository<Company, Integer> {
 
     @Query("SELECT c FROM Company c " +
-            "WHERE c.cik LIKE :text% " +
+            "WHERE str(c.cik) LIKE :text% " +
             "OR c.ticker LIKE :text% " +
             "OR UPPER(c.name) LIKE %:text%")
     List<CompanyView> findLike(String text, Pageable pageable);
@@ -23,9 +23,9 @@ public interface CompanyRepository extends JpaRepository<Company, String> {
     List<CompanyView> findAllViews(Pageable pageable);
 
     @Query("SELECT c FROM Company c WHERE c.cik = :cik")
-    CompanyView findViewById(String cik);
+    CompanyView findViewById(int cik);
 
     @Query("SELECT c.cik FROM Company c WHERE c.cik IN :ids")
-    Set<String> findIdsPresentIn(Set<String> ids);
+    Set<Integer> findIdsPresentIn(Set<Integer> ids);
 
 }

@@ -2,7 +2,7 @@ package com.followinsider.modules.trading.company.models;
 
 public interface CompanyView {
 
-    String getCik();
+    int getCik();
 
     String getName();
 

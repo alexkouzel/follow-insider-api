@@ -24,12 +24,12 @@ public class InsidersController {
     }
 
     @GetMapping("/{cik}")
-    public InsiderView cik(@PathVariable String cik) {
+    public InsiderView cik(@PathVariable int cik) {
         return insiderService.getByCik(cik);
     }
 
     @GetMapping("/{cik}/forms")
-    public List<FormView> forms(@PathVariable String cik) {
+    public List<FormView> forms(@PathVariable int cik) {
         return formService.getByInsiderCik(cik);
     }
 

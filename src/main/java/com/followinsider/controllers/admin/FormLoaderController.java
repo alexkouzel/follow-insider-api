@@ -33,7 +33,7 @@ public class FormLoaderController {
     }
 
     @PostMapping("/company/{cik}")
-    public void company(@PathVariable String cik) {
+    public void company(@PathVariable int cik) {
         formLoader.loadByCompany(cik);
     }
 

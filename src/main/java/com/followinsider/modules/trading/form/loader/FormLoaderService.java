@@ -70,7 +70,7 @@ public class FormLoaderService implements FormLoader {
 
     @Override
     @Async
-    public void loadByCompany(String cik) {
+    public void loadByCompany(int cik) {
         String source = "CIK " + cik;
         loadByRefLoader(source, () -> filingReferenceLoader.loadByCik(cik));
     }
@@ -174,9 +174,6 @@ public class FormLoaderService implements FormLoader {
     }
 
     private int loadByRefsInBatches(String source, List<FilingReference> refs) {
-        if (refs.size() <= formBatchSize)
-            return loadByRefs(refs);
-
         List<List<FilingReference>> batches = ListUtils.splitBySize(refs, formBatchSize);
 
         int batchCount = batches.size();

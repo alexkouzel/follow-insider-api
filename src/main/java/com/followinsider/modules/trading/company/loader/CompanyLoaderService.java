@@ -21,11 +21,15 @@ public class CompanyLoaderService implements CompanyLoader {
     private final CompanyRepository companyRepository;
 
     @Override
-    public void loadAll() {
+    public int loadAll() {
         try {
-            companyRepository.saveAll(fetchAll());
+            List<Company> companies = fetchAll();
+            companyRepository.saveAll(companies);
+            return companies.size();
+
         } catch (HttpRequestException e) {
             log.error("Failed company loading :: error: '{}'", e.getMessage());
+            return 0;
         }
     }
 

@@ -25,7 +25,7 @@ public class InsiderService {
         return insiderRepository.findAllViews(pageable);
     }
 
-    public InsiderView getByCik(String cik) {
+    public InsiderView getByCik(int cik) {
         return insiderRepository.findViewById(cik);
     }
 
@@ -40,11 +40,11 @@ public class InsiderService {
         insiderRepository.saveAll(insiders);
     }
 
-    public Set<String> getCiksPresentIn(Set<String> ciks) {
+    public Set<Integer> getCiksPresentIn(Set<Integer> ciks) {
         return insiderRepository.findIdsPresentIn(ciks);
     }
 
-    public Insider getReferenceByCik(String cik) {
+    public Insider getReferenceByCik(int cik) {
         return insiderRepository.getReferenceById(cik);
     }
 
