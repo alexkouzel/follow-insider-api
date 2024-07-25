@@ -28,9 +28,6 @@ public class FiscalQuarterService {
         List<FiscalQuarter> fiscalQuarters = generate();
         fiscalQuarters = fiscalQuarterRepository.saveAll(fiscalQuarters);
 
-        List<FiscalQuarterForms> fiscalQuartersForms = generateForms(fiscalQuarters);
-        fiscalQuarterFormsRepository.saveAll(fiscalQuartersForms);
-
         log.info("Loaded fiscal quarters :: count: {}", fiscalQuarters.size());
     }
 

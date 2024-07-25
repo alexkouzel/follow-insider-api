@@ -25,6 +25,12 @@ public class Form implements Identifiable<String> {
     @Column(length = 20)
     private String accNo;
 
+    @Column(nullable = false)
+    private LocalDate filedAt;
+
+    @Column(nullable = false)
+    private String xmlFilename;
+
     @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
     private Set<Trade> trades;
 
@@ -42,12 +48,6 @@ public class Form implements Identifiable<String> {
             joinColumns = @JoinColumn(name = "acc_no")
     )
     private Set<String> insiderTitles;
-
-    @Column(nullable = false)
-    private LocalDate filedAt;
-
-    @Column(nullable = false)
-    private String xmlFilename;
 
     @Override
     public String getId() {

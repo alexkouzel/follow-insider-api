@@ -18,10 +18,6 @@ import java.time.LocalDate;
 @Table(name = "trade")
 public class Trade extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acc_no")
-    private Form form;
-
     @Column(nullable = false)
     private String securityTitle;
 
@@ -45,5 +41,9 @@ public class Trade extends BaseEntity {
 
     @Enumerated(EnumType.ORDINAL)
     private TradeType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "acc_no")
+    private Form form;
 
 }

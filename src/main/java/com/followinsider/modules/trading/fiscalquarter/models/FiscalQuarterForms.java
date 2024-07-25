@@ -14,24 +14,19 @@ import lombok.*;
 public class FiscalQuarterForms {
 
     @Id
-    @Column(name = "fiscal_quarter_id")
     private String id;
-
-    @OneToOne
-    @JoinColumn(
-            name = "fiscal_quarter_id",
-            referencedColumnName = "id",
-            insertable = false,
-            updatable = false
-    )
-    private FiscalQuarter fiscalQuarter;
 
     private Integer total;
 
     private Integer loaded;
 
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
+    private FiscalQuarter fiscalQuarter;
+
     public FiscalQuarterForms(FiscalQuarter fiscalQuarter) {
-        this.id = fiscalQuarter.getId();
+        this.fiscalQuarter = fiscalQuarter;
     }
 
     public boolean isFull() {
