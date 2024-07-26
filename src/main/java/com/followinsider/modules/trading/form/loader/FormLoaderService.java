@@ -68,6 +68,11 @@ public class FormLoaderService implements FormLoader {
         }
     }
 
+    private void loadDaysAgo(int daysAgo) {
+        String source = daysAgo + " days ago";
+        loadByRefLoader(source, () -> filingReferenceLoader.loadDaysAgo(daysAgo));
+    }
+
     @Override
     @Async
     public void loadByCompany(int cik) {
@@ -81,51 +86,38 @@ public class FormLoaderService implements FormLoader {
         loadFiscalQuarterRange(new FiscalQuarterRange(from, to));
     }
 
+    private void loadFiscalQuarterRange(FiscalQuarterRange range) {
+        range.generate().forEach(vals -> loadFiscalQuarter(vals.year(), vals.quarter()));
+    }
+
     @Override
     @Async
     public void loadFiscalQuarter(int year, int quarter) {
         fiscalQuarterRepository
                 .findByYearAndQuarter(year, quarter)
-                .ifPresentOrElse(this::loadFiscalQuarter, () -> {
-                    String source = new FiscalQuarterVals(year, quarter).toAlias();
-                    logLoadingAborted(source, "invalid fiscal quarter");
-                });
-    }
-
-    private void loadDaysAgo(int daysAgo) {
-        String source = daysAgo + " days ago";
-        loadByRefLoader(source, () -> filingReferenceLoader.loadDaysAgo(daysAgo));
+                .ifPresentOrElse(this::loadFiscalQuarter,
+                        () -> {
+                            String source = new FiscalQuarterVals(year, quarter).toAlias();
+                            logLoadingAborted(source, "invalid fiscal quarter");
+                        });
     }
 
     private void loadFiscalQuarter(FiscalQuarter fiscalQuarter) {
-        FiscalQuarterForms forms = fiscalQuarterFormsRepository
-                .findByFiscalQuarter(fiscalQuarter)
-                .orElse(new FiscalQuarterForms(fiscalQuarter));
-
-        loadFiscalQuarter(forms);
-    }
-
-    private void loadFiscalQuarter(FiscalQuarterForms forms) {
+        FiscalQuarterForms forms = fiscalQuarterFormsRepository.findByFiscalQuarter(fiscalQuarter);
         FiscalQuarterVals vals = forms.getFiscalQuarter().getVals();
-        String source = vals.toAlias();
 
-        if (forms.isFull()) {
-            logLoadingAborted(source, "already fully loaded");
-            return;
-        }
-        loadByRefLoader(source,
-                () -> filingReferenceLoader.loadByFiscalQuarter(vals.year(), vals.quarter()))
+        RefLoader refLoader = () -> filingReferenceLoader
+                .loadByFiscalQuarter(vals.year(), vals.quarter());
+
+        loadByRefLoader(vals.toAlias(), refLoader)
                 .ifPresent((progress) -> updateFiscalQuarterForms(forms, progress));
     }
 
     private void updateFiscalQuarterForms(FiscalQuarterForms forms, FormLoaderProgress progress) {
         forms.setTotal(progress.total());
-        forms.setLoaded(progress.loaded());
+        forms.setLoaded(progress.old() + progress.loaded());
+        forms.setLastUpdated(LocalDate.now());
         fiscalQuarterFormsRepository.save(forms);
-    }
-
-    private void loadFiscalQuarterRange(FiscalQuarterRange range) {
-        range.generate().forEach(vals -> loadFiscalQuarter(vals.year(), vals.quarter()));
     }
 
     /* --------------------------------------------------- */
@@ -140,7 +132,6 @@ public class FormLoaderService implements FormLoader {
     private Optional<FormLoaderProgress> loadByRefLoader(String source, RefLoader refLoader) {
         return loadRefs(source, refLoader)
                 .flatMap(refs -> {
-                    refs = FilingReferenceUtils.filterType(refs, FilingType.F4);
                     FormLoaderProgress progress = safeLoadByRefs(source, refs);
                     logLoadedForms(source, progress);
                     return Optional.of(progress);
@@ -159,18 +150,20 @@ public class FormLoaderService implements FormLoader {
     }
 
     private FormLoaderProgress safeLoadByRefs(String source, List<FilingReference> refs) {
+        refs = FilingReferenceUtils.filterType(refs, FilingType.F4);
+        refs = FilingReferenceUtils.removeDups(refs);
+
         int total = refs.size();
 
-        refs = FilingReferenceUtils.removeDups(refs);
-        refs = filterOldRefs(refs);
+        List<FilingReference> newRefs = filterOldRefs(refs);
+        int old = total - newRefs.size();
 
-        if (refs.isEmpty())
+        if (newRefs.isEmpty())
             return new FormLoaderProgress(total, total, 0, 0);
 
-        int loaded = loadByRefsInBatches(source, refs);
-        int filtered = total - refs.size();
+        int loaded = loadByRefsInBatches(source, newRefs);
 
-        return new FormLoaderProgress(total, filtered, loaded);
+        return new FormLoaderProgress(total, old, loaded);
     }
 
     private int loadByRefsInBatches(String source, List<FilingReference> refs) {
@@ -259,8 +252,8 @@ public class FormLoaderService implements FormLoader {
     }
 
     private void logLoadedForms(String source, FormLoaderProgress progress) {
-        log.info("Finished form loading :: source: '{}', total: {}, filtered: {}, loaded: {}, failed: {}",
-                source, progress.total(), progress.filtered(), progress.loaded(), progress.failed());
+        log.info("Finished form loading :: source: '{}', total: {}, old: {}, loaded: {}, failed: {}",
+                source, progress.total(), progress.old(), progress.loaded(), progress.failed());
     }
 
     private void logLoadingFormRefsError(String source, String error) {

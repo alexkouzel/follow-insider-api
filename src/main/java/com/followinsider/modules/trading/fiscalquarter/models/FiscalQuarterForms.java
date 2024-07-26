@@ -3,6 +3,8 @@ package com.followinsider.modules.trading.fiscalquarter.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +22,8 @@ public class FiscalQuarterForms {
 
     private Integer loaded;
 
+    private LocalDate lastUpdated;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
@@ -27,10 +31,6 @@ public class FiscalQuarterForms {
 
     public FiscalQuarterForms(FiscalQuarter fiscalQuarter) {
         this.fiscalQuarter = fiscalQuarter;
-    }
-
-    public boolean isFull() {
-        return total != null && total.equals(loaded);
     }
 
 }

@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface FiscalQuarterFormsRepository extends JpaRepository<FiscalQuarterForms, Integer> {
@@ -16,6 +15,6 @@ public interface FiscalQuarterFormsRepository extends JpaRepository<FiscalQuarte
     @Query("SELECT fqf FROM FiscalQuarterForms fqf")
     List<FiscalQuarterFormsView> findAllViews();
 
-    Optional<FiscalQuarterForms> findByFiscalQuarter(FiscalQuarter fiscalQuarter);
+    FiscalQuarterForms findByFiscalQuarter(FiscalQuarter fiscalQuarter);
 
 }
