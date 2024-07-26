@@ -10,8 +10,6 @@ public interface TradeView {
 
     Double getSharePrice();
 
-    String getSharePriceFootnote();
-
     LocalDate getExecutedAt();
 
     Double getSharesLeft();

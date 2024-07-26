@@ -24,11 +24,8 @@ public class Trade extends BaseEntity {
     @Column(nullable = false)
     private double shareCount;
 
-    // If null, then sharePriceFootnote is not null
+    // If null, then indicated in the footnotes
     private Double sharePrice;
-
-    @Column(length = 1000)
-    private String sharePriceFootnote;
 
     @Column(nullable = false)
     private LocalDate executedAt;
