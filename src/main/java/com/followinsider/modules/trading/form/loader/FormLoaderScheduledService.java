@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FormLoaderScheduledService {
 
-    private final FormLoader formLoader;
+    private final ScopedFormLoader scopedFormLoader;
 
     @Value("${edgar.form_auto_load}")
     private boolean formAutoLoad;
@@ -17,13 +17,13 @@ public class FormLoaderScheduledService {
     @Scheduled(cron = "0 */5 * * * *") // every 5 minutes
     public void loadLatestForms() {
         if (!formAutoLoad) return;
-        formLoader.loadLatest();
+        scopedFormLoader.loadLatest();
     }
 
     @Scheduled(cron = "0 0 2 * * *") // every day at 2:00
     public void loadTodayForms() {
         if (!formAutoLoad) return;
-        formLoader.loadLastDays(1);
+        scopedFormLoader.loadLastDays(1);
     }
 
     // TODO: Implement loadLastFiscalQuarterForms().

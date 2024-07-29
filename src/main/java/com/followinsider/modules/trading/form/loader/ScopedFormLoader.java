@@ -1,10 +1,12 @@
 package com.followinsider.modules.trading.form.loader;
 
-public interface FormLoader {
+public interface ScopedFormLoader {
 
     void loadLatest();
 
     void loadLastDays(int days);
+
+    void loadDaysAgo(int daysAgo);
 
     void loadByCompany(int cik);
 

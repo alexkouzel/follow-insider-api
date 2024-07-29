@@ -2,7 +2,7 @@ package com.followinsider.controllers.admin;
 
 import com.followinsider.modules.trading.fiscalquarter.FiscalQuarterService;
 import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterFormsView;
-import com.followinsider.modules.trading.form.loader.FormLoader;
+import com.followinsider.modules.trading.form.loader.ScopedFormLoader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FormLoaderController {
 
-    private final FormLoader formLoader;
+    private final ScopedFormLoader scopedFormLoader;
 
     private final FiscalQuarterService fiscalQuarterService;
 
@@ -24,27 +24,27 @@ public class FormLoaderController {
 
     @PostMapping("/latest")
     public void latest() {
-        formLoader.loadLatest();
+        scopedFormLoader.loadLatest();
     }
 
     @PostMapping("/last/days/{days}")
     public void lastDays(@PathVariable int days) {
-        formLoader.loadLastDays(days);
+        scopedFormLoader.loadLastDays(days);
     }
 
     @PostMapping("/company/{cik}")
     public void company(@PathVariable int cik) {
-        formLoader.loadByCompany(cik);
+        scopedFormLoader.loadByCompany(cik);
     }
 
     @PostMapping("/year/{year}/quarter/{quarter}")
     public void fiscalQuarter(@PathVariable int year, @PathVariable int quarter) {
-        formLoader.loadFiscalQuarter(year, quarter);
+        scopedFormLoader.loadFiscalQuarter(year, quarter);
     }
 
     @PostMapping("/from/{from}/to/{to}")
     public void range(@PathVariable String from, @PathVariable String to) {
-        formLoader.loadFiscalQuarterRange(from, to);
+        scopedFormLoader.loadFiscalQuarterRange(from, to);
     }
 
 }
