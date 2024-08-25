@@ -22,7 +22,7 @@ public class CompanyService {
 
     private final CompanyLoader companyLoader;
 
-    private static final int PAGE_SIZE = 20;
+    private static final int MAX_PAGE_SIZE = 20;
 
     private static final int MAX_SEARCH_LIMIT = 10;
 
@@ -34,9 +34,10 @@ public class CompanyService {
         }
     }
 
-    public List<CompanyView> getPage(int page) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-        return companyRepository.findAllViews(pageable);
+    public List<CompanyView> getPage(int page, int pageSize) {
+        pageSize = Math.min(pageSize, MAX_PAGE_SIZE);
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return companyRepository.findPage(pageable).getContent();
     }
 
     public CompanyView getByCik(int cik) {

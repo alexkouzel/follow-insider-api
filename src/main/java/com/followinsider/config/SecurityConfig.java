@@ -29,14 +29,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 antMatcher("/actuator/health"),
                                 antMatcher("/fiscal/**"),
                                 antMatcher("/insiders/**"),
                                 antMatcher("/companies/**"),
-                                antMatcher("/search/**"),
-                                antMatcher("/forms/**")
+                                antMatcher("/forms/**"),
+                                antMatcher("/trades/**")
                         ).permitAll()
                         .anyRequest().hasRole("ADMIN")
                 )

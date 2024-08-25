@@ -5,7 +5,6 @@ import com.followinsider.modules.trading.form.models.FormView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -16,24 +15,14 @@ public class FormsController {
     private final FormService formService;
 
     @GetMapping
-    public List<FormView> page(@RequestParam(defaultValue = "0") int page) {
-        return formService.getPage(page);
+    public List<FormView> page(@RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "20") int pageSize) {
+        return formService.getPage(page, pageSize);
     }
 
-    @GetMapping("/count/between")
-    public int countBetween(@RequestParam LocalDate date1,
-                            @RequestParam LocalDate date2) {
-        return formService.countBetween(date1, date2);
-    }
-
-    @GetMapping("/count/before")
-    public int countBefore(@RequestParam LocalDate date) {
-        return formService.countBefore(date);
-    }
-
-    @GetMapping("/count/after")
-    public int countAfter(@RequestParam LocalDate date) {
-        return formService.countAfter(date);
+    @GetMapping("/count")
+    public long count() {
+        return formService.count();
     }
 
 }

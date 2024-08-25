@@ -19,8 +19,9 @@ public class InsidersController {
     private final FormService formService;
 
     @GetMapping
-    public List<InsiderView> page(@RequestParam(defaultValue = "0") int page) {
-        return insiderService.getPage(page);
+    public List<InsiderView> page(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "20") int pageSize) {
+        return insiderService.getPage(page, pageSize);
     }
 
     @GetMapping("/{cik}")
@@ -31,6 +32,12 @@ public class InsidersController {
     @GetMapping("/{cik}/forms")
     public List<FormView> forms(@PathVariable int cik) {
         return formService.getByInsiderCik(cik);
+    }
+
+    @GetMapping("/search")
+    public List<InsiderView> search(@RequestParam String text,
+                                    @RequestParam(defaultValue = "5") int limit) {
+        return insiderService.search(text, limit);
     }
 
 }

@@ -35,6 +35,4 @@ public class DateUtils {
                 .withZone(ZoneId.of("UTC"));
     }
 
-
-
 }

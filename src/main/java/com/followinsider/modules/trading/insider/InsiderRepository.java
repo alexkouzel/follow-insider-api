@@ -2,6 +2,7 @@ package com.followinsider.modules.trading.insider;
 
 import com.followinsider.modules.trading.insider.models.Insider;
 import com.followinsider.modules.trading.insider.models.InsiderView;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +18,7 @@ public interface InsiderRepository extends JpaRepository<Insider, Integer> {
     List<InsiderView> findLike(String text, Pageable pageable);
 
     @Query("SELECT i FROM Insider i")
-    List<InsiderView> findAllViews(Pageable pageable);
+    Page<InsiderView> findPage(Pageable pageable);
 
     @Query("SELECT i FROM Insider i WHERE i.cik = :cik")
     InsiderView findViewById(int cik);

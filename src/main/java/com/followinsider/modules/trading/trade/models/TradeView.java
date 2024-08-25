@@ -1,5 +1,7 @@
 package com.followinsider.modules.trading.trade.models;
 
+import com.followinsider.modules.trading.form.models.FormDto;
+
 import java.time.LocalDate;
 
 public interface TradeView {
@@ -10,12 +12,14 @@ public interface TradeView {
 
     Double getSharePrice();
 
-    LocalDate getExecutedAt();
-
     Double getSharesLeft();
 
     Double getValueLeft();
 
+    LocalDate getExecutedAt();
+
     TradeType getType();
+
+    FormDto getForm();
 
 }

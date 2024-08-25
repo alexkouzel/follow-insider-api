@@ -34,11 +34,11 @@ public class Form implements Identifiable<String> {
     @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
     private Set<Trade> trades;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_cik")
     private Company company;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "insider_cik")
     private Insider insider;
 

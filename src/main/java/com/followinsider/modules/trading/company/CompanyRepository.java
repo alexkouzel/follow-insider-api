@@ -2,6 +2,7 @@ package com.followinsider.modules.trading.company;
 
 import com.followinsider.modules.trading.company.models.Company;
 import com.followinsider.modules.trading.company.models.CompanyView;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +21,7 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
     List<CompanyView> findLike(String text, Pageable pageable);
 
     @Query("SELECT c FROM Company c")
-    List<CompanyView> findAllViews(Pageable pageable);
+    Page<CompanyView> findPage(Pageable pageable);
 
     @Query("SELECT c FROM Company c WHERE c.cik = :cik")
     CompanyView findViewById(int cik);
