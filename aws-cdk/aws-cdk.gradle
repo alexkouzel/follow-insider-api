@@ -1,0 +1,19 @@
+plugins {
+    id 'io.freefair.lombok' version '8.4'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'software.amazon.awscdk:aws-cdk-lib:2.46.0'
+    implementation 'software.constructs:constructs:10.1.131'
+}
+
+tasks.register('runCdk', JavaExec) {
+    group = "Execution"
+    description = "Run the CDK deployment class"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "com.followinsider.FollowInsiderApp"
+}

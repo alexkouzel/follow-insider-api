@@ -8,6 +8,19 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 gradle.properties
 
+### CDK ###
+.classpath.txt
+target
+.classpath
+.project
+.idea
+.settings
+.vscode
+*.iml
+
+.cdk.staging
+cdk.out
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -29,4 +42,4 @@ out/
 
 ### Other ###
 logs/
-.env.sh
+scripts/.env.sh
