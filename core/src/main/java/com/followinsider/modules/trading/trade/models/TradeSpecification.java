@@ -16,7 +16,7 @@ public class TradeSpecification implements Specification<Trade> {
 
     public TradeSpecification(TradeFiltersDto filters) {
         this.filters = filters == null
-                ? new TradeFiltersDto(null, null, null, null, null)
+                ? new TradeFiltersDto(null, null, null, null, false)
                 : filters;
     }
 
@@ -24,32 +24,20 @@ public class TradeSpecification implements Specification<Trade> {
     public Predicate toPredicate(Root<Trade> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<>();
 
-        var company = root.join("form").join("company");
+        if (filters.companyCik() != null)
+            predicates.add(cb.equal(root.join("form").join("company").get("cik"), filters.companyCik()));
 
-        if (filters.companyCik() != null) {
-            predicates.add(cb.equal(company.get("cik"), filters.companyCik()));
-
-        } else if (filters.companyName() != null) {
-            String pattern = "%" + filters.companyName() + "%";
-            predicates.add(cb.or(
-                    cb.like(company.get("name"), pattern),
-                    cb.like(company.get("ticker"), pattern)
-            ));
-        }
-
-        if (filters.executedAt() != null) {
+        if (filters.executedAt() != null)
             predicates.add(cb.greaterThanOrEqualTo(root.get("executedAt"), filters.executedAt()));
-        }
 
-        if (filters.filedAt() != null) {
+        if (filters.filedAt() != null)
             predicates.add(cb.greaterThanOrEqualTo(root.join("form").get("filedAt"), filters.filedAt()));
-        }
 
-        if (filters.type() != null) {
+        if (filters.type() != null)
             predicates.add(cb.equal(root.get("type"), filters.type()));
-        }
 
-        predicates.add(cb.lessThanOrEqualTo(root.get("executedAt"), LocalDate.now()));
+        if (!filters.withFuture())
+            predicates.add(cb.lessThanOrEqualTo(root.get("executedAt"), LocalDate.now()));
 
         return cb.and(predicates.toArray(new Predicate[0]));
     }

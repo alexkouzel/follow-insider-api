@@ -26,6 +26,8 @@ public class CompanyService {
 
     private static final int MAX_SEARCH_LIMIT = 10;
 
+    private static final int MAX_SEARCH_TEXT_SIZE = 200;
+
     @PostConstruct
     public void init() {
         if (companyRepository.count() == 0) {
@@ -45,7 +47,15 @@ public class CompanyService {
     }
 
     public List<CompanyView> search(String text, int limit) {
-        text = text.toUpperCase();
+        if (text.length() > MAX_SEARCH_TEXT_SIZE)
+            return List.of();
+
+        // Handle full names -> NAME (TICKER)
+        int parIdx = text.indexOf("(");
+        if (parIdx != -1)
+            text = text.substring(0, parIdx);
+
+        text = text.trim().toUpperCase();
         limit = Math.min(limit, MAX_SEARCH_LIMIT);
         Pageable pageable = PageRequest.of(0, limit);
         return companyRepository.findLike(text, pageable);
