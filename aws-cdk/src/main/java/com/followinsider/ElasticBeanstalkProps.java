@@ -3,6 +3,8 @@ package com.followinsider;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Map;
+
 @Getter
 @Builder
 public class ElasticBeanstalkProps {
@@ -17,10 +19,10 @@ public class ElasticBeanstalkProps {
 
     private final String appName;
 
-    private final String serverPort;
-
     private final String certificateArn;
 
     private final String healthCheckPath;
+
+    private final Map<String, String> vars;
 
 }

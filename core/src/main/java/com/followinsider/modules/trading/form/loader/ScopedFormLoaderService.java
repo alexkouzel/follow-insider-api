@@ -123,9 +123,11 @@ public class ScopedFormLoaderService implements ScopedFormLoader {
 
         } catch (ParsingException | HttpRequestException e) {
             logLoadingAborted(scope, e.getMessage());
+            return Optional.empty();
+
+        } finally {
+            unlockScope(scope);
         }
-        unlockScope(scope);
-        return Optional.empty();
     }
 
     private boolean lockScope(String scope) {

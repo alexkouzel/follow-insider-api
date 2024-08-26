@@ -9,16 +9,8 @@ build/
 gradle.properties
 
 ### CDK ###
-.classpath.txt
-target
-.classpath
-.project
-.idea
-.settings
-.vscode
-*.iml
-
 .cdk.staging
+cdk.context.json
 cdk.out
 
 ### IntelliJ IDEA ###
@@ -42,4 +34,4 @@ out/
 
 ### Other ###
 logs/
-scripts/.env.sh
+.env.sh

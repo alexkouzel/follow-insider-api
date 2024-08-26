@@ -1,5 +1,5 @@
 #!/bin/sh
 
-. ./scripts/.env.sh
+. ./.env.sh
 
 ./gradlew :core:bootRun --args="--spring.profiles.active=$1"

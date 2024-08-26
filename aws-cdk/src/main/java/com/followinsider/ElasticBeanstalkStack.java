@@ -96,7 +96,6 @@ public class ElasticBeanstalkStack extends Stack {
                 .setting("aws:ec2:vpc", "Subnets", publicSubnets)
 
                 /* Elastic Beanstalk settings */
-                .setting("aws:elasticbeanstalk:application:environment", "SERVER_PORT", props.getServerPort())
                 .setting("aws:elasticbeanstalk:environment", "EnvironmentType", "LoadBalanced")
                 .setting("aws:elasticbeanstalk:environment", "LoadBalancerType", "application")
                 .setting("aws:elasticbeanstalk:environment:process:default", "HealthCheckPath", props.getHealthCheckPath())
@@ -113,6 +112,8 @@ public class ElasticBeanstalkStack extends Stack {
                 .setting("aws:autoscaling:launchconfiguration", "IamInstanceProfile", profile.getRef())
                 .setting("aws:autoscaling:asg", "MinSize", "1")
                 .setting("aws:autoscaling:asg", "MaxSize", "1")
+
+                .vars(props.getVars())
 
                 .build();
 

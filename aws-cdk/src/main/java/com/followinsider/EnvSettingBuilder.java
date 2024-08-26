@@ -4,6 +4,7 @@ import software.amazon.awscdk.services.elasticbeanstalk.CfnEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class EnvSettingBuilder {
 
@@ -22,6 +23,11 @@ public class EnvSettingBuilder {
                 .value(value)
                 .build());
 
+        return this;
+    }
+
+    public EnvSettingBuilder vars(Map<String, String> vars) {
+        vars.forEach((key, value) -> setting("aws:elasticbeanstalk:application:environment", key, value));
         return this;
     }
 
