@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.trade.models;
 
-import com.followinsider.common.entities.BaseEntity;
+import com.followinsider.common.models.BaseEntity;
 import com.followinsider.modules.trading.form.models.Form;
 import jakarta.persistence.*;
 import lombok.*;

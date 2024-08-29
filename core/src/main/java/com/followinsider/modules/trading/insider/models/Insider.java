@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.insider.models;
 
-import com.followinsider.common.entities.Identifiable;
+import com.followinsider.common.models.Identifiable;
 import com.followinsider.modules.trading.form.models.Form;
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.fiscalquarter.models;
 
-import com.followinsider.common.entities.TimeRange;
+import com.followinsider.common.models.TimeRange;
 
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;

@@ -1,8 +1,11 @@
 package com.followinsider.modules.trading.insider;
 
+import com.followinsider.common.models.dtos.PageRequestDto;
+import com.followinsider.common.models.dtos.SearchRequestDto;
 import com.followinsider.modules.trading.insider.models.Insider;
 import com.followinsider.modules.trading.insider.models.InsiderView;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,29 +19,23 @@ public class InsiderService {
 
     private final InsiderRepository insiderRepository;
 
-    private static final int MAX_PAGE_SIZE = 20;
-
-    private static final int MAX_SEARCH_LIMIT = 10;
-
-    public List<InsiderView> getPage(int page, int pageSize) {
-        pageSize = Math.min(pageSize, MAX_PAGE_SIZE);
-        Pageable pageable = PageRequest.of(page, pageSize);
+    public List<InsiderView> getPage(PageRequestDto pageRequest) {
+        Pageable pageable = PageRequest.of(pageRequest.pageIdx(), pageRequest.pageSize());
         return insiderRepository.findPage(pageable).getContent();
     }
 
-    public InsiderView getByCik(int cik) {
-        return insiderRepository.findViewById(cik);
+    public List<InsiderView> search(SearchRequestDto searchRequest) {
+        return search(searchRequest.text(), searchRequest.limit());
     }
 
-    public List<InsiderView> search(String text, int limit) {
-        text = text.toUpperCase();
-        limit = Math.min(limit, MAX_SEARCH_LIMIT);
+    private List<InsiderView> search(String text, int limit) {
+        text = text.trim().toUpperCase();
         Pageable pageable = PageRequest.of(0, limit);
         return insiderRepository.findLike(text, pageable);
     }
 
-    public void saveAll(List<Insider> insiders) {
-        insiderRepository.saveAll(insiders);
+    public InsiderView getByCik(int cik) {
+        return insiderRepository.findViewById(cik);
     }
 
     public Set<Integer> getCiksPresentIn(Set<Integer> ciks) {
@@ -47,6 +44,10 @@ public class InsiderService {
 
     public Insider getReferenceByCik(int cik) {
         return insiderRepository.getReferenceById(cik);
+    }
+
+    public void saveAll(List<Insider> insiders) {
+        insiderRepository.saveAll(insiders);
     }
 
 }

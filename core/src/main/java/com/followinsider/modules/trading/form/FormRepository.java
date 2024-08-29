@@ -25,4 +25,7 @@ public interface FormRepository extends JpaRepository<Form, String> {
     @Query("SELECT f.accNo FROM Form f WHERE f.filedAt BETWEEN :date1 AND :date2")
     Set<String> findIdsFiledBetween(LocalDate date1, LocalDate date2);
 
+    @Query("SELECT f.accNo FROM Form f WHERE f.accNo IN :ids")
+    Set<String> findIdsPresentIn(Set<String> ids);
+
 }

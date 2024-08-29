@@ -1,4 +1,4 @@
-package com.followinsider.common.entities;
+package com.followinsider.common.models;
 
 import org.junit.jupiter.api.Test;
 

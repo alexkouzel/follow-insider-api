@@ -1,9 +1,12 @@
 package com.followinsider.controllers;
 
+import com.followinsider.common.models.dtos.PageRequestDto;
+import com.followinsider.common.models.dtos.SearchRequestDto;
 import com.followinsider.modules.trading.form.FormService;
 import com.followinsider.modules.trading.form.models.FormView;
 import com.followinsider.modules.trading.insider.InsiderService;
 import com.followinsider.modules.trading.insider.models.InsiderView;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +21,14 @@ public class InsidersController {
 
     private final FormService formService;
 
-    @GetMapping
-    public List<InsiderView> page(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "20") int pageSize) {
-        return insiderService.getPage(page, pageSize);
+    @PostMapping
+    public List<InsiderView> page(@Valid @RequestBody PageRequestDto pageRequest) {
+        return insiderService.getPage(pageRequest);
+    }
+
+    @PostMapping("/search")
+    public List<InsiderView> search(@Valid @RequestBody SearchRequestDto searchRequest) {
+        return insiderService.search(searchRequest);
     }
 
     @GetMapping("/{cik}")
@@ -32,12 +39,6 @@ public class InsidersController {
     @GetMapping("/{cik}/forms")
     public List<FormView> forms(@PathVariable int cik) {
         return formService.getByInsiderCik(cik);
-    }
-
-    @GetMapping("/search")
-    public List<InsiderView> search(@RequestParam String text,
-                                    @RequestParam(defaultValue = "5") int limit) {
-        return insiderService.search(text, limit);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.followinsider.modules.trading.company;
 
+import com.followinsider.common.models.dtos.PageRequestDto;
+import com.followinsider.common.models.dtos.SearchRequestDto;
 import com.followinsider.modules.trading.company.loader.CompanyLoader;
 import com.followinsider.modules.trading.company.models.Company;
 import com.followinsider.modules.trading.company.models.CompanyView;
@@ -22,12 +24,6 @@ public class CompanyService {
 
     private final CompanyLoader companyLoader;
 
-    private static final int MAX_PAGE_SIZE = 20;
-
-    private static final int MAX_SEARCH_LIMIT = 10;
-
-    private static final int MAX_SEARCH_TEXT_SIZE = 200;
-
     @PostConstruct
     public void init() {
         if (companyRepository.count() == 0) {
@@ -36,19 +32,20 @@ public class CompanyService {
         }
     }
 
+    public List<CompanyView> getPage(PageRequestDto pageRequest) {
+        return getPage(pageRequest.pageIdx(), pageRequest.pageSize());
+    }
+
     public List<CompanyView> getPage(int page, int pageSize) {
-        pageSize = Math.min(pageSize, MAX_PAGE_SIZE);
         Pageable pageable = PageRequest.of(page, pageSize);
         return companyRepository.findPage(pageable).getContent();
     }
 
-    public CompanyView getByCik(int cik) {
-        return companyRepository.findViewById(cik);
+    public List<CompanyView> search(SearchRequestDto searchRequest) {
+        return search(searchRequest.text(), searchRequest.limit());
     }
 
-    public List<CompanyView> search(String text, int limit) {
-        if (text.length() > MAX_SEARCH_TEXT_SIZE)
-            return List.of();
+    private List<CompanyView> search(String text, int limit) {
 
         // Handle full names -> NAME (TICKER)
         int parIdx = text.indexOf("(");
@@ -56,13 +53,12 @@ public class CompanyService {
             text = text.substring(0, parIdx);
 
         text = text.trim().toUpperCase();
-        limit = Math.min(limit, MAX_SEARCH_LIMIT);
         Pageable pageable = PageRequest.of(0, limit);
         return companyRepository.findLike(text, pageable);
     }
 
-    public void saveAll(List<Company> companies) {
-        companyRepository.saveAll(companies);
+    public CompanyView getByCik(int cik) {
+        return companyRepository.findViewById(cik);
     }
 
     public Set<Integer> getCiksPresentIn(Set<Integer> ids) {
@@ -71,6 +67,10 @@ public class CompanyService {
 
     public Company getReferenceByCik(int cik) {
         return companyRepository.getReferenceById(cik);
+    }
+
+    public void saveAll(List<Company> companies) {
+        companyRepository.saveAll(companies);
     }
 
 }

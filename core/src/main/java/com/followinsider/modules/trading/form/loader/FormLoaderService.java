@@ -7,7 +7,7 @@ import com.alexkouzel.filing.reference.FilingReference;
 import com.alexkouzel.filing.reference.FilingReferenceUtils;
 import com.alexkouzel.filing.type.f345.OwnershipDocument;
 import com.alexkouzel.filing.type.f345.OwnershipDocumentLoader;
-import com.followinsider.common.entities.TimeRange;
+import com.followinsider.common.models.TimeRange;
 import com.followinsider.common.utils.ListUtils;
 import com.followinsider.modules.trading.form.FormRepository;
 import com.followinsider.modules.trading.form.converter.FormConverter;
@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 
 @Slf4j
 @Service
@@ -72,14 +75,21 @@ public class FormLoaderService {
     }
 
     private int loadBatch(List<FilingReference> refs) {
-        List<Form> forms = refs
-                .parallelStream()
-                .map(this::fetch)
-                .filter(Objects::nonNull)
-                .toList();
+        ForkJoinPool threadPool = new ForkJoinPool(2);
+        try {
+            Callable<List<Form>> task = () -> refs
+                    .parallelStream()
+                    .map(this::fetch)
+                    .filter(Objects::nonNull)
+                    .toList();
 
-        formSaver.saveForms(forms);
-        return forms.size();
+            List<Form> forms = threadPool.submit(task).get();
+            formSaver.saveForms(forms);
+
+            return forms.size();
+        } catch (InterruptedException | ExecutionException e) {
+            return 0;
+        }
     }
 
     private Form fetch(FilingReference ref) {
@@ -102,22 +112,23 @@ public class FormLoaderService {
 
         LocalDate from = FilingReferenceUtils.getFirst(refs).filedAt();
         LocalDate to = FilingReferenceUtils.getLast(refs).filedAt();
+
         TimeRange timeRange = new TimeRange(from, to);
 
-        boolean oneByOne = (refs.size() < 5) || (refs.size() < 50 && timeRange.days() > 100);
-
-        return oneByOne
-                ? filterOldOneByOne(refs)
+        return refs.size() < 25
+                ? filterOldByPresence(refs)
                 : filterOldByTimeRange(refs, timeRange);
     }
 
     private List<FilingReference> filterOldByTimeRange(List<FilingReference> refs, TimeRange timeRange) {
-        Set<String> accNos = formRepository.findIdsFiledBetween(timeRange.from(), timeRange.to());
-        return FilingReferenceUtils.filterAccNos(refs, accNos);
+        Set<String> oldAccNos = formRepository.findIdsFiledBetween(timeRange.from(), timeRange.to());
+        return FilingReferenceUtils.filterAccNos(refs, oldAccNos);
     }
 
-    private List<FilingReference> filterOldOneByOne(List<FilingReference> refs) {
-        return ListUtils.filter(refs, ref -> !formRepository.existsById(ref.accNo()));
+    private List<FilingReference> filterOldByPresence(List<FilingReference> refs) {
+        Set<String> accNos = FilingReferenceUtils.getAccNos(refs);
+        Set<String> oldAccNos = formRepository.findIdsPresentIn(accNos);
+        return FilingReferenceUtils.filterAccNos(refs, oldAccNos);
     }
 
     /* --------------------------------------------------- */

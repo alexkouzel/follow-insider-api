@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.fiscalquarter.models;
 
-import com.followinsider.common.entities.Identifiable;
+import com.followinsider.common.models.Identifiable;
 import jakarta.persistence.*;
 import lombok.*;
 

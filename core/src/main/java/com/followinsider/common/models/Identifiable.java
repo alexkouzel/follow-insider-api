@@ -1,4 +1,4 @@
-package com.followinsider.common.entities;
+package com.followinsider.common.models;
 
 public interface Identifiable<ID> {
 

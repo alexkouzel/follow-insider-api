@@ -1,9 +1,12 @@
 package com.followinsider.controllers;
 
+import com.followinsider.common.models.dtos.PageRequestDto;
+import com.followinsider.common.models.dtos.SearchRequestDto;
 import com.followinsider.modules.trading.company.CompanyService;
 import com.followinsider.modules.trading.company.models.CompanyView;
 import com.followinsider.modules.trading.form.FormService;
 import com.followinsider.modules.trading.form.models.FormView;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +21,14 @@ public class CompaniesController {
 
     private final FormService formService;
 
-    @GetMapping
-    public List<CompanyView> page(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "20") int pageSize) {
-        return companyService.getPage(page, pageSize);
+    @PostMapping
+    public List<CompanyView> page(@Valid @RequestBody PageRequestDto pageRequest) {
+        return companyService.getPage(pageRequest);
+    }
+
+    @PostMapping("/search")
+    public List<CompanyView> search(@Valid @RequestBody SearchRequestDto searchRequest) {
+        return companyService.search(searchRequest);
     }
 
     @GetMapping("/{cik}")
@@ -32,12 +39,6 @@ public class CompaniesController {
     @GetMapping("/{cik}/forms")
     public List<FormView> forms(@PathVariable int cik) {
         return formService.getByCompanyCik(cik);
-    }
-
-    @GetMapping("/search")
-    public List<CompanyView> search(@RequestParam String text,
-                                    @RequestParam(defaultValue = "5") int limit) {
-        return companyService.search(text, limit);
     }
 
 }

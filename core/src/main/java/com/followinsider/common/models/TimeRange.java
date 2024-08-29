@@ -1,4 +1,4 @@
-package com.followinsider.common.entities;
+package com.followinsider.common.models;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

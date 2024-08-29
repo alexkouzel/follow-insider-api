@@ -1,7 +1,9 @@
 package com.followinsider.controllers;
 
+import com.followinsider.common.models.dtos.PageRequestDto;
 import com.followinsider.modules.trading.form.FormService;
 import com.followinsider.modules.trading.form.models.FormView;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +16,9 @@ public class FormsController {
 
     private final FormService formService;
 
-    @GetMapping
-    public List<FormView> page(@RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "20") int pageSize) {
-        return formService.getPage(page, pageSize);
+    @PostMapping
+    public List<FormView> page(@Valid @RequestBody PageRequestDto pageRequest) {
+        return formService.getPage(pageRequest);
     }
 
     @GetMapping("/count")

@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.form.models;
 
-import com.followinsider.common.entities.Identifiable;
+import com.followinsider.common.models.Identifiable;
 import com.followinsider.modules.trading.company.models.Company;
 import com.followinsider.modules.trading.trade.models.Trade;
 import com.followinsider.modules.trading.insider.models.Insider;

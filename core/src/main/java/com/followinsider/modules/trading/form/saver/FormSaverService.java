@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.form.saver;
 
-import com.followinsider.common.entities.Identifiable;
+import com.followinsider.common.models.Identifiable;
 import com.followinsider.modules.trading.company.CompanyService;
 import com.followinsider.modules.trading.form.models.Form;
 import com.followinsider.modules.trading.company.models.Company;
