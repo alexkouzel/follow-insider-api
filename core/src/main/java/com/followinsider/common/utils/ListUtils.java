@@ -65,8 +65,10 @@ public class ListUtils {
 
     public <T> List<List<T>> splitBySize(List<T> list, int size) {
         List<List<T>> result = new ArrayList<>();
+
         for (int i = 0; i < list.size(); i += size) {
-            result.add(new ArrayList<>(list.subList(i, Math.min(list.size(), i + size))));
+            int j = Math.min(list.size(), i + size);
+            result.add(new ArrayList<>(list.subList(i, j)));
         }
         return result;
     }

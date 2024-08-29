@@ -20,9 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
 
 @Slf4j
 @Service
@@ -75,31 +72,24 @@ public class FormLoaderService {
     }
 
     private int loadBatch(List<FilingReference> refs) {
-        ForkJoinPool threadPool = new ForkJoinPool(2);
-        try {
-            Callable<List<Form>> task = () -> refs
-                    .parallelStream()
-                    .map(this::fetch)
-                    .filter(Objects::nonNull)
-                    .toList();
+        List<Form> forms = refs
+                .parallelStream()
+                .map(this::fetch)
+                .flatMap(Optional::stream)
+                .toList();
 
-            List<Form> forms = threadPool.submit(task).get();
-            formSaver.saveForms(forms);
-
-            return forms.size();
-        } catch (InterruptedException | ExecutionException e) {
-            return 0;
-        }
+        formSaver.saveForms(forms);
+        return forms.size();
     }
 
-    private Form fetch(FilingReference ref) {
+    private Optional<Form> fetch(FilingReference ref) {
         try {
             OwnershipDocument doc = ownershipDocumentLoader.loadByRef(ref);
-            return formConverter.convertToForm(doc);
+            return Optional.of(formConverter.convertToForm(doc));
 
         } catch (ParsingException | HttpRequestException e) {
             logLoadingFormError(ref.getTxtUrl(), e.getMessage());
-            return null;
+            return Optional.empty();
         }
     }
 
