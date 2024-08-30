@@ -1,7 +1,7 @@
 package com.followinsider.modules.trading.company;
 
-import com.followinsider.common.models.dtos.PageRequestDto;
-import com.followinsider.common.models.dtos.SearchRequestDto;
+import com.followinsider.common.models.requests.GetPageRequest;
+import com.followinsider.common.models.requests.SearchRequest;
 import com.followinsider.modules.trading.company.loader.CompanyLoader;
 import com.followinsider.modules.trading.company.models.Company;
 import com.followinsider.modules.trading.company.models.CompanyView;
@@ -32,16 +32,16 @@ public class CompanyService {
         }
     }
 
-    public List<CompanyView> getPage(PageRequestDto pageRequest) {
-        return getPage(pageRequest.pageIdx(), pageRequest.pageSize());
+    public List<CompanyView> getPage(GetPageRequest getPageRequest) {
+        return getPage(getPageRequest.pageIdx(), getPageRequest.pageSize());
     }
 
-    public List<CompanyView> getPage(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+    public List<CompanyView> getPage(int pageIdx, int pageSize) {
+        Pageable pageable = PageRequest.of(pageIdx, pageSize);
         return companyRepository.findPage(pageable).getContent();
     }
 
-    public List<CompanyView> search(SearchRequestDto searchRequest) {
+    public List<CompanyView> search(SearchRequest searchRequest) {
         return search(searchRequest.text(), searchRequest.limit());
     }
 

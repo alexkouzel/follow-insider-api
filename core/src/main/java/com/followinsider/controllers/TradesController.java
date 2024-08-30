@@ -1,9 +1,9 @@
 package com.followinsider.controllers;
 
 import com.followinsider.modules.trading.trade.TradeService;
-import com.followinsider.modules.trading.trade.models.TradeFiltersDto;
-import com.followinsider.modules.trading.trade.models.TradeDto;
-import com.followinsider.modules.trading.trade.models.TradePageRequestDto;
+import com.followinsider.modules.trading.trade.models.TradeFilters;
+import com.followinsider.modules.trading.trade.models.TradePageRequest;
+import com.followinsider.modules.trading.trade.models.TradeView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +18,12 @@ public class TradesController {
     private final TradeService tradeService;
 
     @PostMapping
-    public List<TradeDto> page(@Valid @RequestBody TradePageRequestDto tradePageRequest) {
+    public List<TradeView> page(@Valid @RequestBody TradePageRequest tradePageRequest) {
         return tradeService.getPage(tradePageRequest);
     }
 
     @PostMapping("/count")
-    public long count(@Valid @RequestBody(required = false) TradeFiltersDto filters) {
+    public long count(@Valid @RequestBody(required = false) TradeFilters filters) {
         return tradeService.count(filters);
     }
 

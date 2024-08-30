@@ -1,13 +1,13 @@
 package com.followinsider.modules.trading.trade;
 
-import com.followinsider.common.models.dtos.PageRequestDto;
+import com.followinsider.common.models.requests.GetPageRequest;
 import com.followinsider.modules.trading.trade.models.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,34 +19,28 @@ public class TradeService {
     private final TradeRepository tradeRepository;
 
     @Cacheable("trade")
-    public List<TradeDto> getPage(TradePageRequestDto tradePageRequest) {
-        System.out.println("GET PAGE");
-        Pageable pageable = getPageRequest(tradePageRequest.pageRequest());
-        return getPage(pageable, tradePageRequest.tradeFilters());
-    }
+    public List<TradeView> getPage(TradePageRequest tradePageRequest) {
+        GetPageRequest page = tradePageRequest.getPageRequest();
+        TradeFilters filters = tradePageRequest.tradeFilters();
 
-    private List<TradeDto> getPage(Pageable pageable, TradeFiltersDto filters) {
-        Specification<Trade> spec = new TradeSpecification(filters);
-
-        return tradeRepository
-                .findAll(spec, pageable)
-                .map(trade -> TradeUtils.toDto(trade, true))
-                .getContent();
-    }
-
-    private PageRequest getPageRequest(PageRequestDto pageRequest) {
-        return PageRequest.of(
-                pageRequest.pageIdx(),
-                pageRequest.pageSize(),
-                Sort.by("executedAt").descending()
+        return tradeRepository.findPage(
+            page.pageSize(),
+            page.offset(),
+            filters.companyCik(),
+            filters.executedAt(),
+            filters.filedAt(),
+            filters.type()
         );
     }
 
     @Cacheable("trade_count")
-    public long count(TradeFiltersDto filters) {
-        System.out.println("COUNT");
-        Specification<Trade> spec = new TradeSpecification(filters);
-        return tradeRepository.count(spec);
+    public long count(TradeFilters filters) {
+        return tradeRepository.count(
+            filters.companyCik(),
+            filters.executedAt(),
+            filters.filedAt(),
+            filters.type()
+        );
     }
 
 }

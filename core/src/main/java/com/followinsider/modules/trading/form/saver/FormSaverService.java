@@ -57,8 +57,8 @@ public class FormSaverService implements FormSaver {
         Set<Integer> savedCiks = companyService.getCiksPresentIn(ciks);
 
         List<Company> newCompanies = companies.stream()
-                .filter(company -> !savedCiks.contains(company.getCik()))
-                .toList();
+            .filter(company -> !savedCiks.contains(company.getCik()))
+            .toList();
 
         companyService.saveAll(newCompanies);
     }
@@ -68,16 +68,16 @@ public class FormSaverService implements FormSaver {
         Set<Integer> savedCiks = insiderService.getCiksPresentIn(ciks);
 
         List<Insider> newInsiders = insiders.stream()
-                .filter(insider -> !savedCiks.contains(insider.getCik()))
-                .toList();
+            .filter(insider -> !savedCiks.contains(insider.getCik()))
+            .toList();
 
         insiderService.saveAll(newInsiders);
     }
 
     private <T> Set<T> getEntityIds(List<? extends Identifiable<T>> entities) {
         return entities.stream()
-                .map(Identifiable::getId)
-                .collect(Collectors.toSet());
+            .map(Identifiable::getId)
+            .collect(Collectors.toSet());
     }
 
 }

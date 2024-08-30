@@ -1,7 +1,7 @@
 package com.followinsider.modules.trading.insider;
 
-import com.followinsider.common.models.dtos.PageRequestDto;
-import com.followinsider.common.models.dtos.SearchRequestDto;
+import com.followinsider.common.models.requests.GetPageRequest;
+import com.followinsider.common.models.requests.SearchRequest;
 import com.followinsider.modules.trading.insider.models.Insider;
 import com.followinsider.modules.trading.insider.models.InsiderView;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +18,12 @@ public class InsiderService {
 
     private final InsiderRepository insiderRepository;
 
-    public List<InsiderView> getPage(PageRequestDto pageRequest) {
-        Pageable pageable = PageRequest.of(pageRequest.pageIdx(), pageRequest.pageSize());
+    public List<InsiderView> getPage(GetPageRequest getPageRequest) {
+        Pageable pageable = PageRequest.of(getPageRequest.pageIdx(), getPageRequest.pageSize());
         return insiderRepository.findPage(pageable).getContent();
     }
 
-    public List<InsiderView> search(SearchRequestDto searchRequest) {
+    public List<InsiderView> search(SearchRequest searchRequest) {
         return search(searchRequest.text(), searchRequest.limit());
     }
 

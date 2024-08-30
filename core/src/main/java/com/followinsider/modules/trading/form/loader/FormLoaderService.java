@@ -75,10 +75,10 @@ public class FormLoaderService {
 
     private int loadBatch(List<FilingReference> refs) {
         List<Form> forms = refs
-                .parallelStream()
-                .map(this::fetch)
-                .flatMap(Optional::stream)
-                .toList();
+            .parallelStream()
+            .map(this::fetch)
+            .flatMap(Optional::stream)
+            .toList();
 
         formSaver.saveForms(forms);
         return forms.size();
@@ -108,8 +108,8 @@ public class FormLoaderService {
         TimeRange timeRange = new TimeRange(from, to);
 
         return refs.size() < 25
-                ? filterOldByPresence(refs)
-                : filterOldByTimeRange(refs, timeRange);
+            ? filterOldByPresence(refs)
+            : filterOldByTimeRange(refs, timeRange);
     }
 
     private List<FilingReference> filterOldByTimeRange(List<FilingReference> refs, TimeRange timeRange) {
@@ -129,17 +129,17 @@ public class FormLoaderService {
 
     private void logLoadingCancelled(String scope, int total, String reason) {
         log.info("Loading cancelled :: scope: '{}', total: {}, reason: '{}'",
-                scope, total, reason);
+            scope, total, reason);
     }
 
     private void logLoadingStarted(String scope, int total, int batchCount) {
         log.info("Loading started :: scope: '{}', total: {}, batch_count: {}, batch_size: {}",
-                scope, total, batchCount, formBatchSize);
+            scope, total, batchCount, formBatchSize);
     }
 
     private void logBatchLoaded(String scope, int batchIdx, int batchCount, int total, int loaded) {
         log.info("Batch loaded {}/{} :: scope: '{}', total: {}, loaded: {}",
-                batchIdx + 1, batchCount, scope, total, loaded);
+            batchIdx + 1, batchCount, scope, total, loaded);
     }
 
     private void logLoadingError(String url, String error) {

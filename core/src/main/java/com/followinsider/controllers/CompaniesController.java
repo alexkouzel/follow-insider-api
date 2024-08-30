@@ -1,7 +1,7 @@
 package com.followinsider.controllers;
 
-import com.followinsider.common.models.dtos.PageRequestDto;
-import com.followinsider.common.models.dtos.SearchRequestDto;
+import com.followinsider.common.models.requests.GetPageRequest;
+import com.followinsider.common.models.requests.SearchRequest;
 import com.followinsider.modules.trading.company.CompanyService;
 import com.followinsider.modules.trading.company.models.CompanyView;
 import com.followinsider.modules.trading.form.FormService;
@@ -22,12 +22,12 @@ public class CompaniesController {
     private final FormService formService;
 
     @PostMapping
-    public List<CompanyView> page(@Valid @RequestBody PageRequestDto pageRequest) {
-        return companyService.getPage(pageRequest);
+    public List<CompanyView> page(@Valid @RequestBody GetPageRequest getPageRequest) {
+        return companyService.getPage(getPageRequest);
     }
 
     @PostMapping("/search")
-    public List<CompanyView> search(@Valid @RequestBody SearchRequestDto searchRequest) {
+    public List<CompanyView> search(@Valid @RequestBody SearchRequest searchRequest) {
         return companyService.search(searchRequest);
     }
 

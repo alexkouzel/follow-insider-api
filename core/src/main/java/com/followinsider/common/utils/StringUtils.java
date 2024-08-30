@@ -23,8 +23,8 @@ public class StringUtils {
 
     public String overflow(String value, int length, String trail) {
         return value.length() > length
-                ? value.substring(0, length - trail.length()) + trail
-                : value;
+            ? value.substring(0, length - trail.length()) + trail
+            : value;
     }
 
     public String trimLeft(String value, char c) {

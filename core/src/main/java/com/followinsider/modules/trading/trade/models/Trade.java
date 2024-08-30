@@ -39,7 +39,7 @@ public class Trade extends BaseEntity {
     @Enumerated(EnumType.ORDINAL)
     private TradeType type;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "acc_no")
     private Form form;
 

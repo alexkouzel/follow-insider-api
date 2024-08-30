@@ -42,10 +42,10 @@ public class Form implements Identifiable<String> {
     @JoinColumn(name = "insider_cik")
     private Insider insider;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
-            name = "insider_title",
-            joinColumns = @JoinColumn(name = "acc_no")
+        name = "insider_title",
+        joinColumns = @JoinColumn(name = "acc_no")
     )
     private Set<String> insiderTitles;
 

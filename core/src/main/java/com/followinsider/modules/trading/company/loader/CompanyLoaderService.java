@@ -39,11 +39,11 @@ public class CompanyLoaderService implements CompanyLoader {
 
     private Company convert(ListedCompany company) {
         return Company.builder()
-                .cik(company.id())
-                .name(company.name())
-                .ticker(company.ticker())
-                .exchange(company.exchange())
-                .build();
+            .cik(company.id())
+            .name(company.name())
+            .ticker(company.ticker())
+            .exchange(company.exchange())
+            .build();
     }
 
 }

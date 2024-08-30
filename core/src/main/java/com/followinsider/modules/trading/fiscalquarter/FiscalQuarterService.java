@@ -66,10 +66,10 @@ public class FiscalQuarterService {
         var to = new FiscalQuarterVals(now.getYear(), now.get(IsoFields.QUARTER_OF_YEAR));
 
         return new FiscalQuarterRange(from, to)
-                .generate()
-                .stream()
-                .map(FiscalQuarter::new)
-                .toList();
+            .generate()
+            .stream()
+            .map(FiscalQuarter::new)
+            .toList();
     }
 
 }

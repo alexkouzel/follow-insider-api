@@ -4,16 +4,16 @@ import java.time.LocalDate;
 
 public record Log(
 
-        LocalDate timestamp,
+    LocalDate timestamp,
 
-        String threadName,
+    String threadName,
 
-        LogLevel logLevel,
+    LogLevel logLevel,
 
-        String loggerName,
+    String loggerName,
 
-        String message,
+    String message,
 
-        String stackTrace
+    String stackTrace
 
 ) {}

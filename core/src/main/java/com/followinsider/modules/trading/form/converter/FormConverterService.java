@@ -35,24 +35,24 @@ public class FormConverterService implements FormConverter {
         OwnershipForm form = doc.ownershipForm();
 
         return Form.builder()
-                .accNo(doc.accNo())
-                .filedAt(doc.filedAt())
-                .xmlFilename(doc.xmlFilename())
-                .company(getCompany(form))
-                .insider(getInsider(form))
-                .insiderTitles(getInsiderTitles(form))
-                .trades(getTrades(form))
-                .build();
+            .accNo(doc.accNo())
+            .filedAt(doc.filedAt())
+            .xmlFilename(doc.xmlFilename())
+            .company(getCompany(form))
+            .insider(getInsider(form))
+            .insiderTitles(getInsiderTitles(form))
+            .trades(getTrades(form))
+            .build();
     }
 
     private Company getCompany(OwnershipForm form) {
         Issuer issuer = form.getIssuer();
 
         return Company.builder()
-                .cik(issuer.getIssuerCik())
-                .name(issuer.getIssuerName())
-                .ticker(issuer.getIssuerTradingSymbol())
-                .build();
+            .cik(issuer.getIssuerCik())
+            .name(issuer.getIssuerName())
+            .ticker(issuer.getIssuerTradingSymbol())
+            .build();
     }
 
     // -- Example with multiple reporting owners --
@@ -64,9 +64,9 @@ public class FormConverterService implements FormConverter {
         ReportingOwner.ID id = reportingOwner.getReportingOwnerId();
 
         return Insider.builder()
-                .cik(id.getRptOwnerCik())
-                .name(id.getRptOwnerName())
-                .build();
+            .cik(id.getRptOwnerCik())
+            .name(id.getRptOwnerName())
+            .build();
     }
 
     private Set<String> getInsiderTitles(OwnershipForm form) {
@@ -88,10 +88,10 @@ public class FormConverterService implements FormConverter {
             return Set.of();
         }
         return table
-                .getNonDerivativeTransaction().stream()
-                .map(this::getTrade)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+            .getNonDerivativeTransaction().stream()
+            .map(this::getTrade)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
     }
 
     private Trade getTrade(NonDerivativeTransaction transaction) {
@@ -99,10 +99,10 @@ public class FormConverterService implements FormConverter {
         if (tradeType == null) return null;
 
         boolean isDirect = transaction
-                .getOwnershipNature()
-                .getDirectOrIndirectOwnership()
-                .getValue()
-                .equals("D");
+            .getOwnershipNature()
+            .getDirectOrIndirectOwnership()
+            .getValue()
+            .equals("D");
 
         if (!isDirect) return null;
 
@@ -116,22 +116,22 @@ public class FormConverterService implements FormConverter {
         Double sharePrice = amounts.getTransactionPricePerShare().getValue();
 
         Double valueLeft = postAmounts.getValueOwnedFollowingTransaction() != null
-                ? postAmounts.getValueOwnedFollowingTransaction().getValue()
-                : null;
+            ? postAmounts.getValueOwnedFollowingTransaction().getValue()
+            : null;
 
         Double sharesLeft = postAmounts.getSharesOwnedFollowingTransaction() != null
-                ? postAmounts.getSharesOwnedFollowingTransaction().getValue()
-                : null;
+            ? postAmounts.getSharesOwnedFollowingTransaction().getValue()
+            : null;
 
         return Trade.builder()
-                .type(tradeType)
-                .securityTitle(securityTitle)
-                .executedAt(executedAt)
-                .shareCount(shareCount)
-                .sharePrice(sharePrice)
-                .valueLeft(valueLeft)
-                .sharesLeft(sharesLeft)
-                .build();
+            .type(tradeType)
+            .securityTitle(securityTitle)
+            .executedAt(executedAt)
+            .shareCount(shareCount)
+            .sharePrice(sharePrice)
+            .valueLeft(valueLeft)
+            .sharesLeft(sharesLeft)
+            .build();
     }
 
     private TradeType getTradeType(NonDerivativeTransaction transaction) {

@@ -19,3 +19,5 @@ email:
   username: ${EMAIL_USERNAME}
   password: ${EMAIL_PASSWORD}
   sender: ${EMAIL_SENDER}
+
+spring.jpa.show-sql: true

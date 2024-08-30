@@ -67,10 +67,10 @@ public class LogService {
 
     private List<Log> getStreamLogs(Stream<String> stream, LogLevel level, int limit) {
         return stream
-                .map(this::parseLog)
-                .filter(log -> log != null && log.logLevel().ordinal() >= level.ordinal())
-                .limit(limit)
-                .collect(Collectors.toList());
+            .map(this::parseLog)
+            .filter(log -> log != null && log.logLevel().ordinal() >= level.ordinal())
+            .limit(limit)
+            .collect(Collectors.toList());
     }
 
     private Log parseLog(String line) {

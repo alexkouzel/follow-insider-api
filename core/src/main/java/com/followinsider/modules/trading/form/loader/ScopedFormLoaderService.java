@@ -46,7 +46,7 @@ public class ScopedFormLoaderService implements ScopedFormLoader {
         String scope = "latest 100 F4";
 
         FilingReferenceSupplier refSupplier = () -> filingReferenceLoader
-                .loadLatest(0, LatestFeedCount.HUNDRED, FilingType.F4);
+            .loadLatest(0, LatestFeedCount.HUNDRED, FilingType.F4);
 
         loadScope(scope, refSupplier);
     }
@@ -84,12 +84,12 @@ public class ScopedFormLoaderService implements ScopedFormLoader {
     @Async
     public void loadFiscalQuarter(int year, int quarter) {
         fiscalQuarterRepository
-                .findByYearAndQuarter(year, quarter)
-                .ifPresentOrElse(this::loadFiscalQuarter,
-                        () -> {
-                            String source = new FiscalQuarterVals(year, quarter).toAlias();
-                            logLoadingAborted(source, "invalid fiscal quarter");
-                        });
+            .findByYearAndQuarter(year, quarter)
+            .ifPresentOrElse(this::loadFiscalQuarter,
+                () -> {
+                    String source = new FiscalQuarterVals(year, quarter).toAlias();
+                    logLoadingAborted(source, "invalid fiscal quarter");
+                });
     }
 
     private void loadFiscalQuarter(FiscalQuarter fiscalQuarter) {
@@ -99,10 +99,10 @@ public class ScopedFormLoaderService implements ScopedFormLoader {
         String scope = vals.toAlias();
 
         FilingReferenceSupplier refSupplier = () -> filingReferenceLoader
-                .loadByFiscalQuarter(vals.year(), vals.quarter());
+            .loadByFiscalQuarter(vals.year(), vals.quarter());
 
         loadScope(scope, refSupplier)
-                .ifPresent((progress) -> updateFiscalQuarterForms(forms, progress));
+            .ifPresent((progress) -> updateFiscalQuarterForms(forms, progress));
     }
 
     private void updateFiscalQuarterForms(FiscalQuarterForms forms, FormLoaderProgress progress) {

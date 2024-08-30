@@ -19,9 +19,9 @@ public class LogsController {
 
     @GetMapping
     public List<Log> logs(
-            @RequestParam(value = "level", defaultValue = "INFO") LogLevel level,
-            @RequestParam(value = "limit", defaultValue = "100") int limit,
-            @RequestParam(value = "inverse", defaultValue = "true") boolean inverse
+        @RequestParam(value = "level", defaultValue = "INFO") LogLevel level,
+        @RequestParam(value = "limit", defaultValue = "100") int limit,
+        @RequestParam(value = "inverse", defaultValue = "true") boolean inverse
     ) throws IOException {
         return logService.getLogs(level, limit, inverse);
     }

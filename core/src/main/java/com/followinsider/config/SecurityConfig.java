@@ -29,21 +29,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                antMatcher("/actuator/health"),
-                                antMatcher("/fiscal/**"),
-                                antMatcher("/insiders/**"),
-                                antMatcher("/companies/**"),
-                                antMatcher("/forms/**"),
-                                antMatcher("/trades/**")
-                        ).permitAll()
-                        .anyRequest().hasRole("ADMIN")
-                )
-                .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults())
-                .build();
+            .cors(Customizer.withDefaults())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    antMatcher("/actuator/health"),
+                    antMatcher("/fiscal/**"),
+                    antMatcher("/insiders/**"),
+                    antMatcher("/companies/**"),
+                    antMatcher("/forms/**"),
+                    antMatcher("/trades/**")
+                ).permitAll()
+                .anyRequest().hasRole("ADMIN")
+            )
+            .csrf(AbstractHttpConfigurer::disable)
+            .httpBasic(Customizer.withDefaults())
+            .build();
     }
 
     @Bean
@@ -59,9 +59,9 @@ public class SecurityConfig {
 
     private UserDetails getAdmin(PasswordEncoder passwordEncoder) {
         return User.withUsername(adminUsername)
-                .password(passwordEncoder.encode(adminPassword))
-                .roles("USER", "ADMIN")
-                .build();
+            .password(passwordEncoder.encode(adminPassword))
+            .roles("USER", "ADMIN")
+            .build();
     }
 
 }

@@ -1,25 +1,9 @@
 package com.followinsider.modules.trading.trade.models;
 
-import com.followinsider.modules.trading.form.models.FormDto;
+import com.followinsider.modules.trading.form.models.BasicFormView;
 
-import java.time.LocalDate;
+public interface TradeView extends BasicTradeView {
 
-public interface TradeView {
-
-    String getSecurityTitle();
-
-    Double getShareCount();
-
-    Double getSharePrice();
-
-    Double getSharesLeft();
-
-    Double getValueLeft();
-
-    LocalDate getExecutedAt();
-
-    TradeType getType();
-
-    FormDto getForm();
+    BasicFormView getForm();
 
 }

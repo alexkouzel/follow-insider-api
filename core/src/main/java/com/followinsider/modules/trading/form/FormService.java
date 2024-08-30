@@ -1,6 +1,6 @@
 package com.followinsider.modules.trading.form;
 
-import com.followinsider.common.models.dtos.PageRequestDto;
+import com.followinsider.common.models.requests.GetPageRequest;
 import com.followinsider.modules.trading.form.models.FormView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -15,8 +15,8 @@ public class FormService {
 
     private final FormRepository formRepository;
 
-    public List<FormView> getPage(PageRequestDto pageRequest) {
-        Pageable pageable = PageRequest.of(pageRequest.pageIdx(), pageRequest.pageSize());
+    public List<FormView> getPage(GetPageRequest getPageRequest) {
+        Pageable pageable = PageRequest.of(getPageRequest.pageIdx(), getPageRequest.pageSize());
         return formRepository.findPage(pageable).getContent();
     }
 

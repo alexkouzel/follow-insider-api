@@ -31,8 +31,8 @@ public class DateUtils {
 
     private DateTimeFormatter getFormatter(String pattern) {
         return DateTimeFormatter
-                .ofPattern(pattern)
-                .withZone(ZoneId.of("UTC"));
+            .ofPattern(pattern)
+            .withZone(ZoneId.of("UTC"));
     }
 
 }

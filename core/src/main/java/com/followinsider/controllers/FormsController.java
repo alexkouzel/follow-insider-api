@@ -1,6 +1,6 @@
 package com.followinsider.controllers;
 
-import com.followinsider.common.models.dtos.PageRequestDto;
+import com.followinsider.common.models.requests.GetPageRequest;
 import com.followinsider.modules.trading.form.FormService;
 import com.followinsider.modules.trading.form.models.FormView;
 import jakarta.validation.Valid;
@@ -17,8 +17,8 @@ public class FormsController {
     private final FormService formService;
 
     @PostMapping
-    public List<FormView> page(@Valid @RequestBody PageRequestDto pageRequest) {
-        return formService.getPage(pageRequest);
+    public List<FormView> page(@Valid @RequestBody GetPageRequest getPageRequest) {
+        return formService.getPage(getPageRequest);
     }
 
     @GetMapping("/count")

@@ -15,9 +15,9 @@ import java.util.Set;
 public interface CompanyRepository extends JpaRepository<Company, Integer> {
 
     @Query("SELECT c FROM Company c " +
-            "WHERE str(c.cik) LIKE :text% " +
-            "OR c.ticker LIKE :text% " +
-            "OR UPPER(c.name) LIKE %:text%")
+        "WHERE str(c.cik) LIKE :text% " +
+        "OR c.ticker LIKE :text% " +
+        "OR UPPER(c.name) LIKE %:text%")
     List<CompanyView> findLike(String text, Pageable pageable);
 
     @Query("SELECT c FROM Company c")
