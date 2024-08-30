@@ -46,8 +46,10 @@ public class FormLoaderService {
         List<FilingReference> newRefs = filterOld(refs);
         int old = total - newRefs.size();
 
-        if (newRefs.isEmpty())
+        if (newRefs.isEmpty()) {
+            logLoadingCancelled(scope, refs.size(), "already loaded");
             return new FormLoaderProgress(total, total, 0, 0);
+        }
 
         int loaded = loadInBatches(scope, newRefs);
         int failed = total - loaded - old;
@@ -66,7 +68,7 @@ public class FormLoaderService {
             int loaded = loadBatch(batch);
             loadedTotal += loaded;
 
-            logLoadedFormBatch(scope, batchIdx, batches.size(), batch.size(), loaded);
+            logBatchLoaded(scope, batchIdx, batches.size(), batch.size(), loaded);
         }
         return loadedTotal;
     }
@@ -88,7 +90,7 @@ public class FormLoaderService {
             return Optional.of(formConverter.convertToForm(doc));
 
         } catch (ParsingException | HttpRequestException e) {
-            logLoadingFormError(ref.getTxtUrl(), e.getMessage());
+            logLoadingError(ref.getTxtUrl(), e.getMessage());
             return Optional.empty();
         }
     }
@@ -125,18 +127,23 @@ public class FormLoaderService {
     /*                   LOGGING HELPERS                   */
     /* --------------------------------------------------- */
 
-    private void logLoadingStarted(String scope, int totalForms, int batchCount) {
-        log.info("Started form loading :: scope: '{}', form_count: {}, batch_count: {}, batch_size: {}",
-                scope, totalForms, batchCount, formBatchSize);
+    private void logLoadingCancelled(String scope, int total, String reason) {
+        log.info("Loading cancelled :: scope: '{}', total: {}, reason: '{}'",
+                scope, total, reason);
     }
 
-    private void logLoadedFormBatch(String scope, int batchIdx, int batchCount, int batchSize, int loaded) {
-        log.info("Loaded form batch {}/{} :: scope: '{}', size: {}, loaded: {}",
-                batchIdx + 1, batchCount, scope, batchSize, loaded);
+    private void logLoadingStarted(String scope, int total, int batchCount) {
+        log.info("Loading started :: scope: '{}', total: {}, batch_count: {}, batch_size: {}",
+                scope, total, batchCount, formBatchSize);
     }
 
-    private void logLoadingFormError(String url, String error) {
-        log.error("Failed form loading :: url: '{}', error: '{}'", url, error);
+    private void logBatchLoaded(String scope, int batchIdx, int batchCount, int total, int loaded) {
+        log.info("Batch loaded {}/{} :: scope: '{}', total: {}, loaded: {}",
+                batchIdx + 1, batchCount, scope, total, loaded);
+    }
+
+    private void logLoadingError(String url, String error) {
+        log.error("Loading error :: url: '{}', error: '{}'", url, error);
     }
 
 }
