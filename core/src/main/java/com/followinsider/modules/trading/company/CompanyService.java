@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -32,16 +33,15 @@ public class CompanyService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<CompanyView> getPage(GetPageRequest getPageRequest) {
         Pageable pageable = getPageRequest.prepare();
         return companyRepository.findByPage(pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     public List<CompanyView> search(SearchRequest searchRequest) {
-        return search(searchRequest.text(), searchRequest.limit());
-    }
-
-    private List<CompanyView> search(String text, int limit) {
+        String text = searchRequest.text();
 
         // Handle full names -> NAME (TICKER)
         int parIdx = text.indexOf("(");
@@ -49,14 +49,16 @@ public class CompanyService {
             text = text.substring(0, parIdx);
 
         text = text.trim().toUpperCase();
-        Pageable pageable = PageRequest.of(0, limit);
+        Pageable pageable = PageRequest.of(0, searchRequest.limit());
         return companyRepository.findByPageLike(pageable, text).getContent();
     }
 
+    @Transactional(readOnly = true)
     public CompanyView getByCik(int cik) {
         return companyRepository.findViewById(cik);
     }
 
+    @Transactional(readOnly = true)
     public Set<Integer> getCiksPresentIn(Set<Integer> ids) {
         return companyRepository.findIdsPresentIn(ids);
     }

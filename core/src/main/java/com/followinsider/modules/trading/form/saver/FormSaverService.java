@@ -2,11 +2,11 @@ package com.followinsider.modules.trading.form.saver;
 
 import com.followinsider.common.models.Identifiable;
 import com.followinsider.modules.trading.company.CompanyService;
+import com.followinsider.modules.trading.form.FormService;
 import com.followinsider.modules.trading.form.models.Form;
 import com.followinsider.modules.trading.company.models.Company;
 import com.followinsider.modules.trading.insider.InsiderService;
 import com.followinsider.modules.trading.insider.models.Insider;
-import com.followinsider.modules.trading.form.FormRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,7 @@ public class FormSaverService implements FormSaver {
 
     private final InsiderService insiderService;
 
-    private final FormRepository formRepository;
+    private final FormService formService;
 
     @Override
     @Transactional
@@ -41,7 +41,7 @@ public class FormSaverService implements FormSaver {
         saveInsiders(insiders);
 
         updateRefs(forms);
-        formRepository.saveAll(forms);
+        formService.saveAll(forms);
     }
 
     private void updateRefs(List<Form> forms) {

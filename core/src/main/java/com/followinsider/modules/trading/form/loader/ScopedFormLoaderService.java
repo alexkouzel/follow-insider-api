@@ -6,12 +6,11 @@ import com.alexkouzel.filing.FilingType;
 import com.alexkouzel.filing.reference.FilingReference;
 import com.alexkouzel.filing.reference.FilingReferenceLoader;
 import com.alexkouzel.filing.reference.latest.LatestFeedCount;
-import com.followinsider.modules.trading.fiscalquarter.FiscalQuarterRepository;
+import com.followinsider.modules.trading.fiscalquarter.FiscalQuarterService;
 import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarter;
 import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterForms;
 import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterRange;
 import com.followinsider.modules.trading.fiscalquarter.models.FiscalQuarterVals;
-import com.followinsider.modules.trading.fiscalquarter.FiscalQuarterFormsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -30,9 +29,7 @@ public class ScopedFormLoaderService implements ScopedFormLoader {
 
     private final FilingReferenceLoader filingReferenceLoader;
 
-    private final FiscalQuarterFormsRepository fiscalQuarterFormsRepository;
-
-    private final FiscalQuarterRepository fiscalQuarterRepository;
+    private final FiscalQuarterService fiscalQuarterService;
 
     private final FormLoaderService formLoaderService;
 
@@ -83,7 +80,7 @@ public class ScopedFormLoaderService implements ScopedFormLoader {
     @Override
     @Async
     public void loadFiscalQuarter(int year, int quarter) {
-        fiscalQuarterRepository
+        fiscalQuarterService
             .findByYearAndQuarter(year, quarter)
             .ifPresentOrElse(this::loadFiscalQuarter,
                 () -> {
@@ -93,7 +90,7 @@ public class ScopedFormLoaderService implements ScopedFormLoader {
     }
 
     private void loadFiscalQuarter(FiscalQuarter fiscalQuarter) {
-        FiscalQuarterForms forms = fiscalQuarterFormsRepository.findByFiscalQuarter(fiscalQuarter);
+        FiscalQuarterForms forms = fiscalQuarterService.findFormsByFiscalQuarter(fiscalQuarter);
         FiscalQuarterVals vals = forms.getFiscalQuarter().getVals();
 
         String scope = vals.toAlias();
@@ -109,7 +106,7 @@ public class ScopedFormLoaderService implements ScopedFormLoader {
         forms.setTotal(progress.total());
         forms.setLoaded(progress.old() + progress.loaded());
         forms.setLastUpdated(LocalDate.now());
-        fiscalQuarterFormsRepository.save(forms);
+        fiscalQuarterService.saveForms(forms);
     }
 
     private Optional<FormLoaderProgress> loadScope(String scope, FilingReferenceSupplier refSupplier) {

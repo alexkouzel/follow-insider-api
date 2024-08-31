@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -18,25 +19,30 @@ public class InsiderService {
 
     private final InsiderRepository insiderRepository;
 
+    @Transactional(readOnly = true)
     public List<InsiderView> getPage(GetPageRequest getPageRequest) {
         Pageable pageable = getPageRequest.prepare();
         return insiderRepository.findByPage(pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     public List<InsiderView> search(SearchRequest searchRequest) {
         return search(searchRequest.text(), searchRequest.limit());
     }
 
+    @Transactional(readOnly = true)
     private List<InsiderView> search(String text, int limit) {
         text = text.trim().toUpperCase();
         Pageable pageable = PageRequest.of(0, limit);
         return insiderRepository.findByPageLike(pageable, text).getContent();
     }
 
+    @Transactional(readOnly = true)
     public InsiderView getByCik(int cik) {
         return insiderRepository.findViewById(cik);
     }
 
+    @Transactional(readOnly = true)
     public Set<Integer> getCiksPresentIn(Set<Integer> ciks) {
         return insiderRepository.findIdsPresentIn(ciks);
     }

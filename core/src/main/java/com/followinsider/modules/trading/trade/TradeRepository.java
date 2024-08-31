@@ -22,11 +22,6 @@ public interface TradeRepository extends JpaRepository<Trade, Integer> {
     )
     List<TradeView> findByIds(List<Integer> ids);
 
-    @Query("SELECT t.id FROM Trade t")
-    List<Integer> findIdsByPage(Pageable pageable, Specification<Trade> spec);
-
-    @Query("SELECT COUNT(t)" +
-        " FROM Trade t")
     long count(Specification<Trade> spec);
 
 }

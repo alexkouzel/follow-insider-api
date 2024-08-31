@@ -9,7 +9,7 @@ import com.alexkouzel.filing.type.f345.OwnershipDocument;
 import com.alexkouzel.filing.type.f345.OwnershipDocumentLoader;
 import com.followinsider.common.models.TimeRange;
 import com.followinsider.common.utils.ListUtils;
-import com.followinsider.modules.trading.form.FormRepository;
+import com.followinsider.modules.trading.form.FormService;
 import com.followinsider.modules.trading.form.converter.FormConverter;
 import com.followinsider.modules.trading.form.models.Form;
 import com.followinsider.modules.trading.form.saver.FormSaver;
@@ -28,7 +28,7 @@ public class FormLoaderService {
 
     private final OwnershipDocumentLoader ownershipDocumentLoader;
 
-    private final FormRepository formRepository;
+    private final FormService formService;
 
     private final FormConverter formConverter;
 
@@ -113,13 +113,13 @@ public class FormLoaderService {
     }
 
     private List<FilingReference> filterOldByTimeRange(List<FilingReference> refs, TimeRange timeRange) {
-        Set<String> oldAccNos = formRepository.findIdsFiledBetween(timeRange.from(), timeRange.to());
+        Set<String> oldAccNos = formService.getIdsFiledBetween(timeRange.from(), timeRange.to());
         return FilingReferenceUtils.filterAccNos(refs, oldAccNos);
     }
 
     private List<FilingReference> filterOldByPresence(List<FilingReference> refs) {
         Set<String> accNos = FilingReferenceUtils.getAccNos(refs);
-        Set<String> oldAccNos = formRepository.findIdsPresentIn(accNos);
+        Set<String> oldAccNos = formService.getIdsPresentIn(accNos);
         return FilingReferenceUtils.filterAccNos(refs, oldAccNos);
     }
 
