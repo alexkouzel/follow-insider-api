@@ -56,6 +56,18 @@ public class TradeService {
         Predicate predicate = spec.toPredicate(root, query, cb);
         query.where(predicate);
 
+        // Apply sorting from pageable
+        Sort sort = pageable.getSort();
+        if (sort.isSorted()) {
+            for (Sort.Order order : sort) {
+                if (order.isAscending()) {
+                    query.orderBy(cb.asc(root.get(order.getProperty())));
+                } else {
+                    query.orderBy(cb.desc(root.get(order.getProperty())));
+                }
+            }
+        }
+
         // Apply pagination
         TypedQuery<Integer> typedQuery = entityManager.createQuery(query);
         typedQuery.setFirstResult((int) pageable.getOffset());

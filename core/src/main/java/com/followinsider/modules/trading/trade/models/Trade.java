@@ -19,6 +19,7 @@ import java.time.LocalDate;
     name = "trade",
     indexes = {
         @Index(name = "trade_acc_no", columnList = "acc_no"),
+        @Index(name = "trade_executed_at", columnList = "executedAt"),
         @Index(name = "trade_type", columnList = "type")
     }
 )
@@ -45,7 +46,7 @@ public class Trade extends BaseEntity {
     @Enumerated(EnumType.ORDINAL)
     private TradeType type;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "acc_no")
     private Form form;
 

@@ -18,7 +18,8 @@ public interface TradeRepository extends JpaRepository<Trade, Integer> {
         "LEFT JOIN FETCH f.company c " +
         "LEFT JOIN FETCH f.insider i " +
         "LEFT JOIN FETCH f.insiderTitles it " +
-        "WHERE t.id IN :ids"
+        "WHERE t.id IN :ids " +
+        "ORDER BY t.executedAt"
     )
     List<TradeView> findByIds(List<Integer> ids);
 

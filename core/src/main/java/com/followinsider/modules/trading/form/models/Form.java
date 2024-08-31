@@ -21,9 +21,9 @@ import java.util.Set;
 @Table(
     name = "form",
     indexes = {
-        @Index(name = "form_filed_at", columnList = "filedAt"),
         @Index(name = "form_company_cik", columnList = "company_cik"),
-        @Index(name = "form_insider_cik", columnList = "insider_cik")
+        @Index(name = "form_insider_cik", columnList = "insider_cik"),
+        @Index(name = "form_filed_at", columnList = "filedAt")
     }
 )
 public class Form implements Identifiable<String> {
@@ -41,11 +41,11 @@ public class Form implements Identifiable<String> {
     @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
     private Set<Trade> trades;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_cik")
     private Company company;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "insider_cik")
     private Insider insider;
 

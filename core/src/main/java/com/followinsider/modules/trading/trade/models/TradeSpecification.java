@@ -25,7 +25,11 @@ public class TradeSpecification implements Specification<Trade> {
             return cb.conjunction();
         }
 
-        Join<Trade, Form> formJoin = root.join("form");
+        Join<Trade, Form> formJoin = null;
+
+        if (filters.companyCik() != null || filters.filedAt() != null) {
+            formJoin = root.join("form");
+        }
 
         if (filters.companyCik() != null) {
             Join<Form, Company> companyJoin = formJoin.join("company");
