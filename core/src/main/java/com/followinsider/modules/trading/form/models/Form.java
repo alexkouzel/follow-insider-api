@@ -18,7 +18,14 @@ import java.util.Set;
 @Builder
 @EqualsAndHashCode(exclude = {"company", "insider", "trades"})
 @ToString(exclude = {"company", "insider", "trades"})
-@Table(name = "form", indexes = @Index(columnList = "filedAt"))
+@Table(
+    name = "form",
+    indexes = {
+        @Index(name = "form_filed_at", columnList = "filedAt"),
+        @Index(name = "form_company_cik", columnList = "company_cik"),
+        @Index(name = "form_insider_cik", columnList = "insider_cik")
+    }
+)
 public class Form implements Identifiable<String> {
 
     @Id
@@ -34,18 +41,19 @@ public class Form implements Identifiable<String> {
     @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
     private Set<Trade> trades;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "company_cik")
     private Company company;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "insider_cik")
     private Insider insider;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
         name = "insider_title",
-        joinColumns = @JoinColumn(name = "acc_no")
+        joinColumns = @JoinColumn(name = "acc_no"),
+        indexes = @Index(name = "insider_title_acc_no", columnList = "acc_no")
     )
     private Set<String> insiderTitles;
 

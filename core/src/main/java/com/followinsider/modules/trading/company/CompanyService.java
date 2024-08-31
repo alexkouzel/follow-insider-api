@@ -33,12 +33,8 @@ public class CompanyService {
     }
 
     public List<CompanyView> getPage(GetPageRequest getPageRequest) {
-        return getPage(getPageRequest.pageIdx(), getPageRequest.pageSize());
-    }
-
-    public List<CompanyView> getPage(int pageIdx, int pageSize) {
-        Pageable pageable = PageRequest.of(pageIdx, pageSize);
-        return companyRepository.findPage(pageable).getContent();
+        Pageable pageable = getPageRequest.prepare();
+        return companyRepository.findByPage(pageable).getContent();
     }
 
     public List<CompanyView> search(SearchRequest searchRequest) {
@@ -54,7 +50,7 @@ public class CompanyService {
 
         text = text.trim().toUpperCase();
         Pageable pageable = PageRequest.of(0, limit);
-        return companyRepository.findLike(text, pageable);
+        return companyRepository.findByPageLike(pageable, text).getContent();
     }
 
     public CompanyView getByCik(int cik) {

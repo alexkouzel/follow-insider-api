@@ -63,7 +63,7 @@ public class ScopedFormLoaderService implements ScopedFormLoader {
     @Async
     public void loadDaysAgo(int daysAgo) {
         String scope = daysAgo + " days ago";
-        loadScope(scope, () -> filingReferenceLoader.loadDaysAgo(daysAgo));
+        loadScope(scope, () -> filingReferenceLoader.loadDaysAgo(daysAgo, FilingType.F4));
     }
 
     @Override

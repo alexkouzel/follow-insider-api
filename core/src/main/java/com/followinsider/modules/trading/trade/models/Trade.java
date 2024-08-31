@@ -15,7 +15,13 @@ import java.time.LocalDate;
 @Builder
 @EqualsAndHashCode(callSuper = true, exclude = "form")
 @ToString(callSuper = true, exclude = "form")
-@Table(name = "trade")
+@Table(
+    name = "trade",
+    indexes = {
+        @Index(name = "trade_acc_no", columnList = "acc_no"),
+        @Index(name = "trade_type", columnList = "type")
+    }
+)
 public class Trade extends BaseEntity {
 
     @Column(nullable = false)

@@ -19,8 +19,8 @@ public class InsiderService {
     private final InsiderRepository insiderRepository;
 
     public List<InsiderView> getPage(GetPageRequest getPageRequest) {
-        Pageable pageable = PageRequest.of(getPageRequest.pageIdx(), getPageRequest.pageSize());
-        return insiderRepository.findPage(pageable).getContent();
+        Pageable pageable = getPageRequest.prepare();
+        return insiderRepository.findByPage(pageable).getContent();
     }
 
     public List<InsiderView> search(SearchRequest searchRequest) {
@@ -30,7 +30,7 @@ public class InsiderService {
     private List<InsiderView> search(String text, int limit) {
         text = text.trim().toUpperCase();
         Pageable pageable = PageRequest.of(0, limit);
-        return insiderRepository.findLike(text, pageable);
+        return insiderRepository.findByPageLike(pageable, text).getContent();
     }
 
     public InsiderView getByCik(int cik) {

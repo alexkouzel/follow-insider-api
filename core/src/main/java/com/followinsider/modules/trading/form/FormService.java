@@ -16,8 +16,9 @@ public class FormService {
     private final FormRepository formRepository;
 
     public List<FormView> getPage(GetPageRequest getPageRequest) {
-        Pageable pageable = PageRequest.of(getPageRequest.pageIdx(), getPageRequest.pageSize());
-        return formRepository.findPage(pageable).getContent();
+        Pageable pageable = getPageRequest.prepare();
+        List<String> accNos = formRepository.findAccNosByPage(pageable);
+        return formRepository.findByAccNos(accNos);
     }
 
     public List<FormView> getByCompanyCik(int cik) {

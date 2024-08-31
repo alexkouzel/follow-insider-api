@@ -1,13 +1,11 @@
 package com.followinsider.modules.trading.trade;
 
-import com.followinsider.common.models.requests.GetPageRequest;
 import com.followinsider.modules.trading.trade.models.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,28 +17,20 @@ public class TradeService {
     private final TradeRepository tradeRepository;
 
     @Cacheable("trade")
-    public List<TradeView> getPage(TradePageRequest tradePageRequest) {
-        GetPageRequest page = tradePageRequest.getPageRequest();
-        TradeFilters filters = tradePageRequest.tradeFilters();
+    public List<TradeView> getPage(TradePageRequest request) {
+        Specification<Trade> spec = new TradeSpecification(request.tradeFilters());
 
-        return tradeRepository.findPage(
-            page.pageSize(),
-            page.offset(),
-            filters.companyCik(),
-            filters.executedAt(),
-            filters.filedAt(),
-            filters.type()
-        );
+        Sort sort = Sort.by(Sort.Direction.DESC, "executedAt");
+        Pageable pageable = request.getPageRequest().prepare(sort);
+
+        List<Integer> ids = tradeRepository.findIdsByPage(pageable, spec);
+        return tradeRepository.findByIds(ids);
     }
 
     @Cacheable("trade_count")
     public long count(TradeFilters filters) {
-        return tradeRepository.count(
-            filters.companyCik(),
-            filters.executedAt(),
-            filters.filedAt(),
-            filters.type()
-        );
+        Specification<Trade> spec = new TradeSpecification(filters);
+        return tradeRepository.count(spec);
     }
 
 }

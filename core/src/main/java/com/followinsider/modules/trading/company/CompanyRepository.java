@@ -2,13 +2,12 @@ package com.followinsider.modules.trading.company;
 
 import com.followinsider.modules.trading.company.models.Company;
 import com.followinsider.modules.trading.company.models.CompanyView;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -17,11 +16,12 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
     @Query("SELECT c FROM Company c " +
         "WHERE str(c.cik) LIKE :text% " +
         "OR c.ticker LIKE :text% " +
-        "OR UPPER(c.name) LIKE %:text%")
-    List<CompanyView> findLike(String text, Pageable pageable);
+        "OR UPPER(c.name) LIKE %:text%"
+    )
+    Slice<CompanyView> findByPageLike(Pageable pageable, String text);
 
     @Query("SELECT c FROM Company c")
-    Page<CompanyView> findPage(Pageable pageable);
+    Slice<CompanyView> findByPage(Pageable pageable);
 
     @Query("SELECT c FROM Company c WHERE c.cik = :cik")
     CompanyView findViewById(int cik);

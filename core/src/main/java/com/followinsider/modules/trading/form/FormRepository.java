@@ -2,7 +2,6 @@ package com.followinsider.modules.trading.form;
 
 import com.followinsider.modules.trading.form.models.Form;
 import com.followinsider.modules.trading.form.models.FormView;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,8 +14,17 @@ import java.util.Set;
 @Repository
 public interface FormRepository extends JpaRepository<Form, String> {
 
-    @Query("SELECT f FROM Form f")
-    Page<FormView> findPage(Pageable pageable);
+    @Query("SELECT f FROM Form f " +
+        "LEFT JOIN FETCH f.trades t " +
+        "LEFT JOIN FETCH f.company c " +
+        "LEFT JOIN FETCH f.insider i " +
+        "LEFT JOIN FETCH f.insiderTitles it " +
+        "WHERE f.accNo IN :accNos"
+    )
+    List<FormView> findByAccNos(List<String> accNos);
+
+    @Query("SELECT f.accNo FROM Form f")
+    List<String> findAccNosByPage(Pageable pageable);
 
     List<FormView> findAllByCompanyCik(int cik);
 
