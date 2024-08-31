@@ -25,8 +25,4 @@ public record GetPageRequest(
         return PageRequest.of(pageIdx, pageSize, sort);
     }
 
-    public int offset() {
-        return pageIdx * pageSize;
-    }
-
 }
