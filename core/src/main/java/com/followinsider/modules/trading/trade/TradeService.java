@@ -3,10 +3,7 @@ package com.followinsider.modules.trading.trade;
 import com.followinsider.modules.trading.trade.models.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
@@ -59,13 +56,13 @@ public class TradeService {
         // Apply sorting from pageable
         Sort sort = pageable.getSort();
         if (sort.isSorted()) {
-            for (Sort.Order order : sort) {
-                if (order.isAscending()) {
-                    query.orderBy(cb.asc(root.get(order.getProperty())));
-                } else {
-                    query.orderBy(cb.desc(root.get(order.getProperty())));
-                }
-            }
+            List<Order> orders = sort.stream()
+                .map(order -> order.isAscending()
+                    ? cb.asc(root.get(order.getProperty()))
+                    : cb.desc(root.get(order.getProperty())))
+                .toList();
+
+            query.orderBy(orders);
         }
 
         // Apply pagination

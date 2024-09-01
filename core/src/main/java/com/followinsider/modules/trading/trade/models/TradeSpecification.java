@@ -32,8 +32,7 @@ public class TradeSpecification implements Specification<Trade> {
         }
 
         if (filters.companyCik() != null) {
-            Join<Form, Company> companyJoin = formJoin.join("company");
-            predicates.add(cb.equal(companyJoin.get("cik"), filters.companyCik()));
+            predicates.add(cb.equal(formJoin.get("company").get("cik"), filters.companyCik()));
         }
 
         if (filters.executedAt() != null) {
