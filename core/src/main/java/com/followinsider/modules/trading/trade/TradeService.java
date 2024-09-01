@@ -6,7 +6,6 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -25,13 +24,23 @@ public class TradeService {
     @Cacheable("trade")
     @Transactional(readOnly = true)
     public List<TradeView> getPage(TradePageRequest request) {
+        boolean reverse = request.getPageRequest().shouldReverse();
+
         Specification<Trade> spec = new TradeSpecification(request.tradeFilters());
 
-        Sort sort = Sort.by(Sort.Direction.DESC, "executedAt");
-        Pageable pageable = request.getPageRequest().prepare(sort);
+        int offset = request.getPageRequest().getOffset(reverse);
+        int pageSize = request.getPageRequest().pageSize();
 
-        List<Integer> ids = findIdsByPage(pageable, spec);
-        return tradeRepository.findByIds(ids);
+        Sort.Direction direction = reverse ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, "executedAt");
+
+        List<Integer> ids = findIdsByPage(spec, Math.max(offset, 0), pageSize, sort);
+        List<TradeView> result = tradeRepository.findByIds(ids);
+
+        if (offset < 0) {
+            return result.subList(-offset, result.size());
+        }
+        return result;
     }
 
     @Cacheable("trade_count")
@@ -41,7 +50,7 @@ public class TradeService {
         return tradeRepository.count(spec);
     }
 
-    private List<Integer> findIdsByPage(Pageable pageable, Specification<Trade> spec) {
+    private List<Integer> findIdsByPage(Specification<Trade> spec, int offset, int pageSize, Sort sort) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Integer> query = cb.createQuery(Integer.class);
         Root<Trade> root = query.from(Trade.class);
@@ -54,7 +63,6 @@ public class TradeService {
         query.where(predicate);
 
         // Apply sorting from pageable
-        Sort sort = pageable.getSort();
         if (sort.isSorted()) {
             List<Order> orders = sort.stream()
                 .map(order -> order.isAscending()
@@ -67,8 +75,8 @@ public class TradeService {
 
         // Apply pagination
         TypedQuery<Integer> typedQuery = entityManager.createQuery(query);
-        typedQuery.setFirstResult((int) pageable.getOffset());
-        typedQuery.setMaxResults(pageable.getPageSize());
+        typedQuery.setFirstResult(offset);
+        typedQuery.setMaxResults(pageSize);
 
         // Execute the query and return the result list
         return typedQuery.getResultList();

@@ -1,6 +1,5 @@
 package com.followinsider.modules.trading.trade.models;
 
-import com.followinsider.modules.trading.company.models.Company;
 import com.followinsider.modules.trading.form.models.Form;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;

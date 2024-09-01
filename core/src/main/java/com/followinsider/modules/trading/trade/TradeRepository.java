@@ -2,7 +2,6 @@ package com.followinsider.modules.trading.trade;
 
 import com.followinsider.modules.trading.trade.models.Trade;
 import com.followinsider.modules.trading.trade.models.TradeView;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
