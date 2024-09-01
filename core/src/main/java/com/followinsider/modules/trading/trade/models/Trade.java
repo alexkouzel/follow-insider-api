@@ -19,7 +19,7 @@ import java.time.LocalDate;
     name = "trade",
     indexes = {
         @Index(name = "trade_acc_no", columnList = "acc_no"),
-        @Index(name = "trade_executed_at", columnList = "executedAt DESC, accNo"),
+        @Index(name = "trade_executed_at", columnList = "executedAt DESC, acc_no"),
         @Index(name = "trade_type", columnList = "type")
     }
 )
