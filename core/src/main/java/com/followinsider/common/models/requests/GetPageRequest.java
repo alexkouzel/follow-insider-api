@@ -32,7 +32,7 @@ public record GetPageRequest(
     }
 
     public boolean shouldReverse() {
-        return count != null && count > 1_000_000 && getOffset() > count / 2;
+        return count != null && count > 200_000 && getOffset() > count / 2;
     }
 
     public int getOffset(boolean reverse) {
