@@ -1,37 +1,9 @@
-### Build ###
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### Gradle ###
+build
 .gradle
-!gradle/wrapper/gradle-wrapper.jar
-gradle.properties
+.vscode
+.idea
+.logs
+.env.sh
 
-### CDK ###
-.cdk.staging
 cdk.context.json
 cdk.out
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
-.vscode/
-
-### Other ###
-logs/
-.env.sh

@@ -20,9 +20,9 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class LogService {
 
-    private static final String FILE = "logs/app.log";
+    private static final String FILE = ".logs/app.log";
 
-    private static final String BACKUP_FILE = "logs/app-%d.log";
+    private static final String BACKUP_FILE = ".logs/app-%d.log";
 
     private static final int BACKUP_COUNT = 2;
 
